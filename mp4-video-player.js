@@ -48,24 +48,22 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         }
         .video-track-pointer {
           position: absolute;
-          left: 0;
-          top: calc(50% - 7px);
-          width: 14px;
-          height: 14px;
-          border-radius: 50%;
-          background: yellow;
+          top: calc(50% - 12px);
+          height: 24px;
+          width: 24px;
+          padding: 9px;
           cursor: pointer;
           box-sizing: border-box;
+          margin-left: -12px;
         }
 
-        .video-track-pointer::after {
-          content: '';
-          outline: none;
+        .video-track-pointer span {
           position: absolute;
-          top: -10px;
-          bottom: -10px;
-          left: -10px;
-          right: -10px;
+          top: calc(50% - 6px);
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          background: blueviolet;
         }
       </style>
       <video id="video_player" on-timeupdate="_updateTrack" on-ended="_handleEnd" controls>
@@ -75,7 +73,9 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         <div class="track-timeline" on-click="_handleTimelineClick"></div>
         <div class="track-bar"></div>
         <div id="track_fill" class="track-bar fill"></div>
-        <span id="track_pointer" class="video-track-pointer" on-track="_handleTrack"></span>
+        <div id="track_pointer" class="video-track-pointer" on-track="_handleTrack">
+          <span></span>
+        </div>
       </div>
     `;
   }
@@ -223,7 +223,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         break;
       case 'end':
         this.dragging = false;
-        video.muted = true;
+        video.muted = false;
         break;
       default:
         break;
