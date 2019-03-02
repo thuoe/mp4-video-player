@@ -51,7 +51,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           top: calc(50% - 12px);
           height: 24px;
           width: 24px;
-          padding: 9px;
+          padding: 6px;
           cursor: pointer;
           box-sizing: border-box;
           margin-left: -12px;
