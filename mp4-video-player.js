@@ -1,5 +1,7 @@
-import {html, PolymerElement} from '@polymer/polymer/polymer-element.js';
-import {GestureEventListeners} from '@polymer/polymer/lib/mixins/gesture-event-listeners.js';
+import { GestureEventListeners } from '@polymer/polymer/lib/mixins/gesture-event-listeners.js';
+import { html, PolymerElement } from '@polymer/polymer/polymer-element.js';
+import '@polymer/iron-icon/iron-icon.js';
+import 'player-icons/player-icons.js';
 
 /**
  * `mp4-video-player`
@@ -16,65 +18,202 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         :host {
           display: block;
         }
+        
+        .container {
+          display: flex;
+          flex-direction: column;
+          min-width: 1000px;
+          border: 1px solid lightcoral;
+          box-sizing: border-box;
+        }
+
         video {
-          width: 560px;
-          height: 240px;
-          background: lightgray;
+          width: 100%;
+          height: 100%;
+          background: black;
         }
         .video-controls {
-          position: relative;
           display: flex;
           flex-direction: column;
           width: 100%;
-          height: 40px;
           background: lightgray;
         }
-        .track-timeline {
+
+        .upper-controls {
+          display: flex;
+          flex-direction: column;
+        }
+
+        h3 {
+          margin-top: 5px;
+          margin-bottom: 5px;
+          text-align: center;  
+        }
+
+        .track{
           position: relative;
           width: 100%;
-          height: 100%;
-          cursor: pointer;
+          min-height: 24px;
+          background: orangered;
         }
+
+        #volume_track {
+          margin-left: 7px;
+        }
+
+        .track-timeline {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          background: white;
+          opacity: 0.4;
+          display: none;
+        }
+
         .track-bar {
           position: absolute;
           width: 100%;
-          height: 2px;
-          top: calc(50% - 1px);
+          height: 4px;
+          bottom: 0;
           background: black;
+          border-radius: 25px;
         }
+
         .fill {
+          pointer-events: none;
           background: blueviolet;
           width: 0px;
         }
-        .video-track-pointer {
+
+        .track-pointer {
           position: absolute;
-          top: calc(50% - 12px);
           height: 24px;
           width: 24px;
           padding: 6px;
           cursor: pointer;
           box-sizing: border-box;
           margin-left: -12px;
+          bottom: -10px;
+          outline: none;
         }
 
-        .video-track-pointer span {
+        .track-pointer span {
           position: absolute;
           top: calc(50% - 6px);
           width: 12px;
           height: 12px;
           border-radius: 50%;
           background: blueviolet;
+          transition: all 200ms;
+        }
+
+        .track-pointer span:active {
+          transform: scale(1.5);
+        }
+
+        .track, .track-bar, .track-timeline {
+          cursor: pointer;
+        }
+        
+        .lower-controls {
+          height: 35px;
+        }
+
+        #volume_track_bar, #volume_track_fill {
+          top: calc(50% - 2px);
+        }
+
+        #volume_track_pointer {
+          bottom: 0;
+        }
+
+        .left {
+          position: relative;
+          top: calc(50% - 12px);
+          display: flex;
+          float: left;
+        }
+
+        .right {
+          position: relative;
+          top: calc(50% - 12px);
+          display: flex;
+          float: right;
+          min-width: 300px;
+        }
+
+        .time-elapsed {
+          margin-left: 7px;
+          line-height: 24px;
+        }   
+
+        .icons {
+          margin-left: 7px; 
+          display: flex;
         }
       </style>
-      <video id="video_player" on-timeupdate="_updateTrack" on-ended="_handleEnd" controls>
-        <source src="/assets/sample.mp4" type="video/mp4">
-      </video>
-      <div class="video-controls track">
-        <div class="track-timeline" on-click="_handleTimelineClick"></div>
-        <div class="track-bar"></div>
-        <div id="track_fill" class="track-bar fill"></div>
-        <div id="track_pointer" class="video-track-pointer" on-track="_handleTrack">
-          <span></span>
+
+      <div class="container">
+        <h3>[[title]]</h3>
+        <video id="video_player" on-timeupdate="_updateTrack" on-ended="_handleEnd">
+          <source src="/assets/sample.mp4" type="video/mp4">
+        </video>
+        <div class="video-controls">
+          <div id="playback_track" class="track">
+            <div class="track-timeline" on-click="_handleTimelineClick"></div>
+            <div class="track-bar" on-click="_handleTimelineClick"></div>
+            <div id="track_fill" class="track-bar fill"></div>
+            <div id="track_pointer" class="track-pointer" on-track="_handleTrack">
+              <span></span>
+            </div>
+          </div>
+          <div class="lower-controls">
+            <div class="left">
+              <div on-click="_togglePlay">
+                <template is="dom-if" if={{!playing}}>
+                  <iron-icon icon="player-icons:play-arrow"></iron-icon>
+                </template>
+                <template is="dom-if" if={{playing}}>
+                  <iron-icon icon="player-icons:pause"></iron-icon>
+                </template>
+                <template is="dom-if" if={{ended}}>
+                  <iron-icon icon="player-icons:ended"></iron-icon>
+                </template>
+              </div>
+              <div class="time-elapsed">
+                <span id="current_time" tabindex="-1">0:00</span>
+                &nbsp;/&nbsp;
+                <span id="total_duration" tabindex="-1">0:00</span>
+              </div>
+            </div>
+            <div class="right">
+              <div>
+                <template is="dom-if" if={{muted}}>
+                <iron-icon icon="player-icons:volume-off"></iron-icon>
+                </template>
+                <template is="dom-if" if={{!muted}}>
+                <iron-icon icon="player-icons:volume-up"></iron-icon>
+                </template>
+              </div>
+              <div id="volume_track" class="track">
+                <!-- <div id="volume_timeline" class="track-timeline"></div> -->
+                <div id="volume_track_bar" class="track-bar"></div>
+                <div id="volume_track_fill" class="track-bar fill"></div>
+                <div id="volume_track_pointer" class="track-pointer">
+                  <span></span>
+                </div>
+              </div>
+              <div class="icons">
+                <template is="dom-if" if={{!fullscreen}}>
+                  <iron-icon icon="player-icons:fullscreen"></iron-icon>
+                </template>
+                <template is="dom-if" if={{fullscreen}}>
+                  <iron-icon icon="player-icons:fullscreen-exit"></iron-icon>
+                </template>
+                <iron-icon icon="player-icons:file-download"></iron-icon>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     `;
@@ -106,16 +245,20 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         value: false,
         reflectToAttribute: true
       },
+      title: {
+        type: String,
+        value: 'TITLE HERE'
+      },
       volume: {
         type: Number,
-        value: 0.3,
+        value: 0.75,
         observer: '_volumeChanged'
       },
       elapsed: {
         type: Number,
         observer: '_elapsedChanged'
       }
-    };    
+    };
   }
 
   /**
@@ -124,7 +267,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    * @param {Object} event 
    */
   _updateTrack(event) {
-    if (!this.dragging && !this.playing) {
+    if (!this.dragging && this.playing) {
       const currentTime = event.currentTarget.currentTime;
       const duration = event.currentTarget.duration;
       const progress = currentTime / duration;
@@ -150,13 +293,13 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    * @param {Number} progress 
    */
   _progressTimeline(progress) {
-    const offset = this.shadowRoot.querySelector('.track-timeline').offsetWidth * progress;
+    const offset = this.shadowRoot.querySelector('.track').offsetWidth * progress;
     this.$['track_pointer'].style.left = offset + 'px';
     this.$['track_fill'].style.width = offset + 'px';
   }
 
   _handleEnd() {
-    this.dispatchEvent(new CustomEvent('videoEnded', {detail: {ended: true}}));
+    this.dispatchEvent(new CustomEvent('videoEnded', { detail: { ended: true } }));
   }
 
   /**
@@ -164,7 +307,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    * @private
    */
   _togglePlay() {
-    const video = this.$['volume_player'];
+    const video = this.$['video_player'];
     this.playing = !this.playing;
     if (this.playing) {
       video.play();
@@ -189,7 +332,12 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    */
   _toggleMute() {
     this.muted != this.muted;
-    this.$['video_player'].muted = this.muted;
+    let prevVolume = this.volume
+    if (this.muted) {
+      this.volume = 0;
+    } else {
+      this.volume = prevVolume;
+    }
   }
 
   /**
@@ -198,38 +346,51 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    */
   _handleTimelineClick(event) {
     const clickPos = event.offsetX / event.currentTarget.offsetWidth;
-    this.elapsed = clickPos;
+    if (clickPos === this.elapsed) {
+      console.log('Same');
+    } 
+    if (event.currentTarget.id === 'vol_track_timeline') {
+      this.volume = clickPos;
+    } else {
+      this.elapsed = clickPos;
+    }
   }
-  
+
   _handleTrack(event) {
     const video = this.$['video_player'];
     switch (event.detail.state) {
       case 'start':
         this.dragging = true;
-        this.startleft =  parseInt(event.currentTarget.style.left) || 0;
+        this.startleft = parseInt(event.currentTarget.style.left) || 0;
         video.muted = true;
         break;
-        case 'track':
+      case 'track':
         let movedBy = this.startleft + event.detail.dx;
         if (movedBy < 0) {
           movedBy = 0;
         }
         const trackWidth = event.currentTarget.previousElementSibling.previousElementSibling.offsetWidth;
         if (movedBy > trackWidth) {
-          movedBy = trackWidth;   
+          movedBy = trackWidth;
         }
         const value = movedBy / trackWidth;
-        this.elapsed = value;
+        if (event.currentTarget.id === 'vol_track_pointer') {
+          this.volume = value;
+        } else {
+          this.elapsed = value;
+        }
         break;
       case 'end':
         this.dragging = false;
         video.muted = false;
+        console.log('Elapsed : ' + this.elapsed);
+        console.log('Current Progress px: ' + this.shadowRoot.querySelector('.track').offsetWidth * this.elapsed);
         break;
       default:
         break;
-    }  
+    }
   }
-    
+
 }
 
 window.customElements.define('mp4-video-player', MP4VideoPlayer);
