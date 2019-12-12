@@ -20,11 +20,21 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         }
         
         .container {
+          position: relative;
           display: flex;
           flex-direction: column;
           min-width: 1000px;
           border: 1px solid lightcoral;
           box-sizing: border-box;
+        }
+
+        h3 {
+          position: absolute;
+          left: 50%; 
+          transform: translate(-50%, -50%);
+          text-align: center; 
+          top: 10px;
+          color: white;
         }
 
         video {
@@ -42,12 +52,6 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         .upper-controls {
           display: flex;
           flex-direction: column;
-        }
-
-        h3 {
-          margin-top: 5px;
-          margin-bottom: 5px;
-          text-align: center;  
         }
 
         .track{
@@ -257,7 +261,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
       },
       title: {
         type: String,
-        value: 'TITLE HERE'
+        value: 'VIDEO TITLE HERE'
       },
       volume: {
         type: Number,
