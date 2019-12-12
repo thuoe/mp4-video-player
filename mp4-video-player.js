@@ -53,7 +53,6 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         .track{
           position: relative;
           width: 100%;
-          min-height: 24px;
           background: orangered;
         }
 
