@@ -132,6 +132,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           top: calc(50% - 12px);
           display: flex;
           float: left;
+          margin-left: 7px;
         }
 
         .right {
@@ -140,6 +141,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           display: flex;
           float: right;
           min-width: 300px;
+          margin-right: 7px;
         }
 
         .time-elapsed {
@@ -148,8 +150,15 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         }   
 
         .icons {
-          margin-left: 7px; 
           display: flex;
+        }
+
+        #time {
+          margin-left: 7px;
+        }
+
+        #volume_icons, #volume_track, #download_icon {
+          margin-right: 7px;
         }
       </style>
 
@@ -169,7 +178,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           </div>
           <div class="lower-controls">
             <div class="left">
-              <div on-click="_togglePlay">
+              <div id="play_icons" on-click="_togglePlay">
                 <template is="dom-if" if={{!playing}}>
                   <iron-icon icon="player-icons:play-arrow"></iron-icon>
                 </template>
@@ -180,14 +189,14 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
                   <iron-icon icon="player-icons:ended"></iron-icon>
                 </template>
               </div>
-              <div class="time-elapsed">
+              <div id="time" class="time-elapsed">
                 <span id="current_time" tabindex="-1">0:00</span>
                 &nbsp;/&nbsp;
                 <span id="total_duration" tabindex="-1">0:00</span>
               </div>
             </div>
             <div class="right">
-              <div>
+              <div id="volume_icons">
                 <template is="dom-if" if={{muted}}>
                 <iron-icon icon="player-icons:volume-off"></iron-icon>
                 </template>
@@ -196,21 +205,23 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
                 </template>
               </div>
               <div id="volume_track" class="track">
-                <!-- <div id="volume_timeline" class="track-timeline"></div> -->
+                <div id="volume_timeline" class="track-timeline"></div>
                 <div id="volume_track_bar" class="track-bar"></div>
                 <div id="volume_track_fill" class="track-bar fill"></div>
                 <div id="volume_track_pointer" class="track-pointer">
                   <span></span>
                 </div>
               </div>
-              <div class="icons">
+              <div id="download_icon">
+                <iron-icon icon="player-icons:file-download"></iron-icon>
+              </div>
+              <div id="fullscreen_icons" class="icons">
                 <template is="dom-if" if={{!fullscreen}}>
                   <iron-icon icon="player-icons:fullscreen"></iron-icon>
                 </template>
                 <template is="dom-if" if={{fullscreen}}>
                   <iron-icon icon="player-icons:fullscreen-exit"></iron-icon>
                 </template>
-                <iron-icon icon="player-icons:file-download"></iron-icon>
               </div>
             </div>
           </div>
