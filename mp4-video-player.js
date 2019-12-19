@@ -274,6 +274,20 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
       }
     };
   }
+  
+  _formatCurrentTime(time){
+    let mins = Math.floor(time / 60);
+    let secs = Math.round(time - mins * 60);
+    if (secs === 60) {
+      mins++;
+      secs = 0;
+    }
+    if (secs < 10) {
+      secs = `0${secs}`;
+    }
+    let formattedTime = `${mins}:${secs}`;
+    this.$['current_time'].innerHTML = formattedTime;
+  }
 
   /**
    * Updates the timeline progress when the video 
@@ -285,6 +299,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
       const currentTime = event.currentTarget.currentTime;
       const duration = event.currentTarget.duration;
       const progress = currentTime / duration;
+      this._formatCurrentTime(currentTime);
       this._progressTimeline(progress);
     }
   }
