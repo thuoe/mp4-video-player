@@ -193,9 +193,9 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
                 </template>
               </div>
               <div id="time" class="time-elapsed">
-                <span id="current_time" tabindex="-1">0:00</span>
+                <span id="current_time" tabindex="-1">[[formattedCurrentTime]]</span>
                 &nbsp;/&nbsp;
-                <span id="total_duration" tabindex="-1">0:00</span>
+                <span id="total_duration" tabindex="-1">[[formattedDuration]]</span>
               </div>
             </div>
             <div class="right">
@@ -271,11 +271,23 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
       elapsed: {
         type: Number,
         observer: '_elapsedChanged'
+      },
+      formattedCurrentTime: {
+        type: String,
+        value: '0:00'
+      },
+      formattedDuration: {
+        type: String,
+        value: '0:00'
       }
     };
   }
-  
-  _formatCurrentTime(time){
+
+  ready() {
+    super.ready();
+  }
+
+  _formatTime(time){
     let mins = Math.floor(time / 60);
     let secs = Math.round(time - mins * 60);
     if (secs === 60) {
@@ -286,7 +298,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
       secs = `0${secs}`;
     }
     let formattedTime = `${mins}:${secs}`;
-    this.$['current_time'].innerHTML = formattedTime;
+    return formattedTime;
   }
 
   /**
@@ -299,7 +311,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
       const currentTime = event.currentTarget.currentTime;
       const duration = event.currentTarget.duration;
       const progress = currentTime / duration;
-      this._formatCurrentTime(currentTime);
+      this.formattedCurrentTime = this._formatTime(currentTime);
       this._progressTimeline(progress);
     }
   }
