@@ -208,8 +208,8 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
                 </template>
               </div>
               <div id="volume_track" class="track">
-                <div id="volume_timeline" class="track-timeline"></div>
-                <div id="volume_track_bar" class="track-bar"></div>
+                <div id="volume_timeline" class="track-timeline" on-click="_handleTimelineClick"></div>
+                <div id="volume_track_bar" class="track-bar" on-click="_handleTimelineClick"></div>
                 <div id="volume_track_fill" class="track-bar fill"></div>
                 <div id="volume_track_pointer" class="track-pointer">
                   <span></span>
@@ -365,6 +365,9 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    * @param {Number} newVolume 
    */
   _volumeChanged(newVolume) {
+    const offset = this.$['volume_track'].offsetWidth * newVolume;
+    this.$['volume_track_fill'].style.left = offset + 'px';
+    this.$['volume_track_pointer'].style.left = offset + 'px';
     this.$['video_player'].volume = newVolume;
   }
 
@@ -387,11 +390,8 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    * @param {Object} event 
    */
   _handleTimelineClick(event) {
-    const clickPos = event.offsetX / event.currentTarget.offsetWidth;
-    if (clickPos === this.elapsed) {
-      console.log('Same');
-    } 
-    if (event.currentTarget.id === 'vol_track_timeline') {
+    const clickPos = event.offsetX / event.currentTarget.offsetWidth; 
+    if (event.currentTarget.id === 'volume_track_bar') {
       this.volume = clickPos;
     } else {
       this.elapsed = clickPos;
