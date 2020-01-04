@@ -199,7 +199,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
               </div>
             </div>
             <div class="right">
-              <div id="volume_icons">
+              <div id="volume_icons" tabindex="0" on-click="_toggleMute">
                 <template is="dom-if" if={{muted}}>
                 <iron-icon icon="player-icons:volume-off"></iron-icon>
                 </template>
@@ -211,8 +211,8 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
                 <div id="volume_timeline" class="track-timeline" on-click="_handleTimelineClick"></div>
                 <div id="volume_track_bar" class="track-bar" on-click="_handleTimelineClick"></div>
                 <div id="volume_track_fill" class="track-bar fill"></div>
-                <div id="volume_track_pointer" class="track-pointer">
-                  <span></span>
+                <div id="volume_track_pointer" class="track-pointer" on-track="_handleTrack">
+                <span></span>
                 </div>
               </div>
               <div id="download_icon">
@@ -364,9 +364,15 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    * @private
    * @param {Number} newVolume 
    */
-  _volumeChanged(newVolume) {
+  _volumeChanged(newVolume, oldVolume) {
+    this.prevVolume = oldVolume;
+    if (newVolume === 0) {
+      this.muted = true;
+    } else {
+      this.muted = false;
+    }
     const offset = this.$['volume_track'].offsetWidth * newVolume;
-    this.$['volume_track_fill'].style.left = offset + 'px';
+    this.$['volume_track_fill'].style.width = offset + 'px';
     this.$['volume_track_pointer'].style.left = offset + 'px';
     this.$['video_player'].volume = newVolume;
   }
@@ -376,12 +382,11 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    * @private
    */
   _toggleMute() {
-    this.muted != this.muted;
-    let prevVolume = this.volume
+    this.muted = !this.muted;
     if (this.muted) {
       this.volume = 0;
     } else {
-      this.volume = prevVolume;
+      this.volume = this.prevVolume;
     }
   }
 
@@ -416,7 +421,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           movedBy = trackWidth;
         }
         const value = movedBy / trackWidth;
-        if (event.currentTarget.id === 'vol_track_pointer') {
+        if (event.currentTarget.id === 'volume_track_pointer') {
           this.volume = value;
         } else {
           this.elapsed = value;
@@ -425,8 +430,6 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
       case 'end':
         this.dragging = false;
         video.muted = false;
-        console.log('Elapsed : ' + this.elapsed);
-        console.log('Current Progress px: ' + this.shadowRoot.querySelector('.track').offsetWidth * this.elapsed);
         break;
       default:
         break;
