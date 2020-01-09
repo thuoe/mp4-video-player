@@ -6,4 +6,7 @@ before_script:
 addons:
   chrome: stable
 script:
-  - xvfb-run npm run test
+  - xvfb-run polymer test --local chrome
+cache:
+  directories:
+    - node_modules
