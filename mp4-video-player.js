@@ -88,6 +88,9 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           width: 0px;
         }
 
+        .track-bar.large, .track-fill.large {
+          height: 6px;
+        }
         .track-pointer {
           position: absolute;
           height: 24px;
@@ -172,8 +175,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         </video>
         <div class="video-controls">
           <div id="playback_track" class="track">
-            <div class="track-timeline" on-click="_handleTimelineClick"></div>
-            <div class="track-bar" on-click="_handleTimelineClick"></div>
+            <div id="track_bar" class="track-bar" on-click="_handleTimelineClick"></div>
             <div id="track_fill" class="track-bar fill"></div>
             <div id="track_pointer" class="track-pointer" on-track="_handleTrack">
               <span></span>
@@ -281,6 +283,19 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         value: '0:00'
       }
     };
+  }
+
+  ready() {
+    super.ready();
+    // TODO: Refactor toggling between classes. 
+    this.$['playback_track'].addEventListener('mouseover', (event) => {
+      this.$['track_bar'].classList.add('large');
+      this.$['track_fill'].classList.add('large');
+    });
+    this.$['playback_track'].addEventListener('mouseleave', (event) => {
+      this.$['track_bar'].classList.remove('large');
+      this.$['track_fill'].classList.remove('large');
+    });
   }
 
   _formatDuration(event) {
