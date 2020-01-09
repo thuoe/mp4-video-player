@@ -6,4 +6,4 @@ before_script:
 addons:
   chrome: stable
 script:
-  - npm run test
+  - xvfb-run npm run test
