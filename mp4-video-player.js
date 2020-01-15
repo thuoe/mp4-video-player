@@ -18,7 +18,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         :host {
           display: block;
         }
-        
+
         .container {
           position: relative;
           display: flex;
@@ -30,9 +30,9 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
 
         h3 {
           position: absolute;
-          left: 50%; 
+          left: 50%;
           transform: translate(-50%, -50%);
-          text-align: center; 
+          text-align: center;
           top: 10px;
           color: white;
         }
@@ -120,7 +120,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         .track, .track-bar, .track-timeline {
           cursor: pointer;
         }
-        
+
         .lower-controls {
           height: 35px;
         }
@@ -153,7 +153,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         .time-elapsed {
           margin-left: 7px;
           line-height: 24px;
-        }   
+        }
 
         .icons {
           display: flex;
@@ -174,7 +174,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           <source src="/assets/sample.mp4" type="video/mp4">
         </video>
         <div class="video-controls">
-          <div id="playback_track" class="track">
+          <div id="playback_track" on-mouseover="_scaleTimeline" on-mouseleave="_descaleTimeline" class="track">
             <div id="track_bar" class="track-bar" on-click="_handleTimelineClick"></div>
             <div id="track_fill" class="track-bar fill"></div>
             <div id="track_pointer" class="track-pointer" on-track="_handleTrack">
@@ -285,17 +285,14 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     };
   }
 
-  ready() {
-    super.ready();
-    // TODO: Refactor toggling between classes. 
-    this.$['playback_track'].addEventListener('mouseover', (event) => {
-      this.$['track_bar'].classList.add('large');
-      this.$['track_fill'].classList.add('large');
-    });
-    this.$['playback_track'].addEventListener('mouseleave', (event) => {
-      this.$['track_bar'].classList.remove('large');
-      this.$['track_fill'].classList.remove('large');
-    });
+  _scaleTimeline() {
+    this.$['track_bar'].classList.add('large');
+    this.$['track_fill'].classList.add('large');
+  }
+
+  _descaleTimeline() {
+    this.$['track_bar'].classList.remove('large');
+    this.$['track_fill'].classList.remove('large');
   }
 
   _formatDuration(event) {
@@ -318,9 +315,9 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
   }
 
   /**
-   * Updates the timeline progress when the video 
+   * Updates the timeline progress when the video
    * is playing
-   * @param {Object} event 
+   * @param {Object} event
    */
   _updateTrack(event) {
     if (!this.dragging && this.playing) {
@@ -336,7 +333,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    * Update the current time of the video
    * when clicking a position of the timeline
    * @private
-   * @param {Number} progress 
+   * @param {Number} progress
    */
   _elapsedChanged(progress) {
     const video = this.$['video_player'];
@@ -347,7 +344,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
   /**
    * Progress the timeline
    * @private
-   * @param {Number} progress 
+   * @param {Number} progress
    */
   _progressTimeline(progress) {
     const offset = this.shadowRoot.querySelector('.track').offsetWidth * progress;
@@ -377,7 +374,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    * Change the volume of the video when property
    * changes
    * @private
-   * @param {Number} newVolume 
+   * @param {Number} newVolume
    */
   _volumeChanged(newVolume, oldVolume) {
     this.prevVolume = oldVolume;
@@ -407,10 +404,10 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
 
   /**
    * Calculates the click positioning of the timeline
-   * @param {Object} event 
+   * @param {Object} event
    */
   _handleTimelineClick(event) {
-    const clickPos = event.offsetX / event.currentTarget.offsetWidth; 
+    const clickPos = event.offsetX / event.currentTarget.offsetWidth;
     if (event.currentTarget.id === 'volume_track_bar') {
       this.volume = clickPos;
     } else {
