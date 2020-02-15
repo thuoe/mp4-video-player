@@ -3,7 +3,9 @@
   "description": "Simple MP4 Video Player Element",
   "main": "mp4-video-player.js",
   "dependencies": {
-    "@polymer/polymer": "^3.0.0"
+    "@polymer/polymer": "^3.0.0",
+    "@polymer/iron-icon": "^3.0.0",
+    "player-icons": "1.0.1"
   },
   "devDependencies": {
     "@polymer/iron-demo-helpers": "^3.0.0-pre.19",

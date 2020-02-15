@@ -1,0 +1,14 @@
+language: node_js
+sudo: 'false'
+before_script:
+  - npm install -g polymer-cli
+  - git checkout package-lock.json
+node_js: node
+addons:
+  firefox: latest
+script:
+  - xvfb-run polymer test --module-resolution=node --npm --local firefox
+dist: trusty
+cache:
+  directories:
+    - node_modules
