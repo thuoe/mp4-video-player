@@ -6,7 +6,6 @@ before_script:
 node_js: node
 addons:
   firefox: latest
-  chrome: stable
 script:
   - xvfb-run polymer test --module-resolution=node --npm --local firefox
 dist: trusty
