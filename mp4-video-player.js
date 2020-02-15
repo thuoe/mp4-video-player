@@ -299,6 +299,11 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     const duration = event.currentTarget.duration;
     this.formattedDuration = this._formatTime(duration);
   }
+  
+  _formatElapsedTime() {
+    const currentTime = this.$['video_player'].currentTime;
+    this.formattedCurrentTime = this._formatTime(currentTime);
+  }
 
   _formatTime(time){
     let mins = Math.floor(time / 60);
@@ -324,7 +329,6 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
       const currentTime = event.currentTarget.currentTime;
       const duration = event.currentTarget.duration;
       const progress = currentTime / duration;
-      this.formattedCurrentTime = this._formatTime(currentTime);
       this._progressTimeline(progress);
     }
   }
@@ -350,6 +354,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     const offset = this.shadowRoot.querySelector('.track').offsetWidth * progress;
     this.$['track_pointer'].style.left = offset + 'px';
     this.$['track_fill'].style.width = offset + 'px';
+    this._formatElapsedTime();
   }
 
   _handleEnd() {
