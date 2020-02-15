@@ -4,6 +4,7 @@ node_js:
 before_script:
   - npm install -g polymer-cli
   - git checkout package-lock.json
+node_js: node
 addons:
   chrome: stable
 script:
