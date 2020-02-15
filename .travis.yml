@@ -2,8 +2,13 @@ language: node_js
 node_js:
   - 11
 before_script:
-  - npm i -g polymer-cli
+  - npm install -g polymer-cli
+  - git checkout package-lock.json
 addons:
   chrome: stable
 script:
   - xvfb-run polymer test --local chrome
+dist: trusty
+cache:
+  directories:
+    - node_modules
