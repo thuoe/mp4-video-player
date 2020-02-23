@@ -215,8 +215,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
                 <iron-icon icon="player-icons:volume-up"></iron-icon>
                 </template>
               </div>
-              <div id="volume_track" class="track">
-                <div id="volume_timeline" class="track-timeline" on-click="_handleTimelineClick"></div>
+              <div id="volume_track" class="track" on-click="_handleTimelineClick">
                 <div id="volume_track_bar" class="track-bar" on-click="_handleTimelineClick"></div>
                 <div id="volume_track_fill" class="track-bar fill"></div>
                 <div id="volume_track_pointer" class="track-pointer" on-track="_handleTrack">
@@ -425,7 +424,8 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    */
   _handleTimelineClick(event) {
     const clickPos = event.offsetX / event.currentTarget.offsetWidth;
-    if (event.currentTarget.id === 'volume_track_bar') {
+    const id = event.currentTarget.id;
+    if (id === 'volume_track_bar' || id === 'volume_track') {
       this.volume = clickPos;
     } else {
       this.elapsed = clickPos;
