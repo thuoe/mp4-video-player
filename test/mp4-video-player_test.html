@@ -16,17 +16,27 @@
   </head>
   <body>
 
-    <test-fixture id="BasicTestFixture">
+    <test-fixture id="video-player-basic">
       <template>
         <mp4-video-player></mp4-video-player>
       </template>
     </test-fixture>
 
     <script type="module">
+      let videoPlayer;
+      setup(function() {
+        videoPlayer = fixture('video-player-basic');
+      });
       suite('mp4-video-player', () => {
         test('simple test', (done) => {
           expect(1 + 1).to.equal(2);
           done();
+        });
+        
+        test('check donwload file path is set', () => {
+          const filePath = videoPlayer.videoFilePath;
+          expect(filePath).not.to.be.undefined;
+          expect(filePath).to.be.an('string');
         });
       });
     </script>
