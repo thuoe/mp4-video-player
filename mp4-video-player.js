@@ -171,7 +171,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
       <div class="container">
         <h3>[[title]]</h3>
         <video id="video_player" preload="auto" on-loadedmetadata="_formatDuration" on-timeupdate="_updateTrack" on-ended="_handleEnd">
-          <source src="/assets/sample.mp4" type="video/mp4">
+          <source src$="{{videoFilePath}}" type="video/mp4">
         </video>
         <div class="video-controls">
           <div id="playback_track" on-mouseover="_scaleTimeline" on-mouseleave="_descaleTimeline" class="track">
@@ -218,7 +218,9 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
                 </div>
               </div>
               <div id="download_icon">
-                <iron-icon icon="player-icons:file-download"></iron-icon>
+                <a href$="{{videoFilePath}}" download>
+                  <iron-icon icon="player-icons:file-download"></iron-icon>
+                </a>
               </div>
               <div id="fullscreen_icons" class="icons">
                 <template is="dom-if" if={{!fullscreen}}>
@@ -236,6 +238,10 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
   }
   static get properties() {
     return {
+      videoFilePath: {
+        type: String,
+        value: '/assets/sample.mp4'
+      },
       playing: {
         type: Boolean,
         value: false,
