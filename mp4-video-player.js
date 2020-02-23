@@ -64,15 +64,6 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           margin-left: 7px;
         }
 
-        .track-timeline {
-          position: absolute;
-          width: 100%;
-          height: 100%;
-          background: white;
-          opacity: 0.4;
-          display: none;
-        }
-
         .track-bar {
           position: absolute;
           width: 100%;
@@ -122,7 +113,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           transform: scale(1.5);
         }
 
-        .track, .track-bar, .track-timeline {
+        .track, .track-bar {
           cursor: pointer;
         }
 
