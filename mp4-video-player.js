@@ -82,6 +82,11 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           border-radius: 25px;
         }
 
+        .extra {
+          background: none;
+          height: 16px;
+        }
+
         .fill {
           pointer-events: none;
           background: blueviolet;
@@ -175,6 +180,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         </video>
         <div class="video-controls">
           <div id="playback_track" on-mouseover="_scaleTimeline" on-mouseleave="_descaleTimeline" class="track">
+            <div id="track_bar_extra" class="track-bar extra" on-click="_handleTimelineClick"></div>
             <div id="track_bar" class="track-bar" on-click="_handleTimelineClick"></div>
             <div id="track_fill" class="track-bar fill"></div>
             <div id="track_pointer" class="track-pointer" on-track="_handleTrack">
