@@ -23,6 +23,7 @@
     </test-fixture>
 
     <script type="module">
+      import { pressSpace, pressAndReleaseKeyOn } from './interactions.js';
       let videoPlayer;
       setup(function() {
         videoPlayer = fixture('video-player-basic');
@@ -37,6 +38,27 @@
           const filePath = videoPlayer.videoFilePath;
           expect(filePath).not.to.be.undefined;
           expect(filePath).to.be.an('string');
+        });
+
+        test('space bar calls "_togglePlay()"', () => {
+          pressSpace(videoPlayer);
+          expect(videoPlayer.playing).to.equal(true);
+          pressSpace(videoPlayer);
+          expect(videoPlayer.playing).to.equal(false);
+        });
+
+        test('p key calls "_togglePlay()"', () => {
+          pressAndReleaseKeyOn(videoPlayer, 80);
+          expect(videoPlayer.playing).to.equal(true);
+          pressAndReleaseKeyOn(videoPlayer, 80);
+          expect(videoPlayer.playing).to.equal(false);
+        });
+
+        test('m key calls "_toggleMute()"', () => {
+          pressAndReleaseKeyOn(videoPlayer, 109);
+          expect(videoPlayer.muted).to.equal(true);
+          pressAndReleaseKeyOn(videoPlayer, 109);
+          expect(videoPlayer.muted).to.equal(false);
         });
       });
     </script>
