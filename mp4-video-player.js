@@ -291,6 +291,11 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     };
   }
 
+  ready() {
+    super.ready();
+    this.addEventListener('keyup', this._handleKeyCode.bind(this));
+  }
+
   _scaleTimeline() {
     this.$['track_bar'].classList.add('large');
     this.$['track_fill'].classList.add('large');
@@ -361,6 +366,19 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     this.$['track_pointer'].style.left = offset + 'px';
     this.$['track_fill'].style.width = offset + 'px';
     this._formatElapsedTime();
+  }
+
+  _handleKeyCode(event) {
+    console.log('keycode ' + event.keyCode);
+    switch(event.keyCode) {
+      case 32: // space
+      case 80: // p
+        this._togglePlay();
+        break;
+      case 109: // m
+        this._toggleMute();
+        break;
+    }
   }
 
   _handleEnd() {
