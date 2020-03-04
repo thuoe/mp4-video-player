@@ -170,7 +170,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           <source src$="{{videoFilePath}}" type="video/mp4">
         </video>
         <div class="video-controls">
-          <div id="playback_track" on-mouseover="_scaleTimeline" on-mouseleave="_descaleTimeline" class="track">
+          <div id="playback_track" class="track">
             <div id="track_bar_extra" class="track-bar extra" on-click="_handleTimelineClick"></div>
             <div id="track_bar" class="track-bar" on-click="_handleTimelineClick"></div>
             <div id="track_fill" class="track-bar fill"></div>
@@ -290,16 +290,6 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
   ready() {
     super.ready();
     this.addEventListener('keyup', this._handleKeyCode.bind(this));
-  }
-
-  _scaleTimeline() {
-    this.$['track_bar'].classList.add('large');
-    this.$['track_fill'].classList.add('large');
-  }
-
-  _descaleTimeline() {
-    this.$['track_bar'].classList.remove('large');
-    this.$['track_fill'].classList.remove('large');
   }
 
   _formatDuration(event) {
