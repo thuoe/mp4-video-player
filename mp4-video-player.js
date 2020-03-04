@@ -47,6 +47,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           flex-direction: column;
           width: 100%;
           background: lightgray;
+          position: relative;
         }
 
         .upper-controls {
@@ -162,6 +163,15 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         #volume_icons, #volume_track, #download_icon {
           margin-right: 7px;
         }
+        
+        .thumbnail {
+          position: absolute;
+          width: 168px;
+          height: 96px;
+          background: yellow;
+          bottom: 100%;
+          margin-bottom: 12px;
+        }
       </style>
 
       <div class="container">
@@ -170,9 +180,10 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           <source src$="{{videoFilePath}}" type="video/mp4">
         </video>
         <div class="video-controls">
+          <div class="thumbnail">THUMBNAIL HERE</div>
           <div id="playback_track" class="track">
             <div id="track_bar_extra" class="track-bar extra" on-click="_handleTimelineClick"></div>
-            <div id="track_bar" class="track-bar" on-click="_handleTimelineClick"></div>
+            <div id="track_bar" class="track-bar" on-mousemove="_getPosition" on-click="_handleTimelineClick"></div>
             <div id="track_fill" class="track-bar fill"></div>
             <div id="track_pointer" class="track-pointer" on-track="_handleTrack">
               <span></span>
@@ -290,6 +301,12 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
   ready() {
     super.ready();
     this.addEventListener('keyup', this._handleKeyCode.bind(this));
+  }
+
+  _getPosition(event) {
+    const x = event.clientX;
+    const y = event.clientY;
+    console.log(`X position ${x} Y Position ${y}`);
   }
 
   _formatDuration(event) {
