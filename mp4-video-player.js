@@ -365,7 +365,6 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
   }
 
   _handleKeyCode(event) {
-    console.log('keycode ' + event.keyCode);
     switch(event.keyCode) {
       case 32: // space
       case 80: // p
