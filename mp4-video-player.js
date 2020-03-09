@@ -170,7 +170,18 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           height: 96px;
           background: yellow;
           bottom: 100%;
-          margin-bottom: 12px;
+          margin-bottom: 25px;
+        }
+        
+        .thumbnail::after {
+          position: absolute;
+          top: 100%;
+          left: 50%;
+          content: '';
+          margin-left: -5px;
+          border-width: 5px;
+          border-style: solid;
+          border-color: yellow transparent transparent transparent;
         }
       </style>
 
