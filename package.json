@@ -3,6 +3,14 @@
   "version": "1.0.0",
   "description": "Simple MP4 Video Player Element",
   "main": "mp4-video-player.js",
+  "husky": {
+    "hooks": {
+      "pre-push": "npm test"
+    }
+  },
+  "scripts": {
+    "test": "polymer test -l chrome"
+  },
   "dependencies": {
     "@polymer/iron-icon": "^3.0.0",
     "@polymer/polymer": "^3.0.0",
@@ -13,6 +21,7 @@
     "@polymer/test-fixture": "^4.0.2",
     "@webcomponents/webcomponentsjs": "^2.0.0",
     "chai": "^4.2.0",
+    "husky": "^4.2.3",
     "mocha": "^5.2.0",
     "wct-mocha": "^1.0.0"
   }
