@@ -194,7 +194,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         <div class="video-controls">
           <div id="preview_thumbnail" class="thumbnail">MOUSE OVER POSITION: [[xPosition]]</div>
           <div id="playback_track" class="track">
-            <div id="track_bar_extra" class="track-bar extra" on-mousemove="_updateThumbnailPositon" on-click="_handleTimelineClick"></div>
+            <div id="track_bar_extra" class="track-bar extra" on-mousemove="_updateThumbnailPosition" on-click="_handleTimelineClick"></div>
             <div id="track_bar" class="track-bar"on-click="_handleTimelineClick"></div>
             <div id="track_fill" class="track-bar fill"></div>
             <div id="track_pointer" class="track-pointer" on-track="_handleTrack">
@@ -315,14 +315,14 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     this.addEventListener('keyup', this._handleKeyCode.bind(this));
   }
 
-  _updateThumbnailPositon(event) {
+  _updateThumbnailPosition(event) {
     const containerRec = this.$['video_container'].getBoundingClientRect();
     const previewThumbnailRec = this.$['preview_thumbnail'].getBoundingClientRect();
     const progressBarRec= event.currentTarget.getBoundingClientRect();
     const thumbnailWidth = previewThumbnailRec.width;
-    const mousePosX = event.pageX;
     const minVal = containerRec.left - progressBarRec.left + 10;
     const maxVal = containerRec.right - progressBarRec.left - thumbnailWidth - 10;
+    const mousePosX = event.pageX;
     let previewPos = mousePosX - progressBarRec.left - thumbnailWidth / 2;
     
     if (previewPos < minVal) {
