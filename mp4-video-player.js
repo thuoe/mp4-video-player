@@ -192,7 +192,9 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           <source src$="{{videoFilePath}}" type="video/mp4">
         </video>
         <div class="video-controls">
-          <div id="preview_thumbnail" class="thumbnail">MOUSE OVER POSITION: [[xPosition]]</div>
+          <template is="dom-if" if={{showThumbnailPreview}}>
+            <div id="preview_thumbnail" class="thumbnail">MOUSE OVER POSITION: [[xPosition]]</div>
+          </template>
           <div id="playback_track" class="track">
             <div id="track_bar_extra" class="track-bar extra" on-mousemove="_updateThumbnailPosition" on-click="_handleTimelineClick"></div>
             <div id="track_bar" class="track-bar"on-click="_handleTimelineClick"></div>
@@ -286,6 +288,11 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         value: false,
         reflectToAttribute: true
       },
+      showThumbnailPreview: {
+        type: Boolean,
+        value: false,
+        reflectToAttribute: true
+      },
       title: {
         type: String,
         value: 'VIDEO TITLE HERE'
@@ -315,24 +322,35 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     this.addEventListener('keyup', this._handleKeyCode.bind(this));
   }
 
+  getShadowElementById(id) {
+    const element = this.$[id];
+    if (element) {
+      return element;
+    }
+    return this.shadowRoot.querySelector(`#${id}`);
+  }
+
   _updateThumbnailPosition(event) {
-    const containerRec = this.$['video_container'].getBoundingClientRect();
-    const previewThumbnailRec = this.$['preview_thumbnail'].getBoundingClientRect();
-    const progressBarRec= event.currentTarget.getBoundingClientRect();
-    const thumbnailWidth = previewThumbnailRec.width;
-    const minVal = containerRec.left - progressBarRec.left + 10;
-    const maxVal = containerRec.right - progressBarRec.left - thumbnailWidth - 10;
-    const mousePosX = event.pageX;
-    let previewPos = mousePosX - progressBarRec.left - thumbnailWidth / 2;
-    
-    if (previewPos < minVal) {
-      previewPos = minVal;
+    if (this.showThumbnailPreview) {
+      const thumbnail = this.getShadowElementById('preview_thumbnail');
+      const containerRec = this.getShadowElementById('video_container').getBoundingClientRect();
+      const thumbnailRec = thumbnail.getBoundingClientRect();
+      const progressBarRec= event.currentTarget.getBoundingClientRect();
+      const thumbnailWidth = thumbnailRec.width;
+      const minVal = containerRec.left - progressBarRec.left + 10;
+      const maxVal = containerRec.right - progressBarRec.left - thumbnailWidth - 10;
+      const mousePosX = event.pageX;
+      let previewPos = mousePosX - progressBarRec.left - thumbnailWidth / 2;
+      
+      if (previewPos < minVal) {
+        previewPos = minVal;
+      }
+      if (previewPos > maxVal) {
+        previewPos = maxVal;
+      }
+      thumbnail.style.left = `${previewPos}px`;
+      this.xPosition = mousePosX;
     }
-    if (previewPos > maxVal) {
-      previewPos = maxVal;
-    }
-    this.$['preview_thumbnail'].style.left = `${previewPos}px`;
-    this.xPosition = mousePosX;
   }
 
   _formatDuration(event) {
