@@ -171,6 +171,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           background: yellow;
           bottom: 100%;
           margin-bottom: 25px;
+          text-align: center;
         }
         
         .thumbnail::after {
@@ -185,16 +186,16 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         }
       </style>
 
-      <div class="container">
+      <div id="video_container" class="container">
         <h3>[[title]]</h3>
         <video id="video_player" preload="auto" on-loadedmetadata="_formatDuration" on-timeupdate="_updateTrack" on-ended="_handleEnd">
           <source src$="{{videoFilePath}}" type="video/mp4">
         </video>
         <div class="video-controls">
-          <div class="thumbnail">THUMBNAIL HERE</div>
+          <div id="preview_thumbnail" class="thumbnail">MOUSE OVER POSITION: [[xPosition]]</div>
           <div id="playback_track" class="track">
-            <div id="track_bar_extra" class="track-bar extra" on-click="_handleTimelineClick"></div>
-            <div id="track_bar" class="track-bar" on-mousemove="_getPosition" on-click="_handleTimelineClick"></div>
+            <div id="track_bar_extra" class="track-bar extra" on-mousemove="_updateThumbnailPositon" on-click="_handleTimelineClick"></div>
+            <div id="track_bar" class="track-bar"on-click="_handleTimelineClick"></div>
             <div id="track_fill" class="track-bar fill"></div>
             <div id="track_pointer" class="track-pointer" on-track="_handleTrack">
               <span></span>
@@ -314,10 +315,24 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     this.addEventListener('keyup', this._handleKeyCode.bind(this));
   }
 
-  _getPosition(event) {
-    const x = event.clientX;
-    const y = event.clientY;
-    console.log(`X position ${x} Y Position ${y}`);
+  _updateThumbnailPositon(event) {
+    const containerRec = this.$['video_container'].getBoundingClientRect();
+    const previewThumbnailRec = this.$['preview_thumbnail'].getBoundingClientRect();
+    const progressBarRec= event.currentTarget.getBoundingClientRect();
+    const thumbnailWidth = previewThumbnailRec.width;
+    const mousePosX = event.pageX;
+    const minVal = containerRec.left - progressBarRec.left + 10;
+    const maxVal = containerRec.right - progressBarRec.left - thumbnailWidth - 10;
+    let previewPos = mousePosX - progressBarRec.left - thumbnailWidth / 2;
+    
+    if (previewPos < minVal) {
+      previewPos = minVal;
+    }
+    if (previewPos > maxVal) {
+      previewPos = maxVal;
+    }
+    this.$['preview_thumbnail'].style.left = `${previewPos}px`;
+    this.xPosition = mousePosX;
   }
 
   _formatDuration(event) {
