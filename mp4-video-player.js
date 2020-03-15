@@ -173,6 +173,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           border-radius: 5px;
           margin-bottom: 25px;
           text-align: center;
+          opacity: 0;
         }
         
         .thumbnail::after {
@@ -184,6 +185,10 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           border-width: 5px;
           border-style: solid;
           border-color: yellow transparent transparent transparent;
+        }
+
+        .appear {
+          opacity: 1;
         }
       </style>
 
@@ -197,7 +202,12 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
             <div id="preview_thumbnail" class="thumbnail">MOUSE OVER POSITION: [[xPosition]]</div>
           </template>
           <div id="playback_track" class="track">
-            <div id="track_bar_extra" class="track-bar extra" on-mousemove="_updateThumbnailPosition" on-click="_handleTimelineClick"></div>
+            <div id="track_bar_extra" class="track-bar extra" 
+              on-mouseenter="_toggleThumbnail"
+              on-mousemove="_updateThumbnailPosition" 
+              on-mouseleave="_toggleThumbnail" 
+              on-click="_handleTimelineClick">
+            </div>
             <div id="track_bar" class="track-bar"on-click="_handleTimelineClick"></div>
             <div id="track_fill" class="track-bar fill"></div>
             <div id="track_pointer" class="track-pointer" on-track="_handleTrack">
@@ -329,6 +339,17 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
       return element;
     }
     return this.shadowRoot.querySelector(`#${id}`);
+  }
+
+
+  _toggleThumbnail(event) {
+    const thumbnail = this.getShadowElementById('preview_thumbnail');
+    const { type } = event;
+    let toggle = false;
+    if (type === 'mouseenter') {
+      toggle = true;
+    }
+    thumbnail.classList.toggle('appear', toggle);
   }
 
   _updateThumbnailPosition(event) {
