@@ -170,6 +170,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           height: 96px;
           background: yellow;
           bottom: 100%;
+          border-radius: 5px;
           margin-bottom: 25px;
           text-align: center;
         }
@@ -188,7 +189,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
 
       <div id="video_container" class="container">
         <h3>[[title]]</h3>
-        <video id="video_player" preload="auto" on-loadedmetadata="_formatDuration" on-timeupdate="_updateTrack" on-ended="_handleEnd">
+        <video id="video_player" preload="auto" on-loadedmetadata="_metadetaLoaded" on-timeupdate="_updateTrack" on-ended="_handleEnd">
           <source src$="{{videoFilePath}}" type="video/mp4">
         </video>
         <div class="video-controls">
@@ -290,7 +291,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
       },
       showThumbnailPreview: {
         type: Boolean,
-        value: false,
+        value: true,
         reflectToAttribute: true
       },
       title: {
@@ -353,7 +354,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     }
   }
 
-  _formatDuration(event) {
+  _metadetaLoaded(event) {
     const duration = event.currentTarget.duration;
     this.formattedDuration = this._formatTime(duration);
   }
