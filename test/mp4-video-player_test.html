@@ -29,12 +29,7 @@
         videoPlayer = fixture('video-player-basic');
       });
       suite('mp4-video-player', () => {
-        test('simple test', (done) => {
-          expect(1 + 1).to.equal(2);
-          done();
-        });
-        
-        test('check donwload file path is set', () => {
+        stest('check donwload file path is set', () => {
           const filePath = videoPlayer.videoFilePath;
           expect(filePath).not.to.be.undefined;
           expect(filePath).to.be.an('string');
