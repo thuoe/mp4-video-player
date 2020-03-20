@@ -19,6 +19,10 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           display: block;
         }
 
+        iron-icon {
+          fill: white;
+        }
+
         .container {
           position: relative;
           display: flex;
@@ -60,10 +64,6 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           position: relative;
           width: 100%;
           background: orangered;
-        }
-
-        #volume_track {
-          margin-left: 7px;
         }
 
         .track-bar {
@@ -131,6 +131,10 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           bottom: 0;
         }
 
+        #volume_icons, #volume_track, #download_icon {
+          margin-right: 15px;
+        }
+
         .left {
           position: relative;
           top: calc(50% - 12px);
@@ -144,7 +148,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           top: calc(50% - 12px);
           display: flex;
           float: right;
-          min-width: 300px;
+          min-width: 350px;
           margin-right: 7px;
         }
 
@@ -156,14 +160,6 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
 
         .icons {
           display: flex;
-        }
-
-        #volume_icons, #volume_track, #download_icon {
-          margin-right: 7px;
-        }
-
-        iron-icon {
-          fill: white;
         }
         
         .thumbnail {
