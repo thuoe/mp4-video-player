@@ -131,7 +131,12 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           bottom: 0;
         }
 
+        #play_icons, #fullscreen_icons {
+         cursor: pointer; 
+        }
+
         #volume_icons, #volume_track, #download_icon {
+          cursor: pointer;
           margin-right: 15px;
         }
 
