@@ -43,11 +43,12 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           background: black;
         }
         .video-controls {
+          position: absolute;
           display: flex;
           flex-direction: column;
           width: 100%;
-          background: lightgray;
-          position: relative;
+          bottom: 0;
+          background: linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.7))
         }
 
         .upper-controls {
@@ -70,7 +71,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           width: 100%;
           height: 4px;
           bottom: 0;
-          background: black;
+          background: white;
           border-radius: 25px;
         }
 
@@ -119,7 +120,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         }
 
         .lower-controls {
-          height: 35px;
+          height: 45px;
         }
 
         #volume_track_bar, #volume_track_fill {
@@ -148,20 +149,21 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         }
 
         .time-elapsed {
-          margin-left: 7px;
+          margin-left: 25px;
           line-height: 24px;
+          color: white;
         }
 
         .icons {
           display: flex;
         }
 
-        #time {
-          margin-left: 7px;
-        }
-
         #volume_icons, #volume_track, #download_icon {
           margin-right: 7px;
+        }
+
+        iron-icon {
+          fill: white;
         }
         
         .thumbnail {
