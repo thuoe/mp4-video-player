@@ -18,18 +18,15 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         :host {
           display: block;
         }
-
+        
         iron-icon {
           fill: white;
         }
 
-        .container {
-          position: relative;
-          display: flex;
-          flex-direction: column;
-          min-width: 1000px;
-          border: 1px solid lightcoral;
-          box-sizing: border-box;
+        video {
+          width: 100%;
+          height: 100%;
+          background: black;
         }
 
         h3 {
@@ -41,18 +38,27 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           color: white;
         }
 
-        video {
-          width: 100%;
-          height: 100%;
-          background: black;
+        .container {
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          min-width: 1000px;
+          box-sizing: border-box;
         }
+
         .video-controls {
           position: absolute;
           display: flex;
           flex-direction: column;
           width: 100%;
           bottom: 0;
-          background: linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.7))
+          background: linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.7));
+          opacity: 0;
+          transition: opacity .4s ease-in-out, transform .4s ease-in-out
+        }
+
+        .video-controls:hover {
+          opacity: 1;
         }
 
         .upper-controls {
