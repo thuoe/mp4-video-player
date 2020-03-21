@@ -23,18 +23,13 @@
     </test-fixture>
 
     <script type="module">
+      import {Base} from '@polymer/polymer/polymer-legacy.js';
       import { pressSpace, pressAndReleaseKeyOn } from './interactions.js';
       let videoPlayer;
       setup(function() {
         videoPlayer = fixture('video-player-basic');
       });
-      suite('mp4-video-player', () => {
-        stest('check donwload file path is set', () => {
-          const filePath = videoPlayer.videoFilePath;
-          expect(filePath).not.to.be.undefined;
-          expect(filePath).to.be.an('string');
-        });
-
+      suite('player shortcuts', () => {
         test('space bar calls "_togglePlay()"', () => {
           pressSpace(videoPlayer);
           expect(videoPlayer.playing).to.equal(true);
@@ -54,6 +49,29 @@
           expect(videoPlayer.muted).to.equal(true);
           pressAndReleaseKeyOn(videoPlayer, 109);
           expect(videoPlayer.muted).to.equal(false);
+        });
+      });
+
+      suite('player controls', () => {
+        test('toggle play/pause button');
+        test('toggle volume/mute button');
+        test('toggle fullscreen button');
+        test('clicking download button');
+
+        test('check download file path is set', () => {
+          const filePath = videoPlayer.videoFilePath;
+          expect(filePath).not.to.be.undefined;
+          expect(filePath).to.be.an('string');
+        });
+
+        test('toggle thumbnail preview', () => {    
+          Base.async(() => {
+            videoPlayer.showThumbnailPreview = true;
+            const thumbnail = videoPlayer.shadowRoot.querySelector('#preview_thumbnail');
+            assert.isNotNull(thumbnail, 'thumbnail preview has not rendered');
+            videoPlayer.showThumbnailPreview = false;
+            assert.isNull(thumbnail, 'thumbnail preview has not been removed');
+          });
         });
       });
     </script>
