@@ -87,7 +87,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
 
         .fill {
           pointer-events: none;
-          background: blueviolet;
+          background: #29b6f6;
           width: 0px;
         }
 
@@ -112,7 +112,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           width: 12px;
           height: 12px;
           border-radius: 50%;
-          background: blueviolet;
+          background: #29b6f6;
           transition: all 200ms;
         }
 
@@ -141,7 +141,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         }
 
         .control-icons:hover {
-          background: blue;
+          background: #29b6f6;
           border-radius: 3px;
         }
 
@@ -171,6 +171,8 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           margin-left: 25px;
           line-height: 24px;
           color: white;
+          font-weight: bold;
+          pointer-events: none;
         }
 
         .icons {
@@ -181,7 +183,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           position: absolute;
           width: 168px;
           height: 96px;
-          background: yellow;
+          background: #29b6f6;
           bottom: 100%;
           border-radius: 5px;
           margin-bottom: 25px;
@@ -197,7 +199,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           margin-left: -5px;
           border-width: 5px;
           border-style: solid;
-          border-color: yellow transparent transparent transparent;
+          border-color: #29b6f6 transparent transparent transparent;
         }
 
         .appear {
@@ -212,7 +214,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         </video>
         <div class="video-controls">
           <template is="dom-if" if={{showThumbnailPreview}}>
-            <div id="preview_thumbnail" class="thumbnail">MOUSE OVER POSITION: [[xPosition]]</div>
+            <div id="preview_thumbnail" class="thumbnail">THUMBNAIL PREVIEW MOUSE OVER POSITION: [[xPosition]]</div>
           </template>
           <div id="playback_track" class="track">
             <div id="track_bar_extra" class="track-bar extra" 
