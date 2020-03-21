@@ -136,8 +136,13 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           bottom: 0;
         }
 
-        #play_icons, #fullscreen_icons {
-         cursor: pointer; 
+        .control-icons {
+         cursor: pointer;
+        }
+
+        .control-icons:hover {
+          background: blue;
+          border-radius: 3px;
         }
 
         #volume_icons, #volume_track, #download_icon {
@@ -224,7 +229,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           </div>
           <div class="lower-controls">
             <div class="left">
-              <div id="play_icons" on-click="_togglePlay">
+              <div id="play_icons" class="control-icons" on-click="_togglePlay">
                 <template is="dom-if" if={{!playing}}>
                   <iron-icon icon="player-icons:play-arrow"></iron-icon>
                 </template>
@@ -242,7 +247,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
               </div>
             </div>
             <div class="right">
-              <div id="volume_icons" tabindex="0" on-click="_toggleMute">
+              <div id="volume_icons" class="control-icons" tabindex="0" on-click="_toggleMute">
                 <template is="dom-if" if={{muted}}>
                 <iron-icon icon="player-icons:volume-off"></iron-icon>
                 </template>
@@ -257,12 +262,12 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
                 <span></span>
                 </div>
               </div>
-              <div id="download_icon">
+              <div id="download_icon" class="control-icons">
                 <a href$="{{videoFilePath}}" download>
                   <iron-icon icon="player-icons:file-download"></iron-icon>
                 </a>
               </div>
-              <div id="fullscreen_icons" class="icons">
+              <div id="fullscreen_icons" class="control-icons">
                 <template is="dom-if" if={{!fullscreen}}>
                   <iron-icon icon="player-icons:fullscreen"></iron-icon>
                 </template>
