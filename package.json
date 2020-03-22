@@ -14,7 +14,7 @@
   "dependencies": {
     "@polymer/iron-icon": "^3.0.0",
     "@polymer/polymer": "^3.0.0",
-    "player-icons": "1.1.0"
+    "player-icons": "1.3.0"
   },
   "devDependencies": {
     "@polymer/iron-demo-helpers": "^3.0.0-pre.19",

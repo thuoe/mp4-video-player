@@ -145,7 +145,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           border-radius: 3px;
         }
 
-        #volume_icons, #volume_track, #download_icon {
+        #volume_icons, #volume_track, #download_icon, #fullscreen_icons {
           cursor: pointer;
           margin-right: 15px;
         }
@@ -276,6 +276,9 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
                 <template is="dom-if" if={{fullscreen}}>
                   <iron-icon icon="player-icons:fullscreen-exit"></iron-icon>
                 </template>
+              </div>
+              <div id="settings_icon" class="control-icons">
+                <iron-icon icon="player-icons:more-vert"></iron-icon>
               </div>
             </div>
           </div>
