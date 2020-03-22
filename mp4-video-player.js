@@ -42,7 +42,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           position: relative;
           display: flex;
           flex-direction: column;
-          min-width: 1000px;
+          min-width: 600px;
           box-sizing: border-box;
         }
 
@@ -355,7 +355,6 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     }
     return this.shadowRoot.querySelector(`#${id}`);
   }
-
 
   _toggleThumbnail(event) {
     const thumbnail = this.getShadowElementById('preview_thumbnail');
