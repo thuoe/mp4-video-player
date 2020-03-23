@@ -23,6 +23,27 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           fill: white;
         }
 
+        button {
+          background: white;
+          border: 0;
+          cursor: pointer;
+          outline: none;
+          transition: all .2s ease;
+        }
+
+        button iron-icon {
+          fill: black;
+        }
+
+        button:hover {
+          background: #29b6f6;
+          color: white; 
+        }
+
+        button:hover iron-icon {
+          fill: white;
+        }
+
         video {
           width: 100%;
           height: 100%;
@@ -53,7 +74,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           width: 100%;
           bottom: 0;
           background: linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.7));
-          opacity: 0;
+          opacity: 1;
           transition: opacity .4s ease-in-out, transform .4s ease-in-out
         }
 
@@ -202,8 +223,36 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           border-color: #29b6f6 transparent transparent transparent;
         }
 
+        .dropdown-menu::after {
+          position: absolute;
+          top: 100%;
+          right: 5%;
+          content: '';
+          margin-left: -5px;
+          border-width: 5px;
+          border-style: solid;
+          border-color: white transparent transparent transparent;
+        }
+
         .appear {
           opacity: 1;
+        }
+
+        .dropdown-menu {
+          position: absolute;
+          width: 225px;
+          height: 150px;
+          bottom: 100%;
+          background: red;
+          right: 5px;
+          margin-bottom: 15px;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .dropdown-menu .menu-item {
+          width: 100%;
+          height: 50%;
         }
       </style>
 
@@ -216,6 +265,16 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           <template is="dom-if" if={{showThumbnailPreview}}>
             <div id="preview_thumbnail" class="thumbnail">THUMBNAIL PREVIEW MOUSE OVER POSITION: [[xPosition]]</div>
           </template>
+          <div class="dropdown-menu">
+            <button type="button" class="menu-item">
+              <iron-icon icon="player-icons:file-download"></iron-icon>
+              <span>DOWNLOAD</span>
+            </button>
+            <button type="button" class="menu-item">
+              <iron-icon icon="player-icons:picture-in-picture"></iron-icon>
+              <span>PICTURE-IN-PICTURE</span>
+            </button>
+          </div>
           <div id="playback_track" class="track">
             <div id="track_bar_extra" class="track-bar extra" 
               on-mouseenter="_toggleThumbnail"
