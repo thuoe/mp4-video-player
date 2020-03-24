@@ -258,7 +258,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
 
       <div id="video_container" class="container">
         <h3>[[title]]</h3>
-        <video id="video_player" preload="auto" on-loadedmetadata="_metadetaLoaded" on-timeupdate="_updateTrack" on-ended="_handleEnd">
+        <video id="video_player" preload="auto" on-loadedmetadata="_metadetaLoaded" on-timeupdate="_handleTrack" on-ended="_handleEnd">
           <source src$="{{videoFilePath}}" type="video/mp4">
         </video>
         <div class="video-controls">
@@ -407,6 +407,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
 
   ready() {
     super.ready();
+    window.addEventListener('resize', this._updateControlStyling.bind(this));
     this.addEventListener('keyup', this._handleKeyCode.bind(this));
   }
 
@@ -426,6 +427,12 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
       toggle = true;
     }
     thumbnail.classList.toggle('appear', toggle);
+  }
+
+  _updateControlStyling() {
+    const { currentTime, duration } = this.getShadowElementById('video_player');
+    const progress = currentTime / duration;
+    this._updateTimeline(progress);
   }
 
   _updateThumbnailPosition(event) {
@@ -476,16 +483,16 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
   }
 
   /**
-   * Updates the timeline progress when the video
+   * handle the track when time updates
    * is playing
    * @param {Object} event
    */
-  _updateTrack(event) {
+  _handleTrack(event) {
     if (!this.dragging && this.playing) {
       const currentTime = event.currentTarget.currentTime;
       const duration = event.currentTarget.duration;
       const progress = currentTime / duration;
-      this._progressTimeline(progress);
+      this._updateTimeline(progress);
     }
   }
 
@@ -498,15 +505,15 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
   _elapsedChanged(progress) {
     const video = this.$['video_player'];
     video.currentTime = video.duration * progress;
-    this._progressTimeline(progress);
+    this._updateTimeline(progress);
   }
 
   /**
-   * Progress the timeline
+   * update the timeline
    * @private
    * @param {Number} progress
    */
-  _progressTimeline(progress) {
+  _updateTimeline(progress) {
     const offset = this.shadowRoot.querySelector('.track').offsetWidth * progress;
     this.$['track_pointer'].style.left = offset + 'px';
     this.$['track_fill'].style.width = offset + 'px';
