@@ -248,11 +248,28 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           margin-bottom: 15px;
           display: flex;
           flex-direction: column;
+          opacity: 0;
+        }
+        
+        .dropdown-menu-appear {
+          animation: menu-popup 0.2s ease;
         }
 
         .dropdown-menu .menu-item {
           width: 100%;
           height: 50%;
+        }
+
+        @keyframes menu-popup { 
+          0% {
+            opacity: 0.5;
+            transform: translateY(10px);
+          }
+
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
       </style>
 
@@ -265,7 +282,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           <template is="dom-if" if={{showThumbnailPreview}}>
             <div id="preview_thumbnail" class="thumbnail">THUMBNAIL PREVIEW MOUSE OVER POSITION: [[xPosition]]</div>
           </template>
-          <div class="dropdown-menu">
+          <div id="menu" class="dropdown-menu">
             <button type="button" class="menu-item">
               <iron-icon icon="player-icons:file-download"></iron-icon>
               <span>DOWNLOAD</span>
@@ -336,7 +353,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
                   <iron-icon icon="player-icons:fullscreen-exit"></iron-icon>
                 </template>
               </div>
-              <div id="settings_icon" class="control-icons">
+              <div id="settings_icon" class="control-icons" on-click="_toggleMenu">
                 <iron-icon icon="player-icons:more-vert"></iron-icon>
               </div>
             </div>
@@ -427,6 +444,12 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
       toggle = true;
     }
     thumbnail.classList.toggle('appear', toggle);
+  }
+
+  _toggleMenu(event) {
+    const menu = this.getShadowElementById('menu');
+    let toggle = false;
+    menu.classList.toggle('dropdown-menu-appear', toggle);
   }
 
   _updateControlStyling() {
