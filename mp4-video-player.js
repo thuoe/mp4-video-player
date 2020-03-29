@@ -275,7 +275,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
 
       <div id="video_container" class="container">
         <h3>[[title]]</h3>
-        <video id="video_player" preload="auto" on-loadedmetadata="_metadetaLoaded" on-timeupdate="_handleTrack" on-ended="_handleEnd">
+        <video id="video_player" preload="auto" on-loadedmetadata="_metadetaLoaded" on-timeupdate="_updateTrack" on-ended="_handleEnd">
           <source src$="{{videoFilePath}}" type="video/mp4">
         </video>
         <div class="video-controls">
@@ -506,11 +506,11 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
   }
 
   /**
-   * handle the track when time updates
+   * update the track when the time updates
    * is playing
    * @param {Object} event
    */
-  _handleTrack(event) {
+  _updateTrack(event) {
     if (!this.dragging && this.playing) {
       const currentTime = event.currentTarget.currentTime;
       const duration = event.currentTarget.duration;
