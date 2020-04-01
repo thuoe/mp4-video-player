@@ -482,12 +482,12 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
   }
 
   _metadetaLoaded(event) {
-    const duration = event.currentTarget.duration;
+    const { duration } = event.currentTarget;
     this.formattedDuration = this._formatTime(duration);
   }
   
   _formatElapsedTime() {
-    const currentTime = this.$['video_player'].currentTime;
+    const { currentTime } = this.getShadowElementById('video_player');
     this.formattedCurrentTime = this._formatTime(currentTime);
   }
 
@@ -526,7 +526,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    * @param {Number} progress
    */
   _elapsedChanged(progress) {
-    const video = this.$['video_player'];
+    const video = this.getShadowElementById('video_player');
     video.currentTime = video.duration * progress;
     this._updateTimeline(progress);
   }
@@ -538,8 +538,8 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    */
   _updateTimeline(progress) {
     const offset = this.shadowRoot.querySelector('.track').offsetWidth * progress;
-    this.$['track_pointer'].style.left = offset + 'px';
-    this.$['track_fill'].style.width = offset + 'px';
+    this.getShadowElementById('track_pointer').style.left = offset + 'px';
+    this.getShadowElementById('track_fill').style.width = offset + 'px';
     this._formatElapsedTime();
   }
 
@@ -564,7 +564,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    * @private
    */
   _togglePlay() {
-    const video = this.$['video_player'];
+    const video = this.getShadowElementById('video_player');
     this.playing = !this.playing;
     if (this.playing) {
       video.play();
@@ -586,10 +586,10 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     } else {
       this.muted = false;
     }
-    const offset = this.$['volume_track'].offsetWidth * newVolume;
-    this.$['volume_track_fill'].style.width = offset + 'px';
-    this.$['volume_track_pointer'].style.left = offset + 'px';
-    this.$['video_player'].volume = newVolume;
+    const offset = this.getShadowElementById('volume_track').offsetWidth * newVolume;
+    this.getShadowElementById('volume_track_fill').style.width = offset + 'px';
+    this.getShadowElementById('volume_track_pointer').style.left = offset + 'px';
+    this.getShadowElementById('video_player').volume = newVolume;
   }
 
   /**
@@ -620,7 +620,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
   }
 
   _handleTrack(event) {
-    const video = this.$['video_player'];
+    const video = this.getShadowElementById('video_player');
     switch (event.detail.state) {
       case 'start':
         this.dragging = true;
