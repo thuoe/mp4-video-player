@@ -238,6 +238,10 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           opacity: 1;
         }
 
+        .dropdown-menu[hidden] {
+          display: none!important;
+        }
+
         .dropdown-menu {
           position: absolute;
           width: 225px;
@@ -248,10 +252,6 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           margin-bottom: 15px;
           display: flex;
           flex-direction: column;
-          opacity: 0;
-        }
-        
-        .dropdown-menu-appear {
           animation: menu-popup 0.2s ease;
         }
 
@@ -282,7 +282,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           <template is="dom-if" if={{showThumbnailPreview}}>
             <div id="preview_thumbnail" class="thumbnail">THUMBNAIL PREVIEW MOUSE OVER POSITION: [[xPosition]]</div>
           </template>
-          <div id="menu" class="dropdown-menu">
+          <div id="menu" class="dropdown-menu" hidden>
             <button type="button" class="menu-item">
               <iron-icon icon="player-icons:file-download"></iron-icon>
               <span>DOWNLOAD</span>
@@ -448,8 +448,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
 
   _toggleMenu(event) {
     const menu = this.getShadowElementById('menu');
-    let toggle = false;
-    menu.classList.toggle('dropdown-menu-appear', toggle);
+    menu.hidden = !menu.hidden;
   }
 
   _updateControlStyling() {
