@@ -23,6 +23,10 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           fill: white;
         }
 
+        a {
+          text-decoration: none;
+        }
+
         button {
           background: white;
           border: 0;
@@ -284,12 +288,18 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           </template>
           <div id="menu" class="dropdown-menu" hidden>
             <button type="button" class="menu-item">
-              <iron-icon icon="player-icons:file-download"></iron-icon>
-              <span>DOWNLOAD</span>
+              <iron-icon icon="player-icons:closed-caption"></iron-icon>
+              <span>CAPTION</span>
             </button>
             <button type="button" class="menu-item">
               <iron-icon icon="player-icons:picture-in-picture"></iron-icon>
               <span>PICTURE-IN-PICTURE</span>
+            </button>
+            <button type="button" class="menu-item">
+                <a href$="{{videoFilePath}}" download>
+                  <iron-icon icon="player-icons:file-download"></iron-icon>
+                </a>
+              <span>DOWNLOAD</span>
             </button>
           </div>
           <div id="playback_track" class="track">
@@ -339,11 +349,6 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
                 <div id="volume_track_pointer" class="track-pointer" on-track="_handleTrack">
                 <span></span>
                 </div>
-              </div>
-              <div id="download_icon" class="control-icons">
-                <a href$="{{videoFilePath}}" download>
-                  <iron-icon icon="player-icons:file-download"></iron-icon>
-                </a>
               </div>
               <div id="fullscreen_icons" class="control-icons">
                 <template is="dom-if" if={{!fullscreen}}>
