@@ -163,6 +163,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
 
         .control-icons {
          cursor: pointer;
+         position: relative;
         }
 
         .control-icons:hover {
@@ -275,6 +276,39 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
             transform: translateY(0);
           }
         }
+
+        .tooltip {
+          background: rgba(255,255,255,.9);
+          border-radius: 3px;
+          bottom: 100%;
+          box-shadow: 0 1px 2px rgba(0,0,0,.15);
+          color: black;
+          font-size: 12px;
+          font-weight: 500;
+          left: 50%;
+          line-height: 1.3;
+          margin-bottom: 32px;
+          padding: 5px 7.5px;
+          pointer-events: none;
+          position: absolute;
+          transform: translate(-50%, 5px);
+          white-space: nowrap;
+          z-index: 2;
+        }
+
+        .tooltip::before {
+          border-left: 4px solid transparent;
+          border-right: 4px solid transparent;
+          border-top: 4px solid rgba(255,255,255,.9);
+          bottom: -4px;
+          content: '';
+          height: 0;
+          left: 50%;
+          position: absolute;
+          transform: translateX(-50%);
+          width: 0;
+          z-index: 2;
+        }
       </style>
 
       <div id="video_container" class="container">
@@ -327,6 +361,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
                 <template is="dom-if" if={{ended}}>
                   <iron-icon icon="player-icons:ended"></iron-icon>
                 </template>
+                <span class="tooltip">Play</span>
               </div>
               <div id="time" class="time-elapsed">
                 <span id="current_time" tabindex="-1">[[formattedCurrentTime]]</span>
@@ -342,6 +377,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
                 <template is="dom-if" if={{!muted}}>
                 <iron-icon icon="player-icons:volume-up"></iron-icon>
                 </template>
+                <span class="tooltip">Volume</span>
               </div>
               <div id="volume_track" class="track" on-click="_handleTimelineClick">
                 <div id="volume_track_bar" class="track-bar" on-click="_handleTimelineClick"></div>
@@ -357,9 +393,11 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
                 <template is="dom-if" if={{fullscreen}}>
                   <iron-icon icon="player-icons:fullscreen-exit"></iron-icon>
                 </template>
+                <span class="tooltip">Fullscreen</span>
               </div>
               <div id="settings_icon" class="control-icons" on-click="_toggleMenu">
                 <iron-icon icon="player-icons:more-vert"></iron-icon>
+                <span class="tooltip">Options</span>
               </div>
             </div>
           </div>
