@@ -288,10 +288,12 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           left: 50%;
           line-height: 1.3;
           margin-bottom: 32px;
+          opacity: 0;
           padding: 5px 7.5px;
           pointer-events: none;
           position: absolute;
-          transform: translate(-50%, 5px);
+          transition: all .3s ease;
+          transform: translate(-50%, 5px) scale(1);
           white-space: nowrap;
           z-index: 2;
         }
@@ -308,6 +310,11 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           transform: translateX(-50%);
           width: 0;
           z-index: 2;
+        }
+
+        .control-icons:hover .tooltip {
+          opacity: 1;
+          transform: translate(-50%, -5px) scale(1);
         }
       </style>
 
