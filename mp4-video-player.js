@@ -368,7 +368,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
                 <template is="dom-if" if={{ended}}>
                   <iron-icon icon="player-icons:ended"></iron-icon>
                 </template>
-                <span class="tooltip">Play</span>
+                <span class="tooltip">[[tooltipCaptions.playButton]]</span>
               </div>
               <div id="time" class="time-elapsed">
                 <span id="current_time" tabindex="-1">[[formattedCurrentTime]]</span>
@@ -384,7 +384,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
                 <template is="dom-if" if={{!muted}}>
                 <iron-icon icon="player-icons:volume-up"></iron-icon>
                 </template>
-                <span class="tooltip">Volume</span>
+                <span class="tooltip">[[tooltipCaptions.volumeButton]]</span>
               </div>
               <div id="volume_track" class="track" on-click="_handleTimelineClick">
                 <div id="volume_track_bar" class="track-bar" on-click="_handleTimelineClick"></div>
@@ -400,11 +400,11 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
                 <template is="dom-if" if={{fullscreen}}>
                   <iron-icon icon="player-icons:fullscreen-exit"></iron-icon>
                 </template>
-                <span class="tooltip">Fullscreen</span>
+                <span class="tooltip">[[tooltipCaptions.fullscreenButton]]</span>
               </div>
               <div id="settings_icon" class="control-icons" on-click="_toggleMenu">
                 <iron-icon icon="player-icons:more-vert"></iron-icon>
-                <span class="tooltip">Options</span>
+                <span class="tooltip">[[tooltipCaptions.optionButton]]</span>
               </div>
             </div>
           </div>
@@ -468,6 +468,10 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
       formattedDuration: {
         type: String,
         value: '0:00'
+      },
+      tooltipCaptions: {
+        type: Object,
+        computed: '_computeTooltipCaptions(playing, muted, fullscreen)'
       }
     };
   }
@@ -476,6 +480,25 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     super.ready();
     window.addEventListener('resize', this._updateControlStyling.bind(this));
     this.addEventListener('keyup', this._handleKeyCode.bind(this));
+  }
+
+  _computeTooltipCaptions(playing, muted, fullscreen) {
+    let captions = {
+      playButton: 'Play',
+      volumeButton: 'Volume',
+      fullscreenButton: 'Fullscreen',
+      optionButton: 'Options'
+    };
+    if (playing) {
+      captions.playButton = 'Pause'
+    }
+    if (muted) {
+      captions.volumeButton = 'Mute'
+    }
+    if (fullscreen) {
+      captions.fullscreenButton = 'Exit Fullscreen';
+    }
+    return captions;
   }
 
   getShadowElementById(id) {
@@ -496,7 +519,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     thumbnail.classList.toggle('appear', toggle);
   }
 
-  _toggleMenu(event) {
+  _toggleMenu() {
     const menu = this.getShadowElementById('menu');
     menu.hidden = !menu.hidden;
   }
@@ -651,6 +674,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
       this.volume = 0;
     } else {
       this.volume = this.prevVolume;
+      this.tooltipCaptions.volumeBut
     }
   }
 
