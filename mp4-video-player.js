@@ -344,13 +344,12 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
             </button>
           </div>
           <div id="playback_track" class="track">
-            <div id="track_bar_extra" class="track-bar extra" 
+            <div id="track_bar_extra" class="track-bar extra" on-click="_handleTimelineClick"></div>
+            <div id="track_bar" class="track-bar"on-click="_handleTimelineClick" 
               on-mouseenter="_toggleThumbnail"
               on-mousemove="_updateThumbnailPosition" 
-              on-mouseleave="_toggleThumbnail" 
-              on-click="_handleTimelineClick">
+              on-mouseleave="_toggleThumbnail">
             </div>
-            <div id="track_bar" class="track-bar"on-click="_handleTimelineClick"></div>
             <div id="track_fill" class="track-bar fill"></div>
             <div id="track_pointer" class="track-pointer" on-track="_handleTrack">
               <span></span>
