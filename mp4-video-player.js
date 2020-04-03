@@ -101,7 +101,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           width: 100%;
           height: 4px;
           bottom: 0;
-          background: white;
+          background: rgba(255,255,255,.55);
           border-radius: 25px;
         }
 
@@ -209,7 +209,8 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           position: absolute;
           width: 168px;
           height: 96px;
-          background: #29b6f6;
+          background: rgba(255,255,255,.9);
+          box-shadow: 0 1px 2px rgba(0,0,0,.15);
           bottom: 100%;
           border-radius: 5px;
           margin-bottom: 25px;
@@ -217,7 +218,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           opacity: 0;
         }
         
-        .thumbnail::after {
+        .thumbnail::after { 
           position: absolute;
           top: 100%;
           left: 50%;
@@ -225,7 +226,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           margin-left: -5px;
           border-width: 5px;
           border-style: solid;
-          border-color: #29b6f6 transparent transparent transparent;
+          border-color: rgba(255,255,255,.9) transparent transparent transparent;
         }
 
         .dropdown-menu::after {
@@ -252,7 +253,6 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           width: 225px;
           height: 150px;
           bottom: 100%;
-          background: red;
           right: 5px;
           margin-bottom: 15px;
           display: flex;
