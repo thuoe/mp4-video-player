@@ -27,27 +27,6 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           text-decoration: none;
         }
 
-        button {
-          background: white;
-          border: 0;
-          cursor: pointer;
-          outline: none;
-          transition: all .2s ease;
-        }
-
-        button iron-icon {
-          fill: black;
-        }
-
-        button:hover {
-          background: #29b6f6;
-          color: white; 
-        }
-
-        button:hover iron-icon {
-          fill: white;
-        }
-
         video {
           width: 100%;
           height: 100%;
@@ -67,7 +46,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           position: relative;
           display: flex;
           flex-direction: column;
-          min-width: 600px;
+          min-width: var(--video-min-width, 600px);
           box-sizing: border-box;
         }
 
@@ -101,7 +80,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           width: 100%;
           height: 4px;
           bottom: 0;
-          background: rgba(255,255,255,.55);
+          background: var(--video-track-bar-color, rgba(255,255,255,.55));
           border-radius: 25px;
         }
 
@@ -112,7 +91,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
 
         .fill {
           pointer-events: none;
-          background: #29b6f6;
+          background: var(--video-track-fill-color, #29b6f6);
           width: 0px;
         }
 
@@ -137,7 +116,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           width: 12px;
           height: 12px;
           border-radius: 50%;
-          background: #29b6f6;
+          background: var(--video-pointer-color, #29b6f6);
           transition: all 200ms;
         }
 
@@ -167,7 +146,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         }
 
         .control-icons:hover {
-          background: #29b6f6;
+          background: var(--video-control-icons-background-hover-color, #29b6f6);
           border-radius: 3px;
         }
 
@@ -209,7 +188,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           position: absolute;
           width: 168px;
           height: 96px;
-          background: rgba(255,255,255,.9);
+          background: var(--video-thumbnail-background-color, rgba(255,255,255,.9));
           box-shadow: 0 1px 2px rgba(0,0,0,.15);
           bottom: 100%;
           border-radius: 5px;
@@ -226,7 +205,25 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           margin-left: -5px;
           border-width: 5px;
           border-style: solid;
-          border-color: rgba(255,255,255,.9) transparent transparent transparent;
+          border-color: var(--video-thumbnail-background-color, rgba(255,255,255,.9)) transparent transparent transparent;
+        }
+
+        .appear {
+          opacity: 1;
+        }
+
+
+        .dropdown-menu {
+          position: absolute;
+          width: 225px;
+          height: 150px;
+          bottom: 100%;
+          background: var(--video-menu-background-color, rgba(255,255,255,.9));
+          right: 5px;
+          margin-bottom: 15px;
+          display: flex;
+          flex-direction: column;
+          animation: menu-popup 0.2s ease;
         }
 
         .dropdown-menu::after {
@@ -237,32 +234,29 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           margin-left: -5px;
           border-width: 5px;
           border-style: solid;
-          border-color: white transparent transparent transparent;
+          border-color: var(--video-menu-background-color, rgba(255,255,255,.9)) transparent transparent transparent;
         }
-
-        .appear {
-          opacity: 1;
-        }
-
         .dropdown-menu[hidden] {
           display: none!important;
         }
 
-        .dropdown-menu {
-          position: absolute;
-          width: 225px;
-          height: 150px;
-          bottom: 100%;
-          right: 5px;
-          margin-bottom: 15px;
-          display: flex;
-          flex-direction: column;
-          animation: menu-popup 0.2s ease;
-        }
-
         .dropdown-menu .menu-item {
+          background: var(--video-menu-item-color, rgba(255,255,255,.9));
+          border: 0;
+          cursor: pointer;
+          outline: none;
+          transition: all .2s ease;
           width: 100%;
           height: 50%;
+        }
+
+        .menu-item iron-icon {
+          fill: black;
+        }
+
+        .menu-item:hover {
+          background: var(--video-menu-item-hover-color, #29b6f6);
+          color: white; 
         }
 
         @keyframes menu-popup { 
@@ -278,7 +272,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         }
 
         .tooltip {
-          background: rgba(255,255,255,.9);
+          background: var(--video-tooltip-background-color, rgba(255,255,255,.9));
           border-radius: 3px;
           bottom: 100%;
           box-shadow: 0 1px 2px rgba(0,0,0,.15);
@@ -301,7 +295,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         .tooltip::before {
           border-left: 4px solid transparent;
           border-right: 4px solid transparent;
-          border-top: 4px solid rgba(255,255,255,.9);
+          border-top: 4px solid var(--video-tooltip-background-color, rgba(255,255,255,.9));
           bottom: -4px;
           content: '';
           height: 0;
@@ -673,7 +667,6 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
       this.volume = 0;
     } else {
       this.volume = this.prevVolume;
-      this.tooltipCaptions.volumeBut
     }
   }
 
