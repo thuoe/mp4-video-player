@@ -17,6 +17,8 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
       <style>
         :host {
           display: block;
+          min-width: var(--video-min-width, 600px);
+          min-height: var(--video-min-width, 400px);
         }
         
         iron-icon {
@@ -45,8 +47,9 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         .container {
           position: relative;
           display: flex;
+          width: 100%;
+          height: 100%;
           flex-direction: column;
-          min-width: var(--video-min-width, 600px);
           box-sizing: border-box;
         }
 

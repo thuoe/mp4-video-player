@@ -27,6 +27,7 @@ The following custom CSS variables are also available for custom styling the vid
 Custom property | Description | Default
 ------------------------------------------|-------------------------------------------------------------|----------------------
 `--video-min-width`                       | The minimum width of the video player   | `600px`
+`--video-min-height`                      | The minimum height of the video player  | `400px`
 `--video-track-bar-color`                 | Track bar color                         | `rgba(255,255,255,.55)`
 `--video-track-fill-color`                | Track fill color                        | `#29b6f6`
 `--video-pointer-color`                   | Pointer color                           | `#29b6f6`
