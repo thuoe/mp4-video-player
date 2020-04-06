@@ -238,6 +238,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           bottom: 100%;
           background: var(--video-menu-background-color, rgba(255,255,255,.9));
           border-radius: 4px;
+          box-shadow: 0 1px 2px rgba(0,0,0,.15);
           right: 5px;
           margin-bottom: 15px;
           display: flex;
