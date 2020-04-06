@@ -343,7 +343,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
 
       <div id="video_container" class="container">
         <div class="title">
-          <h3>[[title]]</h3>
+          <h3 id="video_title">[[title]]</h3>
         </div>
         <video id="video_player" preload="auto" on-loadedmetadata="_metadetaLoaded" on-timeupdate="_updateTrack" on-ended="_handleEnd">
           <source src$="{{videoFilePath}}" type="video/mp4">
@@ -469,7 +469,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
       },
       showThumbnailPreview: {
         type: Boolean,
-        value: true,
+        value: false,
         reflectToAttribute: true
       },
       title: {

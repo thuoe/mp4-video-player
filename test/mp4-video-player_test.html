@@ -12,43 +12,54 @@
     <script src="../node_modules/chai/chai.js"></script>
     <script src="../node_modules/wct-mocha/wct-mocha.js"></script>
 
-    <script type="module" src="../mp4-video-player.js"></script>
+    <script type="module">
+      import '@polymer/polymer/lib/elements/custom-style.js';
+      import '../mp4-video-player.js';
+    </script>
   </head>
   <body>
 
     <test-fixture id="video-player-basic">
       <template>
-        <mp4-video-player></mp4-video-player>
+        <mp4-video-player show-thumbnail-preview></mp4-video-player>
       </template>
     </test-fixture>
 
     <script type="module">
       import {Base} from '@polymer/polymer/polymer-legacy.js';
       import { pressSpace, pressAndReleaseKeyOn } from './interactions.js';
-      let videoPlayer;
+   
+      const assertComputed = (node, expected, property) => {
+        let actual = getComputedStyle(node).getPropertyValue(property).trim();
+        assert.equal(expected, actual);
+      };
+
+      let player; 
+
       setup(function() {
-        videoPlayer = fixture('video-player-basic');
+        player = fixture('video-player-basic');
       });
+
       suite('player shortcuts', () => {
         test('space bar calls "_togglePlay()"', () => {
-          pressSpace(videoPlayer);
-          expect(videoPlayer.playing).to.equal(true);
-          pressSpace(videoPlayer);
-          expect(videoPlayer.playing).to.equal(false);
+          pressSpace(player);
+          expect(player.playing).to.equal(true);
+          pressSpace(player);
+          expect(player.playing).to.equal(false);
         });
 
         test('p key calls "_togglePlay()"', () => {
-          pressAndReleaseKeyOn(videoPlayer, 80);
-          expect(videoPlayer.playing).to.equal(true);
-          pressAndReleaseKeyOn(videoPlayer, 80);
-          expect(videoPlayer.playing).to.equal(false);
+          pressAndReleaseKeyOn(player, 80);
+          expect(player.playing).to.equal(true);
+          pressAndReleaseKeyOn(player, 80);
+          expect(player.playing).to.equal(false);
         });
 
         test('m key calls "_toggleMute()"', () => {
-          pressAndReleaseKeyOn(videoPlayer, 109);
-          expect(videoPlayer.muted).to.equal(true);
-          pressAndReleaseKeyOn(videoPlayer, 109);
-          expect(videoPlayer.muted).to.equal(false);
+          pressAndReleaseKeyOn(player, 109);
+          expect(player.muted).to.equal(true);
+          pressAndReleaseKeyOn(player, 109);
+          expect(player.muted).to.equal(false);
         });
       });
 
@@ -59,19 +70,69 @@
         test('clicking download button');
 
         test('check download file path is set', () => {
-          const filePath = videoPlayer.videoFilePath;
+          const filePath = player.videoFilePath;
           expect(filePath).not.to.be.undefined;
           expect(filePath).to.be.an('string');
         });
 
         test('toggle thumbnail preview', () => {    
           Base.async(() => {
-            videoPlayer.showThumbnailPreview = true;
-            const thumbnail = videoPlayer.shadowRoot.querySelector('#preview_thumbnail');
+            player.showThumbnailPreview = true;
+            const thumbnail = player.shadowRoot.querySelector('#preview_thumbnail');
             assert.isNotNull(thumbnail, 'thumbnail preview has not rendered');
-            videoPlayer.showThumbnailPreview = false;
+            player.showThumbnailPreview = false;
             assert.isNull(thumbnail, 'thumbnail preview has not been removed');
           });
+        });
+      });
+
+      suite('player styling', () => {
+        test('CSS properties are being applied..', () => {
+          player.updateStyles({
+            '--video-min-width': '750px',
+            '--video-min-height': '300px',
+            '--video-title-color': 'red',
+            '--video-track-bar-color': 'blue',
+            '--video-track-fill-color': 'green',
+            '--video-pointer-color': 'yellow',
+            '--video-thumbnail-background-color': 'orange',
+            '--video-menu-background-color': 'pink',
+            '--video-menu-item-color': 'Cyan',
+            '--video-menu-item-icon-color': 'DarkViolet',
+            '--video-tooltip-background-color': 'Magenta'
+          });  
+          
+          assertComputed(player, '750px', '--video-min-width');
+          assertComputed(player, '300px', '--video-min-height');
+
+          const title = player.shadowRoot.querySelector('.title');
+          assertComputed(title, 'red', '--video-title-color');
+
+          const trackBar = player.shadowRoot.querySelector('.track-bar');
+          assertComputed(trackBar, 'blue', '--video-track-bar-color');
+          
+          const trackFill = player.shadowRoot.querySelector('.fill');
+          assertComputed(trackFill, 'green', '--video-track-fill-color');
+
+          const pointer = player.shadowRoot.querySelector('.track-pointer');
+          assertComputed(pointer, 'yellow', '--video-pointer-color');
+
+          flush(() => {
+            const thumbnail = player.shadowRoot.querySelector('.thumbnail');
+            assertComputed(thumbnail, 'orange', '--video-thumbnail-background-color');
+          });
+          
+          const menu = player.shadowRoot.querySelector('.dropdown-menu');
+          assertComputed(menu, 'pink', '--video-menu-background-color');
+
+          const menuItem = player.shadowRoot.querySelector('.menu-item');
+          assertComputed(menuItem, 'Cyan', '--video-menu-item-color');
+
+          const menuItemIcon = player.shadowRoot.querySelector('.menu-item iron-icon');
+          assertComputed(menuItemIcon, 'DarkViolet', '--video-menu-item-icon-color');
+
+          const tooltip = player.shadowRoot.querySelector('.tooltip');
+          assertComputed(tooltip, 'Magenta', '--video-tooltip-background-color');
         });
       });
     </script>
