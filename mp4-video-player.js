@@ -75,7 +75,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           width: 100%;
           bottom: 0;
           background: linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.7));
-          opacity: 0;
+          opacity: 1;
           transition: opacity .3s ease-in-out, transform .3s ease-in-out;
         }
 
@@ -237,11 +237,13 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           height: 150px;
           bottom: 100%;
           background: var(--video-menu-background-color, rgba(255,255,255,.9));
+          border-radius: 4px;
           right: 5px;
           margin-bottom: 15px;
           display: flex;
           flex-direction: column;
           animation: menu-popup 0.2s ease;
+          padding: 7px;
           z-index: 4;
         }
 
@@ -255,6 +257,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           border-style: solid;
           border-color: var(--video-menu-background-color, rgba(255,255,255,.9)) transparent transparent transparent;
         }
+
         .dropdown-menu[hidden] {
           display: none!important;
         }
@@ -262,11 +265,13 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         .dropdown-menu .menu-item {
           background: var(--video-menu-item-color, transparent);
           border: 0;
+          border-radius: 4px;
           cursor: pointer;
           outline: none;
           transition: all .2s ease;
           width: 100%;
           height: 50%;
+          padding: 4px 11px;
         }
 
         .menu-item iron-icon {
@@ -741,7 +746,6 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         break;
     }
   }
-
 }
 
 window.customElements.define('mp4-video-player', MP4VideoPlayer);
