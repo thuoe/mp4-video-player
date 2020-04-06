@@ -19,6 +19,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           display: block;
           min-width: var(--video-min-width, 600px);
           min-height: var(--video-min-width, 400px);
+          user-select: none;
         }
         
         iron-icon {
@@ -41,7 +42,21 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           transform: translate(-50%, -50%);
           text-align: center;
           top: 10px;
-          color: white;
+          color: var(--video-title-color, rgba(255,255,255,.9));
+        }
+
+        .title {
+          position: absolute;
+          background: linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,0));
+          width: 100%;
+          height: 40px;
+          opacity: 0;
+          transition: opacity .3s ease-in-out, transform .3s ease-in-out;
+          z-index: 3;
+        }
+
+        .title:hover {
+          opacity: 1;
         }
 
         .container {
@@ -60,8 +75,8 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           width: 100%;
           bottom: 0;
           background: linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.7));
-          opacity: 1;
-          transition: opacity .4s ease-in-out, transform .4s ease-in-out
+          opacity: 0;
+          transition: opacity .3s ease-in-out, transform .3s ease-in-out;
         }
 
         .video-controls:hover {
@@ -321,7 +336,9 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
       </style>
 
       <div id="video_container" class="container">
-        <h3>[[title]]</h3>
+        <div class="title">
+          <h3>[[title]]</h3>
+        </div>
         <video id="video_player" preload="auto" on-loadedmetadata="_metadetaLoaded" on-timeupdate="_updateTrack" on-ended="_handleEnd">
           <source src$="{{videoFilePath}}" type="video/mp4">
         </video>
