@@ -75,3 +75,16 @@ Custom property | Description | Default
 </body>
 </html>
 ```
+
+Or you can dynamically change the CSS properties at runtime..
+
+```js
+const player = window.querySelector('mp4-video-player');
+player.updateStyles({
+    '--video-min-width': '750px',
+    '--video-min-height': '300px',
+    '--video-title-color': 'red',
+    '--video-track-bar-color': 'blue',
+    ...
+});  
+```
