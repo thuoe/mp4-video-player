@@ -35,7 +35,9 @@ Custom property | Description | Default
 `--video-thumbnail-background-color`      | Thumbnail track background color        | `rgba(255,255,255,.9)`
 `--video-menu-background-color`           | Menu background color                   | `rgba(255,255,255,.9)`
 `--video-menu-item-color`                 | Menu item background color              | `rgba(255,255,255,.9)`
+`--video-menu-item-icon-color`            | Menu icon color                         | `black`
 `--video-menu-item-hover-color`           | Menu item hover color                   | `#29b6f6`
+`--video-menu-item-icon-hover-color`      | Menu icon hover color                   | `white`
 `--video-tooltip-background-color`        | Tooltip background color                | `rgba(255,255,255,.9)`
 
 

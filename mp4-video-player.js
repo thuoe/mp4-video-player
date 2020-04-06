@@ -227,6 +227,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           display: flex;
           flex-direction: column;
           animation: menu-popup 0.2s ease;
+          z-index: 4;
         }
 
         .dropdown-menu::after {
@@ -244,7 +245,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         }
 
         .dropdown-menu .menu-item {
-          background: var(--video-menu-item-color, rgba(255,255,255,.9));
+          background: var(--video-menu-item-color, transparent);
           border: 0;
           cursor: pointer;
           outline: none;
@@ -254,12 +255,16 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         }
 
         .menu-item iron-icon {
-          fill: black;
+          fill: var(--video-menu-item-icon-color, black);
         }
 
         .menu-item:hover {
           background: var(--video-menu-item-hover-color, #29b6f6);
           color: white; 
+        }
+
+        .menu-item:hover iron-icon {
+          fill: var(--video-menu-item-icon-hover-color, white);
         }
 
         @keyframes menu-popup { 
