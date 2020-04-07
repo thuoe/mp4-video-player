@@ -11,11 +11,12 @@
     <script src="../node_modules/mocha/mocha.js"></script>
     <script src="../node_modules/chai/chai.js"></script>
     <script src="../node_modules/wct-mocha/wct-mocha.js"></script>
+    <script src="../node_modules/sinon/pkg/sinon.js"></script>
 
     <script type="module">
       import '@polymer/polymer/lib/elements/custom-style.js';
       import '../mp4-video-player.js';
-    </script>
+    </script> 
   </head>
   <body>
 
@@ -134,6 +135,16 @@
           const tooltip = player.shadowRoot.querySelector('.tooltip');
           assertComputed(tooltip, 'Magenta', '--video-tooltip-background-color');
         });
+
+        suite('menu controls', () => {
+          test('Request Picture-In-Picture', () => {
+            const video = player.getShadowElementById('video_player');
+            video.requestPictureInPicture = () => Promise.resolve();
+            const spyPIP = sinon.spy(video, 'requestPictureInPicture');
+            player._togglePictureInPicture();
+            assert(spyPIP.calledOnce);
+          });
+        })
       });
     </script>
 
