@@ -64,17 +64,11 @@
         });
       });
 
-      suite('player controls', () => {
+      suite('track controls', () => {
         test('toggle play/pause button');
         test('toggle volume/mute button');
         test('toggle fullscreen button');
         test('clicking download button');
-
-        test('check download file path is set', () => {
-          const filePath = player.videoFilePath;
-          expect(filePath).not.to.be.undefined;
-          expect(filePath).to.be.an('string');
-        });
 
         test('toggle thumbnail preview', () => {    
           Base.async(() => {
@@ -136,7 +130,7 @@
           assertComputed(tooltip, 'Magenta', '--video-tooltip-background-color');
         });
 
-        suite('menu controls', () => {
+        suite('settings menu controls', () => {
           test('Request Picture-In-Picture', () => {
             const video = player.getShadowElementById('video_player');
             video.requestPictureInPicture = () => Promise.resolve();
@@ -144,6 +138,14 @@
             player._togglePictureInPicture();
             assert(spyPIP.calledOnce);
           });
+
+          test('Download source file', () => {
+            const filePath = player.videoFilePath;
+            expect(filePath).not.to.be.undefined;
+            expect(filePath).to.be.an('string');
+          });
+          
+          test('Request Captions');
         })
       });
     </script>
