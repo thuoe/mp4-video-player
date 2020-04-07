@@ -357,10 +357,12 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
               <iron-icon icon="player-icons:closed-caption"></iron-icon>
               <span>CAPTION</span>
             </button>
-            <button type="button" class="menu-item" on-click="_togglePictureInPicture">
-              <iron-icon icon="player-icons:picture-in-picture"></iron-icon>
-              <span>PICTURE-IN-PICTURE</span>
-            </button>
+            <template is="dom-if" if="{{enablePIP}}">
+              <button type="button" class="menu-item" on-click="_togglePictureInPicture">
+                <iron-icon icon="player-icons:picture-in-picture"></iron-icon>
+                <span>PICTURE-IN-PICTURE</span>
+              </button>
+            </template>
             <button type="button" class="menu-item">
                 <a href$="{{videoFilePath}}" download>
                   <iron-icon icon="player-icons:file-download"></iron-icon>
@@ -496,6 +498,11 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
       tooltipCaptions: {
         type: Object,
         computed: '_computeTooltipCaptions(playing, muted, fullscreen)'
+      },
+      enablePIP: {
+        type: Boolean,
+        value: () => document.pictureInPictureEnabled,
+        readOnly: true
       }
     };
   }
@@ -534,13 +541,15 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
   }
 
   _toggleThumbnail(event) {
-    const thumbnail = this.getShadowElementById('preview_thumbnail');
-    const { type } = event;
-    let toggle = false;
-    if (type === 'mouseenter') {
-      toggle = true;
+    if (this.showThumbnailPreview) {
+      const thumbnail = this.getShadowElementById('preview_thumbnail');
+      const { type } = event;
+      let toggle = false;
+      if (type === 'mouseenter') {
+        toggle = true;
+      }
+      thumbnail.classList.toggle('appear', toggle);
     }
-    thumbnail.classList.toggle('appear', toggle);
   }
 
   _togglePictureInPicture() {
