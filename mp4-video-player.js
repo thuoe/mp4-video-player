@@ -357,7 +357,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
               <iron-icon icon="player-icons:closed-caption"></iron-icon>
               <span>CAPTION</span>
             </button>
-            <button type="button" class="menu-item">
+            <button type="button" class="menu-item" on-click="_togglePictureInPicture">
               <iron-icon icon="player-icons:picture-in-picture"></iron-icon>
               <span>PICTURE-IN-PICTURE</span>
             </button>
@@ -541,6 +541,21 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
       toggle = true;
     }
     thumbnail.classList.toggle('appear', toggle);
+  }
+
+  _togglePictureInPicture() {
+    const video = this.getShadowElementById('video_player');
+    if (!document.pictureInPictureElement) {
+      video.requestPictureInPicture()
+      .catch(() => {
+        console.log('Failed to enter Picture-in-Picture mode');
+      });
+    } else {
+      document.exitPictureInPicture()
+      .catch(() => {
+        console.log('Failed to leave Picture-in-Picture mode');
+      });
+    }
   }
 
   _toggleMenu() {
