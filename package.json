@@ -21,6 +21,9 @@
     "@polymer/test-fixture": "^4.0.2",
     "@webcomponents/webcomponentsjs": "^2.0.0",
     "chai": "^4.2.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.2",
     "husky": "^4.2.3",
     "mocha": "^5.2.0",
     "wct-mocha": "^1.0.0"
