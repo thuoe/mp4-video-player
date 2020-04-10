@@ -631,7 +631,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    * @param {Object} event
    */
   _updateTrack(event) {
-    if (!this.dragging && this.playing) {
+    if (!this.dragging && this.playing || document.pictureInPictureElement) {
       const currentTime = event.currentTarget.currentTime;
       const duration = event.currentTarget.duration;
       const progress = currentTime / duration;
