@@ -7,6 +7,7 @@ node_js: node
 addons:
   firefox: latest
 script:
+  - npm run lint
   - xvfb-run polymer test --module-resolution=node --npm --local firefox
 dist: trusty
 cache:
