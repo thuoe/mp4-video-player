@@ -4,6 +4,7 @@
   "description": "Simple MP4 Video Player Element",
   "main": "mp4-video-player.js",
   "scripts": {
+    "lint": "eslint mp4-video-player.js -o ./report/eslint.html -f html",
     "test": "polymer test -l chrome"
   },
   "husky": {
