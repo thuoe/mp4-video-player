@@ -11,6 +11,8 @@ module.exports = {
     },
     rules: {
         'comma-dangle': [ 'error', 'never' ],
-        'no-underscore-dangle': ["error", { "allowAfterThis": true }]
+        'no-underscore-dangle': [ 'error', { 'allowAfterThis': true }],
+        'class-methods-use-this': 'off',
+        'max-len': 'off'
     }
 };
