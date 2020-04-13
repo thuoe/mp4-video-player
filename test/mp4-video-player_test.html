@@ -14,30 +14,30 @@
     <script src="../node_modules/wct-mocha/wct-mocha.js"></script>
 
     <script type="module">
-      import '@polymer/polymer/lib/elements/custom-style.js';
-      import '../mp4-video-player.js';
+      import '@polymer/polymer/lib/elements/custom-style';
+      import '../mp4-video-player';
     </script> 
   </head>
   <body>
 
     <test-fixture id="video-player-basic">
       <template>
-        <mp4-video-player show-thumbnail-preview></mp4-video-player>
+        <mp4-video-player video-file-path="../assets/sample.mp4" show-thumbnail-preview></mp4-video-player>
       </template>
     </test-fixture>
 
     <script type="module">
-      import {Base} from '@polymer/polymer/polymer-legacy.js';
-      import { pressSpace, pressAndReleaseKeyOn } from './interactions.js';
-   
+      /* eslint-disable no-underscore-dangle, no-unused-expressions */
+      import { pressSpace, pressAndReleaseKeyOn } from './Interactions';
+
       const assertComputed = (node, expected, property) => {
-        let actual = getComputedStyle(node).getPropertyValue(property).trim();
+        const actual = getComputedStyle(node).getPropertyValue(property).trim();
         assert.equal(expected, actual);
       };
 
-      let player; 
+      let player;
 
-      setup(function() {
+      setup(() => {
         player = fixture('video-player-basic');
       });
 
@@ -69,16 +69,6 @@
         test('toggle volume/mute button');
         test('toggle fullscreen button');
         test('clicking download button');
-
-        test('toggle thumbnail preview', () => {    
-          Base.async(() => {
-            player.showThumbnailPreview = true;
-            const thumbnail = player.shadowRoot.querySelector('#preview_thumbnail');
-            assert.isNotNull(thumbnail, 'thumbnail preview has not rendered');
-            player.showThumbnailPreview = false;
-            assert.isNull(thumbnail, 'thumbnail preview has not been removed');
-          });
-        });
       });
 
       suite('player styling', () => {
@@ -95,8 +85,8 @@
             '--video-menu-item-color': 'Cyan',
             '--video-menu-item-icon-color': 'DarkViolet',
             '--video-tooltip-background-color': 'Magenta'
-          });  
-          
+          });
+      
           assertComputed(player, '750px', '--video-min-width');
           assertComputed(player, '300px', '--video-min-height');
 
@@ -105,18 +95,13 @@
 
           const trackBar = player.shadowRoot.querySelector('.track-bar');
           assertComputed(trackBar, 'blue', '--video-track-bar-color');
-          
+      
           const trackFill = player.shadowRoot.querySelector('.fill');
           assertComputed(trackFill, 'green', '--video-track-fill-color');
 
           const pointer = player.shadowRoot.querySelector('.track-pointer');
           assertComputed(pointer, 'yellow', '--video-pointer-color');
-
-          flush(() => {
-            const thumbnail = player.shadowRoot.querySelector('.thumbnail');
-            assertComputed(thumbnail, 'orange', '--video-thumbnail-background-color');
-          });
-          
+      
           const menu = player.shadowRoot.querySelector('.dropdown-menu');
           assertComputed(menu, 'pink', '--video-menu-background-color');
 
@@ -129,24 +114,24 @@
           const tooltip = player.shadowRoot.querySelector('.tooltip');
           assertComputed(tooltip, 'Magenta', '--video-tooltip-background-color');
         });
+      });
 
-        suite('settings menu controls', () => {
-          test('Request Picture-In-Picture', () => {
-            const video = player.getShadowElementById('video_player');
-            video.requestPictureInPicture = () => Promise.resolve();
-            const spyPIP = sinon.spy(video, 'requestPictureInPicture');
-            player._togglePictureInPicture();
-            assert(spyPIP.calledOnce);
-          });
-
-          test('Download source file', () => {
-            const filePath = player.videoFilePath;
-            expect(filePath).not.to.be.undefined;
-            expect(filePath).to.be.an('string');
-          });
-          
-          test('Request Captions');
+      suite('settings menu controls', () => {
+        test('Request Picture-In-Picture', () => {
+          const video = player.getShadowElementById('video_player');
+          video.requestPictureInPicture = () => Promise.resolve();
+          const spyPIP = sinon.spy(video, 'requestPictureInPicture');
+          player._togglePictureInPicture();
+          assert(spyPIP.calledOnce);
         });
+
+        test('Download source file', () => {
+          const filePath = player.videoFilePath;
+          expect(filePath).not.to.be.undefined;
+          expect(filePath).to.be.an('string');
+        });
+
+        test('Request Captions');
       });
     </script>
 
