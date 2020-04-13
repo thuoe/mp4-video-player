@@ -441,10 +441,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
 
   static get properties() {
     return {
-      videoFilePath: {
-        type: String,
-        value: '/assets/sample.mp4'
-      },
+      videoFilePath: String,
       playing: {
         type: Boolean,
         value: false,
