@@ -70,16 +70,6 @@
         test('toggle volume/mute button');
         test('toggle fullscreen button');
         test('clicking download button');
-
-        test('toggle thumbnail preview', () => {
-          Base.async(() => {
-            player.showThumbnailPreview = true;
-            const thumbnail = player.shadowRoot.querySelector('#preview_thumbnail');
-            assert.isNotNull(thumbnail, 'thumbnail preview has not rendered');
-            player.showThumbnailPreview = false;
-            assert.isNull(thumbnail, 'thumbnail preview has not been removed');
-          });
-        });
       });
 
       suite('player styling', () => {
@@ -112,11 +102,6 @@
 
           const pointer = player.shadowRoot.querySelector('.track-pointer');
           assertComputed(pointer, 'yellow', '--video-pointer-color');
-
-          flush(() => {
-            const thumbnail = player.shadowRoot.querySelector('.thumbnail');
-            assertComputed(thumbnail, 'orange', '--video-thumbnail-background-color');
-          });
       
           const menu = player.shadowRoot.querySelector('.dropdown-menu');
           assertComputed(menu, 'pink', '--video-menu-background-color');
@@ -130,24 +115,24 @@
           const tooltip = player.shadowRoot.querySelector('.tooltip');
           assertComputed(tooltip, 'Magenta', '--video-tooltip-background-color');
         });
+      });
 
-        suite('settings menu controls', () => {
-          test('Request Picture-In-Picture', () => {
-            const video = player.getShadowElementById('video_player');
-            video.requestPictureInPicture = () => Promise.resolve();
-            const spyPIP = sinon.spy(video, 'requestPictureInPicture');
-            player._togglePictureInPicture();
-            assert(spyPIP.calledOnce);
-          });
-
-          test('Download source file', () => {
-            const filePath = player.videoFilePath;
-            expect(filePath).not.to.be.undefined;
-            expect(filePath).to.be.an('string');
-          });
-
-          test('Request Captions');
+      suite('settings menu controls', () => {
+        test('Request Picture-In-Picture', () => {
+          const video = player.getShadowElementById('video_player');
+          video.requestPictureInPicture = () => Promise.resolve();
+          const spyPIP = sinon.spy(video, 'requestPictureInPicture');
+          player._togglePictureInPicture();
+          assert(spyPIP.calledOnce);
         });
+
+        test('Download source file', () => {
+          const filePath = player.videoFilePath;
+          expect(filePath).not.to.be.undefined;
+          expect(filePath).to.be.an('string');
+        });
+
+        test('Request Captions');
       });
     </script>
 
