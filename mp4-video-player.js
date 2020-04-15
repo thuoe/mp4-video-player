@@ -518,11 +518,24 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     super.ready();
     window.addEventListener('resize', this._updateControlStyling.bind(this));
     this.addEventListener('keyup', this._handleKeyCode.bind(this));
+    const fullscreenChangeEvent = this.prefix === 'ms' ? 'MSFullscreenchange' : `${this.prefix}fullscreenchange`;
+    this.addEventListener(fullscreenChangeEvent, this._handleFullscreenChange.bind(this));
+  }
+
+  isFunction(func) {
+    return typeof func === 'function';
   }
 
   get prefix() {
+    if (document.exitFullscreen) {
+      return ''; // no prefix Edge
+    }
     const prefixes = ['webkit', 'ms', 'moz'];
-    return prefixes.find((prefix) => typeof this[`${prefix}RequestFullscreen`] === 'function');
+    return prefixes.find((prefix) => {
+      const exitFunction = document[`${prefix}ExitFullscreen`]; // Chrome, Safari, IE
+      const mozExitFunction = document[`${prefix}CancelFullscreen`]; // Firefox
+      return this.isFunction(exitFunction) || this.isFunction(mozExitFunction);
+    });
   }
 
   _computeTooltipCaptions(playing, muted, fullscreen) {
@@ -684,6 +697,10 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
       default:
         break;
     }
+  }
+
+  _handleFullscreenChange() {
+    this.fullscreen = !!document.fullscreenElement;
   }
 
   _handleEnd() {
