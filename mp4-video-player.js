@@ -22,6 +22,11 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           user-select: none;
         }
 
+        :host(:-webkit-full-screen) {
+          width: 100%;
+          height: 100%;
+        }
+
         iron-icon {
           fill: white;
         }
