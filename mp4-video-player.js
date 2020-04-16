@@ -729,7 +729,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     }
   }
 
-  _exitFullScreen() {
+  _exitFullscreen() {
     if (!this.prefix) {
       document.exitFullscreen();
     } else {
@@ -743,7 +743,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     if (this.fullscreen) {
       this._enterFullscreen();
     } else {
-      this._exitFullScreen();
+      this._exitFullscreen();
     }
   }
 

@@ -67,8 +67,24 @@
       suite('track controls', () => {
         test('toggle play/pause button');
         test('toggle volume/mute button');
-        test('toggle fullscreen button');
         test('clicking download button');
+
+        test('toggle fullscreen', () => {
+          player._enterFullscreen = () => Promise.resolve();
+          player._exitFullscreen = () => Promise.resolve();
+          const enterSpy = sinon.spy(player, '_enterFullscreen');
+          const exitSpy = sinon.spy(player, '_exitFullscreen');
+      
+          player._toggleFullscreen();
+
+          expect(player.fullscreen).to.equal(true);
+          assert(enterSpy.calledOnce);
+      
+          player._toggleFullscreen();
+      
+          expect(player.fullscreen).to.equal(false);
+          assert(exitSpy.calledOnce);
+        });
       });
 
       suite('player styling', () => {
