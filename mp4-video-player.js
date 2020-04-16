@@ -21,7 +21,12 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           min-height: var(--video-min-height, 400px);
           user-select: none;
         }
-        
+
+        :host(:-webkit-full-screen) {
+          width: 100%;
+          height: 100%;
+        }
+
         iron-icon {
           fill: white;
         }
@@ -34,6 +39,10 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
           width: 100%;
           height: 100%;
           background: black;
+        }
+
+        video::-webkit-media-controls {
+          display: none;
         }
 
         h3 {
@@ -419,7 +428,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
                 <span></span>
                 </div>
               </div>
-              <div id="fullscreen_icons" class="control-icons">
+              <div id="fullscreen_icons" class="control-icons" on-click="_toggleFullscreen">
                 <template is="dom-if" if={{!fullscreen}}>
                   <iron-icon icon="player-icons:fullscreen"></iron-icon>
                 </template>
@@ -509,6 +518,24 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     super.ready();
     window.addEventListener('resize', this._updateControlStyling.bind(this));
     this.addEventListener('keyup', this._handleKeyCode.bind(this));
+    const fullscreenChangeEvent = this.prefix === 'ms' ? 'MSFullscreenchange' : `${this.prefix}fullscreenchange`;
+    this.addEventListener(fullscreenChangeEvent, this._handleFullscreenChange.bind(this));
+  }
+
+  isFunction(func) {
+    return typeof func === 'function';
+  }
+
+  get prefix() {
+    if (document.exitFullscreen) {
+      return ''; // no prefix Edge
+    }
+    const prefixes = ['webkit', 'ms', 'moz'];
+    return prefixes.find((prefix) => {
+      const exitFunction = document[`${prefix}ExitFullscreen`]; // Chrome, Safari, IE
+      const mozExitFunction = document[`${prefix}CancelFullscreen`]; // Firefox
+      return this.isFunction(exitFunction) || this.isFunction(mozExitFunction);
+    });
   }
 
   _computeTooltipCaptions(playing, muted, fullscreen) {
@@ -672,6 +699,10 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     }
   }
 
+  _handleFullscreenChange() {
+    this.fullscreen = !!document.fullscreenElement;
+  }
+
   _handleEnd() {
     this.dispatchEvent(new CustomEvent('videoEnded', { detail: { ended: true } }));
   }
@@ -687,6 +718,32 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
       video.play();
     } else {
       video.pause();
+    }
+  }
+
+  _enterFullscreen() {
+    if (!this.prefix) {
+      this.requestFullscreen();
+    } else {
+      this[`${this.prefix}RequestFullscreen`]();
+    }
+  }
+
+  _exitFullscreen() {
+    if (!this.prefix) {
+      document.exitFullscreen();
+    } else {
+      const action = this.prefix === 'moz' ? 'Cancel' : 'Exit';
+      document[`${this.prefix}${action}Fullscreen`]();
+    }
+  }
+
+  _toggleFullscreen() {
+    this.fullscreen = !this.fullscreen;
+    if (this.fullscreen) {
+      this._enterFullscreen();
+    } else {
+      this._exitFullscreen();
     }
   }
 
