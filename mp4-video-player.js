@@ -450,63 +450,78 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
 
   static get properties() {
     return {
+      /* File path to .mp4 video */
       videoFilePath: String,
+      /* File path to poster image. It can be a relative or absolute URL */
       poster: String,
+      /* If the video is currently playing */
       playing: {
         type: Boolean,
         value: false,
         reflectToAttribute: true
       },
+      /* If the user is currently dragging the player track */
       dragging: {
         type: Boolean,
         reflectToAttribute: true,
         value: false
       },
+      /* If the audio is currently muted */
       muted: {
         type: Boolean,
         value: false,
         reflectToAttribute: true
       },
+      /* If the video playback has ended */
       ended: {
         type: Boolean,
         value: false,
         reflectToAttribute: true
       },
+      /* If the player is in fullscreen mode */
       fullscreen: {
         type: Boolean,
         value: false,
         reflectToAttribute: true
       },
+      /* Determines if the timeline preview above the track appears when hovering */
       showThumbnailPreview: {
         type: Boolean,
         value: false,
         reflectToAttribute: true
       },
+      /* The title displayed on the top of video player */
       title: {
         type: String,
         value: 'VIDEO TITLE HERE'
       },
+      /* The volume scaled from 0-1 */
       volume: {
         type: Number,
         value: 0.75,
         observer: '_volumeChanged'
       },
+      /* Time elapsed */
       elapsed: {
         type: Number,
         observer: '_elapsedChanged'
       },
+      /* The formatted current position of the video playback in m:ss */
       formattedCurrentTime: {
         type: String,
         value: '0:00'
       },
+      /* The formatted total duration of the video playback in m:ss */
       formattedDuration: {
         type: String,
         value: '0:00'
       },
+      /* Used the populate the tooltip captions based on the current state of the player */
       tooltipCaptions: {
         type: Object,
         computed: '_computeTooltipCaptions(playing, muted, fullscreen)'
       },
+      /* Toggle the Picture-in-Picture feature based on browser compatibility */
       enablePIP: {
         type: Boolean,
         value: () => document.pictureInPictureEnabled,
