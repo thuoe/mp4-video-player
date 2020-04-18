@@ -22,7 +22,7 @@
 
     <test-fixture id="video-player-basic">
       <template>
-        <mp4-video-player video-file-path="../assets/sample.mp4" show-thumbnail-preview></mp4-video-player>
+        <mp4-video-player poster="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.jpg" video-file-path="../assets/sample.mp4" show-thumbnail-preview></mp4-video-player>
       </template>
     </test-fixture>
 
@@ -39,6 +39,20 @@
 
       setup(() => {
         player = fixture('video-player-basic');
+      });
+
+      suite('player props', () => {
+        test('poster path can be set', () => {
+          const path = player.poster;
+          expect(path).not.to.be.undefined;
+          expect(path).to.be.an('string');
+        });
+
+        test('Download path can be set', () => {
+          const filePath = player.videoFilePath;
+          expect(filePath).not.to.be.undefined;
+          expect(filePath).to.be.an('string');
+        });
       });
 
       suite('player shortcuts', () => {
@@ -139,12 +153,6 @@
           const spyPIP = sinon.spy(video, 'requestPictureInPicture');
           player._togglePictureInPicture();
           assert(spyPIP.calledOnce);
-        });
-
-        test('Download source file', () => {
-          const filePath = player.videoFilePath;
-          expect(filePath).not.to.be.undefined;
-          expect(filePath).to.be.an('string');
         });
 
         test('Request Captions');
