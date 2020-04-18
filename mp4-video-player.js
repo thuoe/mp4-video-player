@@ -354,7 +354,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         <div class="title">
           <h3 id="video_title">[[title]]</h3>
         </div>
-        <video id="video_player" preload="auto" on-loadedmetadata="_metadetaLoaded" on-timeupdate="_updateTrack" on-ended="_handleEnd">
+        <video id="video_player" preload="metadata" poster$="[[poster]]" on-loadedmetadata="_metadetaLoaded" on-timeupdate="_updateTrack" on-ended="_handleEnd">
           <source src$="{{videoFilePath}}" type="video/mp4">
         </video>
         <div class="video-controls">
@@ -451,6 +451,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
   static get properties() {
     return {
       videoFilePath: String,
+      poster: String,
       playing: {
         type: Boolean,
         value: false,
