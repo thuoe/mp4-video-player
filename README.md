@@ -26,8 +26,6 @@ $ npm test
 $ npm run lint
 ```
 
-Your application is already set up to be tested via [web-component-tester](https://github.com/Polymer/web-component-tester). Run `polymer test` to run your application's test suite locally.
-
 ## Custom CSS Properties
 
 The following custom CSS variables are also available for custom styling the video player:
