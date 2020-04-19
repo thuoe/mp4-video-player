@@ -32,7 +32,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
               <iron-icon icon="player-icons:closed-caption"></iron-icon>
               <span>CAPTION</span>
             </button>
-            <template is="dom-if" if="{{enablePIP}}">
+            <template is="dom-if" if="{{_enablePIP}}">
               <button type="button" class="menu-item" on-click="_togglePictureInPicture">
                 <iron-icon icon="player-icons:picture-in-picture"></iron-icon>
                 <span>PICTURE-IN-PICTURE</span>
@@ -69,12 +69,12 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
                 <template is="dom-if" if={{ended}}>
                   <iron-icon icon="player-icons:ended"></iron-icon>
                 </template>
-                <span class="tooltip">[[tooltipCaptions.playButton]]</span>
+                <span class="tooltip">[[_tooltipCaptions.playButton]]</span>
               </div>
               <div id="time" class="time-elapsed">
-                <span id="current_time" tabindex="-1">[[formattedCurrentTime]]</span>
+                <span id="current_time" tabindex="-1">[[_formattedCurrentTime]]</span>
                 &nbsp;/&nbsp;
-                <span id="total_duration" tabindex="-1">[[formattedDuration]]</span>
+                <span id="total_duration" tabindex="-1">[[_formattedDuration]]</span>
               </div>
             </div>
             <div class="right">
@@ -85,7 +85,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
                 <template is="dom-if" if={{!muted}}>
                 <iron-icon icon="player-icons:volume-up"></iron-icon>
                 </template>
-                <span class="tooltip">[[tooltipCaptions.volumeButton]]</span>
+                <span class="tooltip">[[_tooltipCaptions.volumeButton]]</span>
               </div>
               <div id="volume_track" class="track" on-click="_handleTimelineClick">
                 <div id="volume_track_bar" class="track-bar" on-click="_handleTimelineClick"></div>
@@ -101,11 +101,11 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
                 <template is="dom-if" if={{fullscreen}}>
                   <iron-icon icon="player-icons:fullscreen-exit"></iron-icon>
                 </template>
-                <span class="tooltip">[[tooltipCaptions.fullscreenButton]]</span>
+                <span class="tooltip">[[_tooltipCaptions.fullscreenButton]]</span>
               </div>
               <div id="settings_icon" class="control-icons" on-click="_toggleMenu">
                 <iron-icon icon="player-icons:more-vert"></iron-icon>
-                <span class="tooltip">[[tooltipCaptions.optionButton]]</span>
+                <span class="tooltip">[[_tooltipCaptions.optionButton]]</span>
               </div>
             </div>
           </div>
@@ -173,22 +173,22 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         observer: '_elapsedChanged'
       },
       /* The formatted current position of the video playback in m:ss */
-      formattedCurrentTime: {
+      _formattedCurrentTime: {
         type: String,
         value: '0:00'
       },
       /* The formatted total duration of the video playback in m:ss */
-      formattedDuration: {
+      _formattedDuration: {
         type: String,
         value: '0:00'
       },
       /* Used the populate the tooltip captions based on the current state of the player */
-      tooltipCaptions: {
+      _tooltipCaptions: {
         type: Object,
         computed: '_computeTooltipCaptions(playing, muted, fullscreen)'
       },
       /* Toggle the Picture-in-Picture feature based on browser compatibility */
-      enablePIP: {
+      _enablePIP: {
         type: Boolean,
         value: () => document.pictureInPictureEnabled,
         readOnly: true
@@ -309,12 +309,12 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
 
   _metadetaLoaded(event) {
     const { duration } = event.currentTarget;
-    this.formattedDuration = this._formatTime(duration);
+    this._formattedDuration = this._formatTime(duration);
   }
 
   _formatElapsedTime() {
     const { currentTime } = this.getShadowElementById('video_player');
-    this.formattedCurrentTime = this._formatTime(currentTime);
+    this._formattedCurrentTime = this._formatTime(currentTime);
   }
 
   _formatTime(time) {
