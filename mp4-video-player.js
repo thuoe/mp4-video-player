@@ -197,15 +197,27 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     super.ready();
     window.addEventListener('resize', this._updateControlStyling.bind(this));
     this.addEventListener('keyup', this._handleKeyCode.bind(this));
-    const fullscreenChangeEvent = this.prefix === 'ms' ? 'MSFullscreenchange' : `${this.prefix}fullscreenchange`;
+    const fullscreenChangeEvent = this._prefix === 'ms' ? 'MSFullscreenchange' : `${this._prefix}fullscreenchange`;
     this.addEventListener(fullscreenChangeEvent, this._handleFullscreenChange.bind(this));
   }
 
+  /**
+   * Determine if variable/property is truly a function.
+   * @param {*} func function variable
+   * @return {boolean} if variable is function. 
+   * @private
+   */
   _isFunction(func) {
     return typeof func === 'function';
   }
 
-  get prefix() {
+  /**
+   * Retrieve vender prefix for handling fullscreen
+   * functionality
+   * @private
+   * @return {string} vendor prefix
+   */
+  get _prefix() {
     if (document.exitFullscreen) {
       return ''; // no prefix Edge
     }
@@ -217,6 +229,15 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     });
   }
 
+  /**
+   * Compute the tooltip caption text based on the current
+   * state of the video player.
+   * @param {boolean} playing if video is playing
+   * @param {boolean} muted if volume is muted
+   * @param {boolean} fullscreen if player is in fullscreen mode
+   * @return {Object} captions for lower track controls
+   * @private
+   */
   _computeTooltipCaptions(playing, muted, fullscreen) {
     const captions = {
       playButton: 'Play',
@@ -236,6 +257,13 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     return captions;
   }
 
+  /**
+   * Find element with an id within the Shadow DOM
+   * of the video player.
+   * @param {string} id id of element
+   * @return {Element | undefined} element
+   * @private
+   */
   _getShadowElementById(id) {
     const element = this.$[id];
     if (element) {
@@ -244,6 +272,11 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     return this.shadowRoot.querySelector(`#${id}`);
   }
 
+  /**
+   * Toggle thumbnail previews event handler
+   * @param {MouseEvent} event mouse-enter/leave event
+   * @private
+   */
   _toggleThumbnail(event) {
     if (this.showThumbnailPreview) {
       const thumbnail = this._getShadowElementById('preview_thumbnail');
@@ -256,6 +289,10 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     }
   }
 
+  /**
+   * Toggle Picture-in-Picture mode
+   * @private
+   */
   _togglePictureInPicture() {
     const video = this._getShadowElementById('video_player');
     if (!document.pictureInPictureElement) {
@@ -271,17 +308,31 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     }
   }
 
+  /**
+   * Toggle settings menu
+   * @private
+   */
   _toggleMenu() {
     const menu = this._getShadowElementById('menu');
     menu.hidden = !menu.hidden;
   }
 
+  /**
+   * Update control styling
+   * @private
+   */
   _updateControlStyling() {
     const { currentTime, duration } = this._getShadowElementById('video_player');
     const progress = currentTime / duration;
     this._updateTimeline(progress);
   }
 
+  /**
+   * Update thumbnail preview position on
+   * track
+   * @param {MouseEvent} event mouse-move event
+   * @private
+   */
   _updateThumbnailPosition(event) {
     if (this.showThumbnailPreview) {
       const thumbnail = this._getShadowElementById('preview_thumbnail');
@@ -304,16 +355,32 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     }
   }
 
+  /**
+   * When video metadata is completely loaded
+   * total duration is then formatted onto the player
+   * @param {Event} event when the video has loaded metadeta
+   * @private
+   */
   _metadetaLoaded(event) {
     const { duration } = event.currentTarget;
     this._formattedDuration = this._formatTime(duration);
   }
 
+  /**
+   * Format the elasped time to minutes and seconds
+   * @private
+   */
   _formatElapsedTime() {
     const { currentTime } = this._getShadowElementById('video_player');
     this._formattedCurrentTime = this._formatTime(currentTime);
   }
 
+  /**
+   * Format the current time
+   * @param {number} time current time
+   * @return {string} formatted time
+   * @private
+   */
   _formatTime(time) {
     let mins = Math.floor(time / 60);
     let secs = Math.round(time - mins * 60);
@@ -328,9 +395,11 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
   }
 
   /**
-   * update the track when the time updates
+   * Update the track positioning when the
+   * current video time updates
    * is playing
-   * @param {Object} event
+   * @param {Event} event
+   * @private
    */
   _updateTrack(event) {
     if ((!this.dragging && this.playing) || document.pictureInPictureElement) {
@@ -343,8 +412,8 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
   /**
    * Update the current time of the video
    * when clicking a position of the timeline
-   * @private
    * @param {Number} progress
+   * @private
    */
   _elapsedChanged(progress) {
     const video = this._getShadowElementById('video_player');
@@ -353,7 +422,8 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
   }
 
   /**
-   * update the timeline
+   * Update the timeline fill length &
+   * track pointer positioning
    * @private
    * @param {Number} progress
    */
@@ -364,6 +434,11 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     this._formatElapsedTime();
   }
 
+  /**
+   * Handle keycode video playback shortcuts
+   * @param {KeyboardEvent} event key-up event
+   * @private
+   */
   _handleKeyCode(event) {
     switch (event.keyCode) {
       case 32: // space
@@ -378,10 +453,20 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     }
   }
 
+  /**
+   * Handle changes when toggling between
+   * fullscreen mode
+   * @private
+   */
   _handleFullscreenChange() {
     this.fullscreen = !!document.fullscreenElement;
   }
 
+  /**
+   * Dispatch a custom event when the video has
+   * ended
+   * @private
+   */
   _handleEnd() {
     this.dispatchEvent(new CustomEvent('videoEnded', { detail: { ended: true } }));
   }
@@ -400,23 +485,35 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     }
   }
 
+  /**
+   * Request to enter fullscreen mode
+   * @private
+   */
   _enterFullscreen() {
-    if (!this.prefix) {
+    if (!this._prefix) {
       this.requestFullscreen();
     } else {
-      this[`${this.prefix}RequestFullscreen`]();
+      this[`${this._prefix}RequestFullscreen`]();
     }
   }
 
+  /**
+   * Exit fullscreen mode
+   * @private
+   */
   _exitFullscreen() {
-    if (!this.prefix) {
+    if (!this._prefix) {
       document.exitFullscreen();
     } else {
-      const action = this.prefix === 'moz' ? 'Cancel' : 'Exit';
-      document[`${this.prefix}${action}Fullscreen`]();
+      const action = this._prefix === 'moz' ? 'Cancel' : 'Exit';
+      document[`${this._prefix}${action}Fullscreen`]();
     }
   }
 
+  /**
+   * Toggle fullscreen mode
+   * @private
+   */
   _toggleFullscreen() {
     this.fullscreen = !this.fullscreen;
     if (this.fullscreen) {
@@ -427,10 +524,10 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
   }
 
   /**
-   * Change the volume of the video when property
-   * changes
+   * Change the volume of the video
+   * @param {Number} newVolume new volume level
+   * @param {Number} oldVolume current volume level
    * @private
-   * @param {Number} newVolume
    */
   _volumeChanged(newVolume, oldVolume) {
     this.prevVolume = oldVolume;
@@ -461,6 +558,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
   /**
    * Calculates the click positioning of the timeline
    * @param {Object} event
+   * @private
    */
   _handleTimelineClick(event) {
     const { id } = event.currentTarget;
@@ -472,6 +570,11 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     }
   }
 
+  /**
+   * Handle gesture event on the track.
+   * @param {Event} event
+   * @private
+   */
   _handleTrack(event) {
     const video = this._getShadowElementById('video_player');
     switch (event.detail.state) {
