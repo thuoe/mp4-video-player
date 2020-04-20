@@ -116,6 +116,8 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
 
   static get properties() {
     return {
+      /* The title displayed on the top of video player */
+      title: String,
       /* File path to .mp4 video */
       videoFilePath: String,
       /* File path to poster image. It can be a relative or absolute URL */
@@ -155,11 +157,6 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         type: Boolean,
         value: false,
         reflectToAttribute: true
-      },
-      /* The title displayed on the top of video player */
-      title: {
-        type: String,
-        value: 'VIDEO TITLE HERE'
       },
       /* The volume scaled from 0-1 */
       volume: {
