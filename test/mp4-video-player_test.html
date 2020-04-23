@@ -48,7 +48,7 @@
           expect(path).to.be.an('string');
         });
 
-        test('Download path can be set', () => {
+        test('download path can be set', () => {
           const filePath = player.videoFilePath;
           expect(filePath).not.to.be.undefined;
           expect(filePath).to.be.an('string');
@@ -147,15 +147,15 @@
       });
 
       suite('settings menu controls', () => {
-        test('Request Picture-In-Picture', () => {
-          const video = player.getShadowElementById('video_player');
+        test('request Picture-In-Picture', () => {
+          const video = player._getShadowElementById('video_player');
           video.requestPictureInPicture = () => Promise.resolve();
           const spyPIP = sinon.spy(video, 'requestPictureInPicture');
           player._togglePictureInPicture();
           assert(spyPIP.calledOnce);
         });
 
-        test('Request Captions');
+        test('request Captions');
       });
     </script>
 
