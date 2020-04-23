@@ -204,7 +204,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
   /**
    * Determine if variable/property is truly a function.
    * @param {*} func function variable
-   * @return {boolean} if variable is function. 
+   * @return {boolean} if variable is function.
    * @private
    */
   _isFunction(func) {
