@@ -2,6 +2,10 @@
   "name": "mp4-video-player",
   "version": "1.0.0",
   "description": "Simple MP4 Video Player Element",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Eddie-Thuo/mp4-video-player"
+  },
   "main": "mp4-video-player.js",
   "scripts": {
     "lint": "eslint './**/*.{html,js}' -o ./report/eslint.html -f html",
