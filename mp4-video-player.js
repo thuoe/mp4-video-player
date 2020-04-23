@@ -1,5 +1,6 @@
 import { GestureEventListeners } from '@polymer/polymer/lib/mixins/gesture-event-listeners';
 import { html, PolymerElement } from '@polymer/polymer/polymer-element';
+import playerStyles from './player-styles';
 import '@polymer/iron-icon/iron-icon';
 import 'player-icons/player-icons';
 
@@ -14,342 +15,7 @@ import 'player-icons/player-icons';
 class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
   static get template() {
     return html`
-      <style>
-        :host {
-          display: block;
-          min-width: var(--video-min-width, 600px);
-          min-height: var(--video-min-height, 400px);
-          user-select: none;
-        }
-
-        :host(:-webkit-full-screen) {
-          width: 100%;
-          height: 100%;
-        }
-
-        iron-icon {
-          fill: white;
-        }
-
-        a {
-          text-decoration: none;
-        }
-
-        video {
-          width: 100%;
-          height: 100%;
-          background: black;
-        }
-
-        video::-webkit-media-controls {
-          display: none;
-        }
-
-        h3 {
-          position: absolute;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          text-align: center;
-          top: 10px;
-          color: var(--video-title-color, rgba(255,255,255,.9));
-        }
-
-        .title {
-          position: absolute;
-          background: linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,0));
-          width: 100%;
-          height: 40px;
-          opacity: 0;
-          transition: opacity .3s ease-in-out, transform .3s ease-in-out;
-          z-index: 3;
-        }
-
-        .title:hover {
-          opacity: 1;
-        }
-
-        .container {
-          position: relative;
-          display: flex;
-          width: 100%;
-          height: 100%;
-          flex-direction: column;
-          box-sizing: border-box;
-        }
-
-        .video-controls {
-          position: absolute;
-          display: flex;
-          flex-direction: column;
-          width: 100%;
-          bottom: 0;
-          background: linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.7));
-          opacity: 1;
-          transition: opacity .3s ease-in-out, transform .3s ease-in-out;
-        }
-
-        .video-controls:hover {
-          opacity: 1;
-        }
-
-        .upper-controls {
-          display: flex;
-          flex-direction: column;
-        }
-
-        .track{
-          position: relative;
-          width: 100%;
-        }
-
-        .track-bar {
-          position: absolute;
-          width: 100%;
-          height: 4px;
-          bottom: 0;
-          background: var(--video-track-bar-color, rgba(255,255,255,.55));
-          border-radius: 25px;
-        }
-
-        .extra {
-          background: none;
-          height: 16px;
-        }
-
-        .fill {
-          pointer-events: none;
-          background: var(--video-track-fill-color, #29b6f6);
-          width: 0px;
-        }
-
-        .track-bar.large, .track-fill.large {
-          height: 6px;
-        }
-        .track-pointer {
-          position: absolute;
-          height: 24px;
-          width: 24px;
-          padding: 6px;
-          cursor: pointer;
-          box-sizing: border-box;
-          margin-left: -12px;
-          bottom: -10px;
-          outline: none;
-        }
-
-        .track-pointer span {
-          position: absolute;
-          top: calc(50% - 6px);
-          width: 12px;
-          height: 12px;
-          border-radius: 50%;
-          background: var(--video-pointer-color, #29b6f6);
-          transition: all 200ms;
-        }
-
-        .track-pointer span:active {
-          transform: scale(1.5);
-        }
-
-        .track, .track-bar {
-          cursor: pointer;
-        }
-
-        .lower-controls {
-          height: 45px;
-        }
-
-        #volume_track_bar, #volume_track_fill {
-          top: calc(50% - 2px);
-        }
-
-        #volume_track_pointer {
-          bottom: 0;
-        }
-
-        .control-icons {
-         cursor: pointer;
-         position: relative;
-        }
-
-        .control-icons:hover {
-          background: var(--video-control-icons-background-hover-color, #29b6f6);
-          border-radius: 3px;
-        }
-
-        #volume_icons, #volume_track, #download_icon, #fullscreen_icons {
-          cursor: pointer;
-          margin-right: 15px;
-        }
-
-        .left {
-          position: relative;
-          top: calc(50% - 12px);
-          display: flex;
-          float: left;
-          margin-left: 7px;
-        }
-
-        .right {
-          position: relative;
-          top: calc(50% - 12px);
-          display: flex;
-          float: right;
-          min-width: 350px;
-          margin-right: 7px;
-        }
-
-        .time-elapsed {
-          margin-left: 25px;
-          line-height: 24px;
-          color: white;
-          font-weight: bold;
-          pointer-events: none;
-        }
-
-        .icons {
-          display: flex;
-        }
-        
-        .thumbnail {
-          position: absolute;
-          width: 168px;
-          height: 96px;
-          background: var(--video-thumbnail-background-color, rgba(255,255,255,.9));
-          box-shadow: 0 1px 2px rgba(0,0,0,.15);
-          bottom: 100%;
-          border-radius: 5px;
-          margin-bottom: 25px;
-          text-align: center;
-          opacity: 0;
-        }
-        
-        .thumbnail::after { 
-          position: absolute;
-          top: 100%;
-          left: 50%;
-          content: '';
-          margin-left: -5px;
-          border-width: 5px;
-          border-style: solid;
-          border-color: var(--video-thumbnail-background-color, rgba(255,255,255,.9)) transparent transparent transparent;
-        }
-
-        .appear {
-          opacity: 1;
-        }
-
-
-        .dropdown-menu {
-          position: absolute;
-          width: 225px;
-          height: 150px;
-          bottom: 100%;
-          background: var(--video-menu-background-color, rgba(255,255,255,.9));
-          border-radius: 4px;
-          box-shadow: 0 1px 2px rgba(0,0,0,.15);
-          right: 5px;
-          margin-bottom: 15px;
-          display: flex;
-          flex-direction: column;
-          animation: menu-popup 0.2s ease;
-          padding: 7px;
-          z-index: 4;
-        }
-
-        .dropdown-menu::after {
-          position: absolute;
-          top: 100%;
-          right: 5%;
-          content: '';
-          margin-left: -5px;
-          border-width: 5px;
-          border-style: solid;
-          border-color: var(--video-menu-background-color, rgba(255,255,255,.9)) transparent transparent transparent;
-        }
-
-        .dropdown-menu[hidden] {
-          display: none!important;
-        }
-
-        .dropdown-menu .menu-item {
-          background: var(--video-menu-item-color, transparent);
-          border: 0;
-          border-radius: 4px;
-          cursor: pointer;
-          outline: none;
-          transition: all .2s ease;
-          width: 100%;
-          height: 50%;
-          padding: 4px 11px;
-        }
-
-        .menu-item iron-icon {
-          fill: var(--video-menu-item-icon-color, black);
-        }
-
-        .menu-item:hover {
-          background: var(--video-menu-item-hover-color, #29b6f6);
-          color: white; 
-        }
-
-        .menu-item:hover iron-icon {
-          fill: var(--video-menu-item-icon-hover-color, white);
-        }
-
-        @keyframes menu-popup { 
-          0% {
-            opacity: 0.5;
-            transform: translateY(10px);
-          }
-
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .tooltip {
-          background: var(--video-tooltip-background-color, rgba(255,255,255,.9));
-          border-radius: 3px;
-          bottom: 100%;
-          box-shadow: 0 1px 2px rgba(0,0,0,.15);
-          color: black;
-          font-size: 12px;
-          font-weight: 500;
-          left: 50%;
-          line-height: 1.3;
-          margin-bottom: 32px;
-          opacity: 0;
-          padding: 5px 7.5px;
-          pointer-events: none;
-          position: absolute;
-          transition: all .3s ease;
-          transform: translate(-50%, 5px) scale(1);
-          white-space: nowrap;
-          z-index: 2;
-        }
-
-        .tooltip::before {
-          border-left: 4px solid transparent;
-          border-right: 4px solid transparent;
-          border-top: 4px solid var(--video-tooltip-background-color, rgba(255,255,255,.9));
-          bottom: -4px;
-          content: '';
-          height: 0;
-          left: 50%;
-          position: absolute;
-          transform: translateX(-50%);
-          width: 0;
-          z-index: 2;
-        }
-
-        .control-icons:hover .tooltip {
-          opacity: 1;
-          transform: translate(-50%, -5px) scale(1);
-        }
-      </style>
-
+      ${playerStyles}
       <div id="video_container" class="container">
         <div class="title">
           <h3 id="video_title">[[title]]</h3>
@@ -366,7 +32,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
               <iron-icon icon="player-icons:closed-caption"></iron-icon>
               <span>CAPTION</span>
             </button>
-            <template is="dom-if" if="{{enablePIP}}">
+            <template is="dom-if" if="{{_enablePIP}}">
               <button type="button" class="menu-item" on-click="_togglePictureInPicture">
                 <iron-icon icon="player-icons:picture-in-picture"></iron-icon>
                 <span>PICTURE-IN-PICTURE</span>
@@ -403,12 +69,12 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
                 <template is="dom-if" if={{ended}}>
                   <iron-icon icon="player-icons:ended"></iron-icon>
                 </template>
-                <span class="tooltip">[[tooltipCaptions.playButton]]</span>
+                <span class="tooltip">[[_tooltipCaptions.playButton]]</span>
               </div>
               <div id="time" class="time-elapsed">
-                <span id="current_time" tabindex="-1">[[formattedCurrentTime]]</span>
+                <span id="current_time" tabindex="-1">[[_formattedCurrentTime]]</span>
                 &nbsp;/&nbsp;
-                <span id="total_duration" tabindex="-1">[[formattedDuration]]</span>
+                <span id="total_duration" tabindex="-1">[[_formattedDuration]]</span>
               </div>
             </div>
             <div class="right">
@@ -419,7 +85,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
                 <template is="dom-if" if={{!muted}}>
                 <iron-icon icon="player-icons:volume-up"></iron-icon>
                 </template>
-                <span class="tooltip">[[tooltipCaptions.volumeButton]]</span>
+                <span class="tooltip">[[_tooltipCaptions.volumeButton]]</span>
               </div>
               <div id="volume_track" class="track" on-click="_handleTimelineClick">
                 <div id="volume_track_bar" class="track-bar" on-click="_handleTimelineClick"></div>
@@ -435,11 +101,11 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
                 <template is="dom-if" if={{fullscreen}}>
                   <iron-icon icon="player-icons:fullscreen-exit"></iron-icon>
                 </template>
-                <span class="tooltip">[[tooltipCaptions.fullscreenButton]]</span>
+                <span class="tooltip">[[_tooltipCaptions.fullscreenButton]]</span>
               </div>
               <div id="settings_icon" class="control-icons" on-click="_toggleMenu">
                 <iron-icon icon="player-icons:more-vert"></iron-icon>
-                <span class="tooltip">[[tooltipCaptions.optionButton]]</span>
+                <span class="tooltip">[[_tooltipCaptions.optionButton]]</span>
               </div>
             </div>
           </div>
@@ -450,64 +116,76 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
 
   static get properties() {
     return {
+      /* The title displayed on the top of video player */
+      title: String,
+      /* File path to .mp4 video */
       videoFilePath: String,
+      /* File path to poster image. It can be a relative or absolute URL */
       poster: String,
+      /* If the video is currently playing */
       playing: {
         type: Boolean,
         value: false,
         reflectToAttribute: true
       },
+      /* If the user is currently dragging the player track */
       dragging: {
         type: Boolean,
         reflectToAttribute: true,
         value: false
       },
+      /* If the audio is currently muted */
       muted: {
         type: Boolean,
         value: false,
         reflectToAttribute: true
       },
+      /* If the video playback has ended */
       ended: {
         type: Boolean,
         value: false,
         reflectToAttribute: true
       },
+      /* If the player is in fullscreen mode */
       fullscreen: {
         type: Boolean,
         value: false,
         reflectToAttribute: true
       },
+      /* Determines if the timeline preview above the track appears when hovering */
       showThumbnailPreview: {
         type: Boolean,
         value: false,
         reflectToAttribute: true
       },
-      title: {
-        type: String,
-        value: 'VIDEO TITLE HERE'
-      },
+      /* The volume scaled from 0-1 */
       volume: {
         type: Number,
         value: 0.75,
         observer: '_volumeChanged'
       },
+      /* Time elapsed */
       elapsed: {
         type: Number,
         observer: '_elapsedChanged'
       },
-      formattedCurrentTime: {
+      /* The formatted current position of the video playback in m:ss */
+      _formattedCurrentTime: {
         type: String,
         value: '0:00'
       },
-      formattedDuration: {
+      /* The formatted total duration of the video playback in m:ss */
+      _formattedDuration: {
         type: String,
         value: '0:00'
       },
-      tooltipCaptions: {
+      /* Used the populate the tooltip captions based on the current state of the player */
+      _tooltipCaptions: {
         type: Object,
         computed: '_computeTooltipCaptions(playing, muted, fullscreen)'
       },
-      enablePIP: {
+      /* Toggle the Picture-in-Picture feature based on browser compatibility */
+      _enablePIP: {
         type: Boolean,
         value: () => document.pictureInPictureEnabled,
         readOnly: true
@@ -519,15 +197,27 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     super.ready();
     window.addEventListener('resize', this._updateControlStyling.bind(this));
     this.addEventListener('keyup', this._handleKeyCode.bind(this));
-    const fullscreenChangeEvent = this.prefix === 'ms' ? 'MSFullscreenchange' : `${this.prefix}fullscreenchange`;
+    const fullscreenChangeEvent = this._prefix === 'ms' ? 'MSFullscreenchange' : `${this._prefix}fullscreenchange`;
     this.addEventListener(fullscreenChangeEvent, this._handleFullscreenChange.bind(this));
   }
 
-  isFunction(func) {
+  /**
+   * Determine if variable/property is truly a function.
+   * @param {*} func function variable
+   * @return {boolean} if variable is function.
+   * @private
+   */
+  _isFunction(func) {
     return typeof func === 'function';
   }
 
-  get prefix() {
+  /**
+   * Retrieve vender prefix for handling fullscreen
+   * functionality
+   * @private
+   * @return {string} vendor prefix
+   */
+  get _prefix() {
     if (document.exitFullscreen) {
       return ''; // no prefix Edge
     }
@@ -535,10 +225,19 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     return prefixes.find((prefix) => {
       const exitFunction = document[`${prefix}ExitFullscreen`]; // Chrome, Safari, IE
       const mozExitFunction = document[`${prefix}CancelFullscreen`]; // Firefox
-      return this.isFunction(exitFunction) || this.isFunction(mozExitFunction);
+      return this._isFunction(exitFunction) || this._isFunction(mozExitFunction);
     });
   }
 
+  /**
+   * Compute the tooltip caption text based on the current
+   * state of the video player.
+   * @param {boolean} playing if video is playing
+   * @param {boolean} muted if volume is muted
+   * @param {boolean} fullscreen if player is in fullscreen mode
+   * @return {Object} captions for lower track controls
+   * @private
+   */
   _computeTooltipCaptions(playing, muted, fullscreen) {
     const captions = {
       playButton: 'Play',
@@ -558,7 +257,14 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     return captions;
   }
 
-  getShadowElementById(id) {
+  /**
+   * Find element with an id within the Shadow DOM
+   * of the video player.
+   * @param {string} id id of element
+   * @return {Element | undefined} element
+   * @private
+   */
+  _getShadowElementById(id) {
     const element = this.$[id];
     if (element) {
       return element;
@@ -566,9 +272,14 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     return this.shadowRoot.querySelector(`#${id}`);
   }
 
+  /**
+   * Toggle thumbnail previews event handler
+   * @param {MouseEvent} event mouse-enter/leave event
+   * @private
+   */
   _toggleThumbnail(event) {
     if (this.showThumbnailPreview) {
-      const thumbnail = this.getShadowElementById('preview_thumbnail');
+      const thumbnail = this._getShadowElementById('preview_thumbnail');
       const { type } = event;
       let toggle = false;
       if (type === 'mouseenter') {
@@ -578,8 +289,12 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     }
   }
 
+  /**
+   * Toggle Picture-in-Picture mode
+   * @private
+   */
   _togglePictureInPicture() {
-    const video = this.getShadowElementById('video_player');
+    const video = this._getShadowElementById('video_player');
     if (!document.pictureInPictureElement) {
       video.requestPictureInPicture()
         .catch(() => {
@@ -593,21 +308,35 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     }
   }
 
+  /**
+   * Toggle settings menu
+   * @private
+   */
   _toggleMenu() {
-    const menu = this.getShadowElementById('menu');
+    const menu = this._getShadowElementById('menu');
     menu.hidden = !menu.hidden;
   }
 
+  /**
+   * Update control styling
+   * @private
+   */
   _updateControlStyling() {
-    const { currentTime, duration } = this.getShadowElementById('video_player');
+    const { currentTime, duration } = this._getShadowElementById('video_player');
     const progress = currentTime / duration;
     this._updateTimeline(progress);
   }
 
+  /**
+   * Update thumbnail preview position on
+   * track
+   * @param {MouseEvent} event mouse-move event
+   * @private
+   */
   _updateThumbnailPosition(event) {
     if (this.showThumbnailPreview) {
-      const thumbnail = this.getShadowElementById('preview_thumbnail');
-      const containerRec = this.getShadowElementById('video_container').getBoundingClientRect();
+      const thumbnail = this._getShadowElementById('preview_thumbnail');
+      const containerRec = this._getShadowElementById('video_container').getBoundingClientRect();
       const thumbnailRec = thumbnail.getBoundingClientRect();
       const progressBarRec = event.currentTarget.getBoundingClientRect();
       const thumbnailWidth = thumbnailRec.width;
@@ -626,16 +355,32 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     }
   }
 
+  /**
+   * When video metadata is completely loaded
+   * total duration is then formatted onto the player
+   * @param {Event} event when the video has loaded metadeta
+   * @private
+   */
   _metadetaLoaded(event) {
     const { duration } = event.currentTarget;
-    this.formattedDuration = this._formatTime(duration);
+    this._formattedDuration = this._formatTime(duration);
   }
 
+  /**
+   * Format the elasped time to minutes and seconds
+   * @private
+   */
   _formatElapsedTime() {
-    const { currentTime } = this.getShadowElementById('video_player');
-    this.formattedCurrentTime = this._formatTime(currentTime);
+    const { currentTime } = this._getShadowElementById('video_player');
+    this._formattedCurrentTime = this._formatTime(currentTime);
   }
 
+  /**
+   * Format the current time
+   * @param {number} time current time
+   * @return {string} formatted time
+   * @private
+   */
   _formatTime(time) {
     let mins = Math.floor(time / 60);
     let secs = Math.round(time - mins * 60);
@@ -650,9 +395,11 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
   }
 
   /**
-   * update the track when the time updates
+   * Update the track positioning when the
+   * current video time updates
    * is playing
-   * @param {Object} event
+   * @param {Event} event
+   * @private
    */
   _updateTrack(event) {
     if ((!this.dragging && this.playing) || document.pictureInPictureElement) {
@@ -665,27 +412,33 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
   /**
    * Update the current time of the video
    * when clicking a position of the timeline
-   * @private
    * @param {Number} progress
+   * @private
    */
   _elapsedChanged(progress) {
-    const video = this.getShadowElementById('video_player');
+    const video = this._getShadowElementById('video_player');
     video.currentTime = video.duration * progress;
     this._updateTimeline(progress);
   }
 
   /**
-   * update the timeline
+   * Update the timeline fill length &
+   * track pointer positioning
    * @private
    * @param {Number} progress
    */
   _updateTimeline(progress) {
     const offset = this.shadowRoot.querySelector('.track').offsetWidth * progress;
-    this.getShadowElementById('track_pointer').style.left = `${offset}px`;
-    this.getShadowElementById('track_fill').style.width = `${offset}px`;
+    this._getShadowElementById('track_pointer').style.left = `${offset}px`;
+    this._getShadowElementById('track_fill').style.width = `${offset}px`;
     this._formatElapsedTime();
   }
 
+  /**
+   * Handle keycode video playback shortcuts
+   * @param {KeyboardEvent} event key-up event
+   * @private
+   */
   _handleKeyCode(event) {
     switch (event.keyCode) {
       case 32: // space
@@ -700,10 +453,20 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     }
   }
 
+  /**
+   * Handle changes when toggling between
+   * fullscreen mode
+   * @private
+   */
   _handleFullscreenChange() {
     this.fullscreen = !!document.fullscreenElement;
   }
 
+  /**
+   * Dispatch a custom event when the video has
+   * ended
+   * @private
+   */
   _handleEnd() {
     this.dispatchEvent(new CustomEvent('videoEnded', { detail: { ended: true } }));
   }
@@ -713,7 +476,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    * @private
    */
   _togglePlay() {
-    const video = this.getShadowElementById('video_player');
+    const video = this._getShadowElementById('video_player');
     this.playing = !this.playing;
     if (this.playing) {
       video.play();
@@ -722,23 +485,35 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     }
   }
 
+  /**
+   * Request to enter fullscreen mode
+   * @private
+   */
   _enterFullscreen() {
-    if (!this.prefix) {
+    if (!this._prefix) {
       this.requestFullscreen();
     } else {
-      this[`${this.prefix}RequestFullscreen`]();
+      this[`${this._prefix}RequestFullscreen`]();
     }
   }
 
+  /**
+   * Exit fullscreen mode
+   * @private
+   */
   _exitFullscreen() {
-    if (!this.prefix) {
+    if (!this._prefix) {
       document.exitFullscreen();
     } else {
-      const action = this.prefix === 'moz' ? 'Cancel' : 'Exit';
-      document[`${this.prefix}${action}Fullscreen`]();
+      const action = this._prefix === 'moz' ? 'Cancel' : 'Exit';
+      document[`${this._prefix}${action}Fullscreen`]();
     }
   }
 
+  /**
+   * Toggle fullscreen mode
+   * @private
+   */
   _toggleFullscreen() {
     this.fullscreen = !this.fullscreen;
     if (this.fullscreen) {
@@ -749,10 +524,10 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
   }
 
   /**
-   * Change the volume of the video when property
-   * changes
+   * Change the volume of the video
+   * @param {Number} newVolume new volume level
+   * @param {Number} oldVolume current volume level
    * @private
-   * @param {Number} newVolume
    */
   _volumeChanged(newVolume, oldVolume) {
     this.prevVolume = oldVolume;
@@ -761,10 +536,10 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     } else {
       this.muted = false;
     }
-    const offset = this.getShadowElementById('volume_track').offsetWidth * newVolume;
-    this.getShadowElementById('volume_track_fill').style.width = `${offset}px`;
-    this.getShadowElementById('volume_track_pointer').style.left = `${offset}px`;
-    this.getShadowElementById('video_player').volume = newVolume;
+    const offset = this._getShadowElementById('volume_track').offsetWidth * newVolume;
+    this._getShadowElementById('volume_track_fill').style.width = `${offset}px`;
+    this._getShadowElementById('volume_track_pointer').style.left = `${offset}px`;
+    this._getShadowElementById('video_player').volume = newVolume;
   }
 
   /**
@@ -783,6 +558,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
   /**
    * Calculates the click positioning of the timeline
    * @param {Object} event
+   * @private
    */
   _handleTimelineClick(event) {
     const { id } = event.currentTarget;
@@ -794,8 +570,13 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     }
   }
 
+  /**
+   * Handle gesture event on the track.
+   * @param {Event} event
+   * @private
+   */
   _handleTrack(event) {
-    const video = this.getShadowElementById('video_player');
+    const video = this._getShadowElementById('video_player');
     switch (event.detail.state) {
       case 'start': {
         this.dragging = true;

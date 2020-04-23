@@ -1,5 +1,7 @@
 # \<mp4-video-player\>
 
+[![Build Status](https://travis-ci.org/Eddie-Thuo/mp4-video-player.svg?branch=master)](https://travis-ci.org/Eddie-Thuo/mp4-video-player)
+
 Simple MP4 Video Player Element
 
 ## Install the Polymer-CLI
@@ -11,6 +13,7 @@ First, make sure you have the [Polymer CLI](https://www.npmjs.com/package/polyme
 ```
 $ polymer serve
 ```
+The live demo page will be available to view via `http://127.0.0.1:8081/components/mp4-video-player/docs.html`
 
 ## Running Tests
 
@@ -24,7 +27,19 @@ $ npm test
 $ npm run lint
 ```
 
-Your application is already set up to be tested via [web-component-tester](https://github.com/Polymer/web-component-tester). Run `polymer test` to run your application's test suite locally.
+## Video Player Properties
+
+The following properties are accessible to use:
+
+| Property               | Description                                                        | Type    | Value       |
+|------------------------|--------------------------------------------------------------------|---------|-------------|
+| `title`                | Title positioned on top of the video player                        | String  | `undefined` |
+| `videoFilePath`        | Relative file path to .mp4 video                                   | String  | `undefined` |
+| `poster`               | File path to poster image. It can be a relative or absolute URL    | String  | `undefined` |
+| `playing`              | If the video is playing                                            | Boolean | `false`     |
+| `muted`                | If the video is muted                                              | Boolean | `false`     |
+| `showThumbnailPreview` | Determines if the thumbnail previews show above the timeline track | Boolean | `false`     |
+| `volume`               | The volume scaled from 0-1                                         | Number  | `0.75`      |
 
 ## Custom CSS Properties
 
