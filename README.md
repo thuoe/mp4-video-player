@@ -39,7 +39,7 @@ The following properties are accessible to use:
 | `playing`              | If the video is playing                                            | Boolean | `false`     |
 | `muted`                | If the video is muted                                              | Boolean | `false`     |
 | `showThumbnailPreview` | Determines if the thumbnail previews show above the timeline track | Boolean | `false`     |
-| `volume`               | The volume scaled from 0-1                                         | Number  | 0.75        |
+| `volume`               | The volume scaled from 0-1                                         | Number  | `0.75`      |
 
 ## Custom CSS Properties
 
