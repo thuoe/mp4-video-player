@@ -109,3 +109,13 @@ player.updateStyles({
     ...
 });  
 ```
+## Keyboard Shortcuts
+
+This video player has intergrated the following shortcuts to further enhance
+playback experience:
+
+| Keyboard Shortcut | Intended Action   |
+|-------------------|-------------------|
+| `space` or `p`    | Toggle play       |
+| `m`               | Toggle mute       |
+| `f`               | Toggle fullscreen |
