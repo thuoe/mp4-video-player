@@ -13,7 +13,7 @@ First, make sure you have the [Polymer CLI](https://www.npmjs.com/package/polyme
 ```
 $ polymer serve
 ```
-The live demo page will be available to view via `http://127.0.0.1:8081/components/mp4-video-player/docs.html`
+The live demo page will be available to view via `http://127.0.0.1:8081/components/mp4-video-player/`
 
 ## Running Tests
 
