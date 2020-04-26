@@ -13,7 +13,7 @@ First, make sure you have the [Polymer CLI](https://www.npmjs.com/package/polyme
 ```
 $ polymer serve
 ```
-The live demo page will be available to view via `http://127.0.0.1:8081/components/mp4-video-player/docs.html`
+The live demo page will be available to view via `http://127.0.0.1:8081/components/mp4-video-player/`
 
 ## Running Tests
 
@@ -109,3 +109,13 @@ player.updateStyles({
     ...
 });  
 ```
+## Keyboard Shortcuts
+
+This video player has intergrated the following shortcuts to further enhance
+playback experience:
+
+| Keyboard Shortcut | Intended Action   |
+|-------------------|-------------------|
+| `space` or `p`    | Toggle play       |
+| `m`               | Toggle mute       |
+| `f`               | Toggle fullscreen |
