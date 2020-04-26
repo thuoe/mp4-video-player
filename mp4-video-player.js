@@ -196,7 +196,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
   ready() {
     super.ready();
     window.addEventListener('resize', this._updateControlStyling.bind(this));
-    this.addEventListener('keyup', this._handleKeyCode.bind(this));
+    window.addEventListener('keyup', this._handleKeyCode.bind(this));
     const fullscreenChangeEvent = this._prefix === 'ms' ? 'MSFullscreenchange' : `${this._prefix}fullscreenchange`;
     this.addEventListener(fullscreenChangeEvent, this._handleFullscreenChange.bind(this));
   }
@@ -227,6 +227,22 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
       const mozExitFunction = document[`${prefix}CancelFullscreen`]; // Firefox
       return this._isFunction(exitFunction) || this._isFunction(mozExitFunction);
     });
+  }
+
+  get _SPACE_BAR_KEY() {
+    return 32;
+  }
+
+  get _P_KEY() {
+    return 80;
+  }
+
+  get _M_KEY() {
+    return 77;
+  }
+
+  get _F_KEY() {
+    return 70;
   }
 
   /**
@@ -441,12 +457,15 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    */
   _handleKeyCode(event) {
     switch (event.keyCode) {
-      case 32: // space
-      case 80: // p
+      case this._SPACE_BAR_KEY:
+      case this._P_KEY:
         this._togglePlay();
         break;
-      case 109: // m
+      case this._M_KEY:
         this._toggleMute();
+        break;
+      case this._F_KEY:
+        this._toggleFullscreen();
         break;
       default:
         break;

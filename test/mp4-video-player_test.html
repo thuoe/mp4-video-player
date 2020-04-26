@@ -30,6 +30,10 @@
       /* eslint-disable no-underscore-dangle, no-unused-expressions */
       import { pressSpace, pressAndReleaseKeyOn } from './Interactions';
 
+      const P_KEY = 80;
+      const M_KEY = 77;
+      const F_KEY = 70;
+
       const assertComputed = (node, expected, property) => {
         const actual = getComputedStyle(node).getPropertyValue(property).trim();
         assert.equal(expected, actual);
@@ -64,17 +68,24 @@
         });
 
         test('p key calls "_togglePlay()"', () => {
-          pressAndReleaseKeyOn(player, 80);
+          pressAndReleaseKeyOn(player, P_KEY);
           expect(player.playing).to.equal(true);
-          pressAndReleaseKeyOn(player, 80);
+          pressAndReleaseKeyOn(player, P_KEY);
           expect(player.playing).to.equal(false);
         });
 
         test('m key calls "_toggleMute()"', () => {
-          pressAndReleaseKeyOn(player, 109);
+          pressAndReleaseKeyOn(player, M_KEY);
           expect(player.muted).to.equal(true);
-          pressAndReleaseKeyOn(player, 109);
+          pressAndReleaseKeyOn(player, M_KEY);
           expect(player.muted).to.equal(false);
+        });
+
+        test('f key calls "_toggleFullscreen()"', () => {
+          pressAndReleaseKeyOn(player, F_KEY);
+          expect(player.fullscreen).to.equal(true);
+          pressAndReleaseKeyOn(player, F_KEY);
+          expect(player.fullscreen).to.equal(false);
         });
       });
 
