@@ -482,6 +482,20 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
   }
 
   /**
+   * Play the video
+   */
+  play() {
+    this._getShadowElementById('video_player').play();
+  }
+
+  /**
+   * Pause the video
+   */
+  pause() {
+    this._getShadowElementById('video_player').pause();
+  }
+
+  /**
    * Dispatch a custom event when the video has
    * ended
    * @private
@@ -495,12 +509,11 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    * @private
    */
   _togglePlay() {
-    const video = this._getShadowElementById('video_player');
     this.playing = !this.playing;
     if (this.playing) {
-      video.play();
+      this.play();
     } else {
-      video.pause();
+      this.pause();
     }
   }
 
@@ -595,12 +608,11 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    * @private
    */
   _handleTrack(event) {
-    const video = this._getShadowElementById('video_player');
     switch (event.detail.state) {
       case 'start': {
         this.dragging = true;
         this.startleft = parseInt(event.currentTarget.style.left, 10) || 0;
-        video.muted = true;
+        this.muted = true;
         break;
       }
       case 'track': {
@@ -622,7 +634,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
       }
       case 'end':
         this.dragging = false;
-        video.muted = false;
+        this.muted = false;
         break;
       default: {
         break;
