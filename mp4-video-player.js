@@ -595,11 +595,6 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     }
   }
 
-  /**
-   * Calculates the click positioning of the timeline
-   * @param {Object} event
-   * @private
-   */
   _onMouseDown(e) {
     e.preventDefault();
     if (e.button !== 0) {
@@ -607,15 +602,22 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     }
     this.dragging = true;
     this._handleThumbPosition(e.clientX);
-    document.addEventListener('mousemove', this.onMouseMove.bind(this));
-    document.addEventListener('mouseup', this.onMouseUp.bind(this));
+    document.addEventListener('mousemove', this._onMouseMove.bind(this));
+    document.addEventListener('mouseup', this._onMouseUp.bind(this));
   }
 
-  onMouseMove(e) {
+  _onMouseMove(e) {
     e.preventDefault();
     if (this.dragging) {
       this._handleThumbPosition(e.clientX);
     }
+  }
+
+  _onMouseUp(e) {
+    e.preventDefault();
+    this.dragging = false;
+    document.removeEventListener('mousedown', this._onMouseUp.bind(this));
+    document.removeEventListener('mousemove', this._onMouseMove.bind(this));
   }
 
   _handleThumbPosition(clientX) {
@@ -630,13 +632,6 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
       newLeft = trackBarEdge;
     }
     thumb.style.left = `${newLeft}px`;
-  }
-
-  onMouseUp(e) {
-    e.preventDefault();
-    document.removeEventListener('mousedown', this.onMouseUp.bind(this));
-    document.removeEventListener('mousemove', this.onMouseMove.bind(this));
-    this.dragging = false;
   }
 
   /**
