@@ -1,8 +1,8 @@
+import '@polymer/iron-icon/iron-icon';
 import { GestureEventListeners } from '@polymer/polymer/lib/mixins/gesture-event-listeners';
 import { html, PolymerElement } from '@polymer/polymer/polymer-element';
-import playerStyles from './player-styles';
-import '@polymer/iron-icon/iron-icon';
 import 'player-icons/player-icons';
+import playerStyles from './player-styles';
 
 /**
  * `mp4-video-player`
@@ -45,18 +45,19 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
               <span>DOWNLOAD</span>
             </button>
           </div>
-          <div id="playback_track" class="track">
-            <div id="track_bar_extra" class="track-bar extra" on-click="_handleTimelineClick"></div>
-            <div id="track_bar" class="track-bar"on-click="_handleTimelineClick" 
+          <div class="track" on-mousedown="_onMouseDown"> 
+            <div id="track_slider" class="slider">
+              <div id="track_pointer" class="thumb"></div>
+            </div>
+            <div id="track_fill" class="fill"></div>
+          </div>
+          <!-- <div id="playback_track" class="track">
+            <div id="track_bar" class="track-bar" 
               on-mouseenter="_toggleThumbnail"
               on-mousemove="_updateThumbnailPosition" 
               on-mouseleave="_toggleThumbnail">
-            </div>
-            <div id="track_fill" class="track-bar fill"></div>
-            <div id="track_pointer" class="track-pointer" on-track="_handleTrack">
-              <span></span>
-            </div>
-          </div>
+            </div>  
+          </div> -->
           <div class="lower-controls">
             <div class="left">
               <div id="play_icons" class="control-icons" on-click="_togglePlay">
@@ -91,7 +92,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
                 <div id="volume_track_bar" class="track-bar" on-click="_handleTimelineClick"></div>
                 <div id="volume_track_fill" class="track-bar fill"></div>
                 <div id="volume_track_pointer" class="track-pointer" on-track="_handleTrack">
-                <span></span>
+                    <div class="thumb"></div>
                 </div>
               </div>
               <div id="fullscreen_icons" class="control-icons" on-click="_toggleFullscreen">
@@ -425,6 +426,11 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     }
   }
 
+  _updateCurrentTime(progress) {
+    const video = this._getShadowElementById('video_player');
+    video.currentTime = video.duration * progress;
+  }
+
   /**
    * Update the current time of the video
    * when clicking a position of the timeline
@@ -445,8 +451,10 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    */
   _updateTimeline(progress) {
     const offset = this.shadowRoot.querySelector('.track').offsetWidth * progress;
-    this._getShadowElementById('track_pointer').style.left = `${offset}px`;
-    this._getShadowElementById('track_fill').style.width = `${offset}px`;
+    const thumb = this._getShadowElementById('track_pointer');
+    const fill = this._getShadowElementById('track_fill');
+    thumb.style.left = `${offset - thumb.offsetWidth}px`;
+    fill.style.width = `${offset}px`;
     this._formatElapsedTime();
   }
 
@@ -592,14 +600,43 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    * @param {Object} event
    * @private
    */
-  _handleTimelineClick(event) {
-    const { id } = event.currentTarget;
-    const clickPos = event.offsetX / event.currentTarget.offsetWidth;
-    if (id === 'volume_track_bar' || id === 'volume_track') {
-      this.volume = clickPos;
-    } else {
-      this.elapsed = clickPos;
+  _onMouseDown(e) {
+    e.preventDefault();
+    if (e.button !== 0) {
+      return;
     }
+    this.dragging = true;
+    this._handleThumbPosition(e.clientX);
+    document.addEventListener('mousemove', this.onMouseMove.bind(this));
+    document.addEventListener('mouseup', this.onMouseUp.bind(this));
+  }
+
+  onMouseMove(e) {
+    e.preventDefault();
+    if (this.dragging) {
+      this._handleThumbPosition(e.clientX);
+    }
+  }
+
+  _handleThumbPosition(clientX) {
+    const slider = this._getShadowElementById('track_slider');
+    const thumb = this._getShadowElementById('track_pointer');
+    let newLeft = clientX - slider.getBoundingClientRect().left - thumb.offsetWidth / 2;
+    if (newLeft < 0) {
+      newLeft = 0;
+    }
+    const trackBarEdge = slider.offsetWidth - thumb.offsetWidth;
+    if (newLeft > trackBarEdge) {
+      newLeft = trackBarEdge;
+    }
+    thumb.style.left = `${newLeft}px`;
+  }
+
+  onMouseUp(e) {
+    e.preventDefault();
+    document.removeEventListener('mousedown', this.onMouseUp.bind(this));
+    document.removeEventListener('mousemove', this.onMouseMove.bind(this));
+    this.dragging = false;
   }
 
   /**

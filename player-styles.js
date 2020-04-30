@@ -71,6 +71,8 @@ const playerStyles = html`
       width: 100%;
       bottom: 0;
       background: linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.7));
+      box-sizing: border-box;
+      padding: 0px 5px 0px 5px;
       opacity: 1;
       transition: opacity .3s ease-in-out, transform .3s ease-in-out;
     }
@@ -85,8 +87,9 @@ const playerStyles = html`
     }
 
     .track{
-      position: relative;
       width: 100%;
+      height: 20px;
+      box-sizing: border-box;
     }
 
     .track-bar {
@@ -103,39 +106,46 @@ const playerStyles = html`
       height: 16px;
     }
 
-    .fill {
-      pointer-events: none;
-      background: var(--video-track-fill-color, #29b6f6);
-      width: 0px;
-    }
-
     .track-bar.large, .track-fill.large {
       height: 6px;
     }
-    .track-pointer {
-      position: absolute;
-      height: 24px;
-      width: 24px;
-      padding: 6px;
-      cursor: pointer;
+
+    .track {
+      position: relative;
+      width: 100%;
+      height: 20px;
       box-sizing: border-box;
-      margin-left: -12px;
-      bottom: -10px;
-      outline: none;
     }
-
-    .track-pointer span {
+    
+    .slider {
       position: absolute;
-      top: calc(50% - 6px);
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: var(--video-pointer-color, #29b6f6);
-      transition: all 200ms;
+      border-radius: 5px;
+      background: var(--video-track-bar-color, rgba(255,255,255,.55));
+      bottom: 0;
+      width: 100%;
+      height: 5px;
+      cursor: pointer;
+    }
+    
+    .fill {
+      position: absolute;
+      pointer-events: none;
+      border-radius: 5px;
+      background: var(--video-track-fill-color, #29b6f6);
+      bottom: 0;
+      height: 5px;
     }
 
-    .track-pointer span:active {
-      transform: scale(1.5);
+    .thumb {
+      width: 20px;
+      height: 20px;
+      position: relative;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #fff;
+      border-radius: 20px;
+      cursor: pointer;
+      z-index: 3;
     }
 
     .track, .track-bar {
