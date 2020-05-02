@@ -604,6 +604,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     const distance = e.clientX - slider.getBoundingClientRect().left;
     const progress = distance / slider.offsetWidth;
     this.dragging = true;
+    this.prevPlaying = this.playing;
     this.pause();
     this._handleThumbPosition(distance);
     this._updateCurrentTime(progress);
@@ -627,7 +628,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     this.dragging = false;
     document.removeEventListener('mousedown', this._onMouseUp.bind(this));
     document.removeEventListener('mousemove', this._onMouseMove.bind(this));
-    this.play();
+    if (this.prevPlaying) this.play();
   }
 
   _handleThumbPosition(distance) {
