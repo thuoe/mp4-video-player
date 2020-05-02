@@ -20,7 +20,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         <div class="title">
           <h3 id="video_title">[[title]]</h3>
         </div>
-        <video id="video_player" preload="metadata" poster$="[[poster]]" on-loadedmetadata="_metadetaLoaded" on-timeupdate="_updateTrack" on-ended="_handleEnd">
+        <video id="video_player" preload="metadata" poster$="[[poster]]" on-loadedmetadata="_metadetaLoaded" on-timeupdate="_handleTimeUpdate" on-ended="_handleEnd">
           <source src$="{{videoFilePath}}" type="video/mp4">
         </video>
         <div class="video-controls">
@@ -413,17 +413,17 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
 
   /**
    * Update the track positioning when the
-   * current video time updates
-   * is playing
+   * current video curentTime property updates
    * @param {Event} event
    * @private
    */
-  _updateTrack(event) {
-    if ((!this.dragging && this.playing) || document.pictureInPictureElement) {
-      const { currentTime, duration } = event.currentTarget;
-      const progress = currentTime / duration;
-      this._updateTimeline(progress);
-    }
+  _handleTimeUpdate(event) {
+    const trackSlider = this._getShadowElementById('track_slider');
+    const { currentTime, duration } = event.currentTarget;
+    const progress = currentTime / duration;
+    const distance = trackSlider.offsetWidth * progress;
+    this._formatElapsedTime();
+    this._handleThumbPosition(distance);
   }
 
   _updateCurrentTime(progress) {
@@ -494,6 +494,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    */
   play() {
     this._getShadowElementById('video_player').play();
+    this.playing = true;
   }
 
   /**
@@ -501,6 +502,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    */
   pause() {
     this._getShadowElementById('video_player').pause();
+    this.playing = false;
   }
 
   /**
@@ -597,11 +599,14 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
 
   _onMouseDown(e) {
     e.preventDefault();
-    if (e.button !== 0) {
-      return;
-    }
+    if (e.button !== 0) return;
+    const slider = this._getShadowElementById('track_slider');
+    const distance = e.clientX - slider.getBoundingClientRect().left;
+    const progress = distance / slider.offsetWidth;
     this.dragging = true;
-    this._handleThumbPosition(e.clientX);
+    this.pause();
+    this._handleThumbPosition(distance);
+    this._updateCurrentTime(progress);
     document.addEventListener('mousemove', this._onMouseMove.bind(this));
     document.addEventListener('mouseup', this._onMouseUp.bind(this));
   }
@@ -609,7 +614,11 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
   _onMouseMove(e) {
     e.preventDefault();
     if (this.dragging) {
-      this._handleThumbPosition(e.clientX);
+      const slider = this._getShadowElementById('track_slider');
+      const distance = e.clientX - slider.getBoundingClientRect().left;
+      const progress = distance / slider.offsetWidth;
+      this._handleThumbPosition(distance);
+      this._updateCurrentTime(progress);
     }
   }
 
@@ -618,20 +627,31 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     this.dragging = false;
     document.removeEventListener('mousedown', this._onMouseUp.bind(this));
     document.removeEventListener('mousemove', this._onMouseMove.bind(this));
+    this.play();
   }
 
-  _handleThumbPosition(clientX) {
+  _handleThumbPosition(distance) {
     const slider = this._getShadowElementById('track_slider');
     const thumb = this._getShadowElementById('track_pointer');
-    let newLeft = clientX - slider.getBoundingClientRect().left - thumb.offsetWidth / 2;
-    if (newLeft < 0) {
-      newLeft = 0;
+    const fill = this._getShadowElementById('track_fill');
+    let fillWidth = distance;
+    let newThumbLeft = distance - thumb.offsetWidth / 2;
+
+    if (newThumbLeft < 0) {
+      newThumbLeft = 0;
     }
     const trackBarEdge = slider.offsetWidth - thumb.offsetWidth;
-    if (newLeft > trackBarEdge) {
-      newLeft = trackBarEdge;
+
+    if (newThumbLeft > trackBarEdge) {
+      newThumbLeft = trackBarEdge;
     }
-    thumb.style.left = `${newLeft}px`;
+
+    if (fillWidth > slider.offsetWidth) {
+      fillWidth = slider.offsetWidth;
+    }
+
+    thumb.style.left = `${newThumbLeft}px`;
+    fill.style.width = `${fillWidth}px`;
   }
 
   /**
