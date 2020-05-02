@@ -45,19 +45,16 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
               <span>DOWNLOAD</span>
             </button>
           </div>
-          <div class="track" on-mousedown="_onMouseDown"> 
+          <div class="track" 
+            on-mouseenter="_toggleThumbnail" 
+            on-mousemove="_updateThumbnailPosition" 
+            on-mouseleave="_toggleThumbnail" 
+            on-mousedown="_onMouseDown"> 
             <div id="track_slider" class="slider">
               <div id="track_pointer" class="thumb"></div>
             </div>
             <div id="track_fill" class="fill"></div>
           </div>
-          <!-- <div id="playback_track" class="track">
-            <div id="track_bar" class="track-bar" 
-              on-mouseenter="_toggleThumbnail"
-              on-mousemove="_updateThumbnailPosition" 
-              on-mouseleave="_toggleThumbnail">
-            </div>  
-          </div> -->
           <div class="lower-controls">
             <div class="left">
               <div id="play_icons" class="control-icons" on-click="_togglePlay">
@@ -156,7 +153,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
       /* Determines if the timeline preview above the track appears when hovering */
       showThumbnailPreview: {
         type: Boolean,
-        value: false,
+        value: true,
         reflectToAttribute: true
       },
       /* The volume scaled from 0-1 */
@@ -353,12 +350,12 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
   _updateThumbnailPosition(event) {
     if (this.showThumbnailPreview) {
       const thumbnail = this._getShadowElementById('preview_thumbnail');
-      const containerRec = this._getShadowElementById('video_container').getBoundingClientRect();
+      const containerRec = this._getShadowElementById('track_slider').getBoundingClientRect();
       const thumbnailRec = thumbnail.getBoundingClientRect();
       const progressBarRec = event.currentTarget.getBoundingClientRect();
       const thumbnailWidth = thumbnailRec.width;
-      const minVal = containerRec.left - progressBarRec.left + 10;
-      const maxVal = containerRec.right - progressBarRec.left - thumbnailWidth - 10;
+      const minVal = containerRec.left - progressBarRec.left + 5;
+      const maxVal = containerRec.right - progressBarRec.left - thumbnailWidth - 5;
       const mousePosX = event.pageX;
       let previewPos = mousePosX - progressBarRec.left - thumbnailWidth / 2;
       if (previewPos < minVal) {

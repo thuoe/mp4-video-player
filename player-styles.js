@@ -216,7 +216,6 @@ const playerStyles = html`
       box-shadow: 0 1px 2px rgba(0,0,0,.15);
       bottom: 100%;
       border-radius: 5px;
-      margin-bottom: 25px;
       text-align: center;
       opacity: 0;
     }
@@ -226,7 +225,6 @@ const playerStyles = html`
       top: 100%;
       left: 50%;
       content: '';
-      margin-left: -5px;
       border-width: 5px;
       border-style: solid;
       border-color: var(--video-thumbnail-background-color, rgba(255,255,255,.9)) transparent transparent transparent;
