@@ -116,6 +116,10 @@ const playerStyles = html`
       height: 20px;
       box-sizing: border-box;
     }
+
+    .track.volume {
+      height: 24px;
+    }
     
     .slider {
       position: absolute;
@@ -126,6 +130,11 @@ const playerStyles = html`
       height: 5px;
       cursor: pointer;
     }
+
+    .slider.volume {
+      bottom: 50%;
+      transform: translateY(50%);
+    }
     
     .fill {
       position: absolute;
@@ -134,6 +143,11 @@ const playerStyles = html`
       background: var(--video-track-fill-color, #29b6f6);
       bottom: 0;
       height: 5px;
+    }
+
+    .fill.volume {
+      bottom: 50%;
+      transform: translateY(50%);
     }
 
     .thumb {
@@ -154,14 +168,6 @@ const playerStyles = html`
 
     .lower-controls {
       height: 45px;
-    }
-
-    #volume_track_bar, #volume_track_fill {
-      top: calc(50% - 2px);
-    }
-
-    #volume_track_pointer {
-      bottom: 0;
     }
 
     .control-icons {

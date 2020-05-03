@@ -85,11 +85,17 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
                 </template>
                 <span class="tooltip">[[_tooltipCaptions.volumeButton]]</span>
               </div>
-              <div id="volume_track" class="track" on-click="_handleTimelineClick">
+              <!-- <div id="volume_track" class="track" on-click="_handleTimelineClick">
                 <div id="volume_track_bar" class="track-bar" on-click="_handleTimelineClick"></div>
                 <div id="volume_track_fill" class="track-bar fill"></div>
                 <div id="volume_track_pointer" class="track-pointer" on-track="_handleTrack">
                     <div class="thumb"></div>
+                </div>
+              </div> -->
+              <div class="track volume"> 
+                <div id="volume_track_slider" class="slider volume">
+                  <div id="volume_track_pointer" class="thumb volume"></div>
+                  <div id="volume_track_fill" class="fill volume"></div>
                 </div>
               </div>
               <div id="fullscreen_icons" class="control-icons" on-click="_toggleFullscreen">
