@@ -117,6 +117,10 @@ const playerStyles = html`
       box-sizing: border-box;
     }
 
+    .track:active .thumb {
+      box-shadow: 0 1px 1px rgba(35,40,47,.15), 0 0 0 1px rgba(35,40,47,.2), 0 0 0 3px rgba(255,255,255,.5)
+    }
+
     .track.volume {
       height: 24px;
     }
@@ -145,17 +149,13 @@ const playerStyles = html`
       height: 5px;
     }
 
-    .fill.volume {
-      bottom: 50%;
-      transform: translateY(50%);
-    }
-
     .thumb {
       width: 20px;
       height: 20px;
       position: relative;
       top: 50%;
       transform: translateY(-50%);
+      transition: box-shadow .3s ease;
       background: #fff;
       border-radius: 20px;
       cursor: pointer;
