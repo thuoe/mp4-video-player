@@ -51,7 +51,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
             on-mouseleave="_toggleThumbnail" 
             on-mousedown="_onMouseDown"> 
             <div id="track_slider" class="slider">
-              <div id="track_pointer" class="thumb"></div>
+              <div id="track_thumb" class="thumb"></div>
             </div>
             <div id="track_fill" class="fill"></div>
           </div>
@@ -92,9 +92,9 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
                     <div class="thumb"></div>
                 </div>
               </div> -->
-              <div class="track volume"> 
+              <div id="volume_track" class="track volume" on-mousedown="_onMouseDown"> 
                 <div id="volume_track_slider" class="slider volume">
-                  <div id="volume_track_pointer" class="thumb volume"></div>
+                  <div id="volume_track_thumb" class="thumb volume"></div>
                   <div id="volume_track_fill" class="fill volume"></div>
                 </div>
               </div>
@@ -165,7 +165,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
       /* The volume scaled from 0-1 */
       volume: {
         type: Number,
-        value: 0.75,
+        value: 0.5,
         observer: '_volumeChanged'
       },
       /* Time elapsed */
@@ -420,18 +420,17 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    * @param {Event} event
    * @private
    */
-  _handleTimeUpdate(event) {
-    const trackSlider = this._getShadowElementById('track_slider');
-    const { currentTime, duration } = event.currentTarget;
-    const progress = currentTime / duration;
-    const distance = trackSlider.offsetWidth * progress;
+  _handleTimeUpdate() {
     this._formatElapsedTime();
-    this._handleThumbPosition(distance);
   }
 
   _updateCurrentTime(progress) {
     const video = this._getShadowElementById('video_player');
     video.currentTime = video.duration * progress;
+  }
+
+  _updateCurrentVolume(progress) {
+    this.volume = progress;
   }
 
   /**
@@ -581,9 +580,6 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     } else {
       this.muted = false;
     }
-    const offset = this._getShadowElementById('volume_track').offsetWidth * newVolume;
-    this._getShadowElementById('volume_track_fill').style.width = `${offset}px`;
-    this._getShadowElementById('volume_track_pointer').style.left = `${offset}px`;
     this._getShadowElementById('video_player').volume = newVolume;
   }
 
@@ -602,60 +598,115 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
 
   _onMouseDown(e) {
     e.preventDefault();
-    if (e.button !== 0) return;
-    const slider = this._getShadowElementById('track_slider');
-    const distance = e.clientX - slider.getBoundingClientRect().left;
-    const progress = distance / slider.offsetWidth;
+    const { button, currentTarget } = e;
+    if (button !== 0) return;
+    const sliderIdPrefix = currentTarget.classList.contains('volume') ? 'volume_' : '';
+    const slider = this._getShadowElementById(`${sliderIdPrefix}track_slider`);
+    const thumb = this._getShadowElementById(`${sliderIdPrefix}track_thumb`);
+    const posX = this.getRelativePosition(e, sliderIdPrefix);
+    this.grabX = thumb.offsetWidth / 2;
+    this.maxHandlePos = slider.offsetWidth - thumb.offsetWidth;
     this.dragging = true;
     this.prevPlaying = this.playing;
-    this.pause();
-    this._handleThumbPosition(distance);
-    this._updateCurrentTime(progress);
-    document.addEventListener('mousemove', this._onMouseMove.bind(this));
-    document.addEventListener('mouseup', this._onMouseUp.bind(this));
+    this._boundMouseMove = (event) => this._onMouseMove(event, sliderIdPrefix);
+    this._boundMouseUp = (event) => this._onMouseUp(event);
+    this.setPosition(posX - this.grabX, sliderIdPrefix);
+    document.addEventListener('mousemove', this._boundMouseMove);
+    document.addEventListener('mouseup', this._boundMouseUp);
   }
 
-  _onMouseMove(e) {
+  getPositionFromValue(value) {
+    const percentage = (value - this.min) / (this.max - this.min);
+    const pos = percentage * this.maxHandlePos;
+    // eslint-disable-next-line no-restricted-globals
+    return isNaN(pos) ? 0 : pos;
+  }
+
+  getValueFromPosition(pos) {
+    const percentage = ((pos) / (this.maxHandlePos || 1));
+    const value = this.step * Math.round((percentage * (this.max - this.min)) / this.step) + this.min;
+    return Number((value).toFixed(this.toFixed));
+  }
+
+  getRelativePosition(e, sliderIdPrefix) {
+    const slider = this._getShadowElementById(`${sliderIdPrefix}track_slider`);
+    const boundingClientRect = slider.getBoundingClientRect();
+
+    // Get the offset relative to the viewport
+    const rangeSize = boundingClientRect.left;
+    let pageOffset = 0;
+
+    const pagePositionProperty = this.vertical ? 'pageY' : 'pageX';
+
+    if (typeof e[pagePositionProperty] !== 'undefined') {
+      pageOffset = (e.touches && e.touches.length) ? e.touches[0][pagePositionProperty] : e[pagePositionProperty];
+    } else if (typeof e.originalEvent !== 'undefined') {
+      if (typeof e.originalEvent[pagePositionProperty] !== 'undefined') {
+        pageOffset = e.originalEvent[pagePositionProperty];
+      } else if (e.originalEvent.touches && e.originalEvent.touches[0] &&
+        typeof e.originalEvent.touches[0][pagePositionProperty] !== 'undefined') {
+        pageOffset = e.originalEvent.touches[0][pagePositionProperty];
+      }
+    } else if (e.touches && e.touches[0] && typeof e.touches[0][pagePositionProperty] !== 'undefined') {
+      pageOffset = e.touches[0][pagePositionProperty];
+    } else if (e.currentPoint && (typeof e.currentPoint.x !== 'undefined' || typeof e.currentPoint.y !== 'undefined')) {
+      pageOffset = this.vertical ? e.currentPoint.y : e.currentPoint.x;
+    }
+
+    return this.vertical ? rangeSize - pageOffset : pageOffset - rangeSize;
+  }
+
+  between(pos, min, max) {
+    if (pos < min) {
+      return min;
+    }
+    if (pos > max) {
+      return max;
+    }
+    return pos;
+  }
+
+  _onMouseMove(e, sliderIdPrefix) {
     e.preventDefault();
     if (this.dragging) {
-      const slider = this._getShadowElementById('track_slider');
-      const distance = e.clientX - slider.getBoundingClientRect().left;
-      const progress = distance / slider.offsetWidth;
-      this._handleThumbPosition(distance);
-      this._updateCurrentTime(progress);
+      const posX = this.getRelativePosition(e, sliderIdPrefix);
+      const pos = posX - this.grabX;
+      this.setPosition(pos, sliderIdPrefix);
     }
   }
 
   _onMouseUp(e) {
     e.preventDefault();
     this.dragging = false;
-    document.removeEventListener('mousedown', this._onMouseUp.bind(this));
-    document.removeEventListener('mousemove', this._onMouseMove.bind(this));
+    document.removeEventListener('mousemove', this._boundMouseMove);
+    document.removeEventListener('mouseup', this._boundMouseUp);
     if (this.prevPlaying) this.play();
   }
 
-  _handleThumbPosition(distance) {
-    const slider = this._getShadowElementById('track_slider');
-    const thumb = this._getShadowElementById('track_pointer');
-    const fill = this._getShadowElementById('track_fill');
-    let fillWidth = distance;
-    let newThumbLeft = distance - thumb.offsetWidth / 2;
-
-    if (newThumbLeft < 0) {
-      newThumbLeft = 0;
+  setPosition(pos, sliderIdPrefix) {
+    const slider = this._getShadowElementById(`${sliderIdPrefix}track_slider`);
+    const thumb = this._getShadowElementById(`${sliderIdPrefix}track_thumb`);
+    const fill = this._getShadowElementById(`${sliderIdPrefix}track_fill`);
+    this.maxHandlePos = slider.offsetWidth - thumb.offsetWidth;
+    this.max = 1;
+    this.min = 0;
+    this.step = 0.01;
+    this.toFixed = 8;
+    const value = this.getValueFromPosition(this.between(pos, 0, this.maxHandlePos));
+    const newPos = this.getPositionFromValue(value);
+    console.log(`Volume value ${value}`);
+    console.log(`Position from value ${newPos}`);
+    fill.style.width = `${newPos + this.grabX}px`;
+    thumb.style.left = `${newPos}px`;
+    if (sliderIdPrefix === 'volume_') {
+      // update volume
+      this._updateCurrentVolume(value);
     }
-    const trackBarEdge = slider.offsetWidth - thumb.offsetWidth;
-
-    if (newThumbLeft > trackBarEdge) {
-      newThumbLeft = trackBarEdge;
+    if (sliderIdPrefix === '') {
+      this._updateCurrentTime(value);
+      // update timeline
     }
-
-    if (fillWidth > slider.offsetWidth) {
-      fillWidth = slider.offsetWidth;
-    }
-
-    thumb.style.left = `${newThumbLeft}px`;
-    fill.style.width = `${fillWidth}px`;
+    this._updateCurrentVolume(value);
   }
 
   /**
