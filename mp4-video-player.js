@@ -120,6 +120,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
 
   static get properties() {
     return {
+      duration: Number,
       /* The title displayed on the top of video player */
       title: String,
       /* File path to .mp4 video */
@@ -383,6 +384,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    */
   _metadetaLoaded(event) {
     const { duration } = event.currentTarget;
+    this.duration = duration;
     this._formattedDuration = this._formatTime(duration);
   }
 
@@ -607,10 +609,15 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     this.grabX = thumb.offsetWidth / 2;
     this.maxHandlePos = slider.offsetWidth - thumb.offsetWidth;
     this.dragging = true;
-    this.prevPlaying = this.playing;
     this._boundMouseMove = (event) => this._onMouseMove(event, sliderIdPrefix);
     this._boundMouseUp = (event) => this._onMouseUp(event);
     this.setPosition(posX - this.grabX, sliderIdPrefix);
+    if (sliderIdPrefix === '') { // timeline
+      if (this.playing) {
+        this.prevPlaying = this.playing;
+        this.pause();
+      }
+    }
     document.addEventListener('mousemove', this._boundMouseMove);
     document.addEventListener('mouseup', this._boundMouseUp);
   }
@@ -688,7 +695,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     const thumb = this._getShadowElementById(`${sliderIdPrefix}track_thumb`);
     const fill = this._getShadowElementById(`${sliderIdPrefix}track_fill`);
     this.maxHandlePos = slider.offsetWidth - thumb.offsetWidth;
-    this.max = 1;
+    this.max = sliderIdPrefix === 'volume_' ? 1 : this.duration;
     this.min = 0;
     this.step = 0.01;
     this.toFixed = 8;
@@ -706,7 +713,6 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
       this._updateCurrentTime(value);
       // update timeline
     }
-    this._updateCurrentVolume(value);
   }
 
   /**
