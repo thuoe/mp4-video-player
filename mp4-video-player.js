@@ -1,5 +1,4 @@
 import '@polymer/iron-icon/iron-icon';
-import { GestureEventListeners } from '@polymer/polymer/lib/mixins/gesture-event-listeners';
 import { html, PolymerElement } from '@polymer/polymer/polymer-element';
 import 'player-icons/player-icons';
 import playerStyles from './player-styles';
@@ -12,7 +11,7 @@ import playerStyles from './player-styles';
  * @polymer
  * @demo demo/index.html
  */
-class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
+class MP4VideoPlayer extends PolymerElement {
   static get template() {
     return html`
       ${playerStyles}
@@ -85,13 +84,6 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
                 </template>
                 <span class="tooltip">[[_tooltipCaptions.volumeButton]]</span>
               </div>
-              <!-- <div id="volume_track" class="track" on-click="_handleTimelineClick">
-                <div id="volume_track_bar" class="track-bar" on-click="_handleTimelineClick"></div>
-                <div id="volume_track_fill" class="track-bar fill"></div>
-                <div id="volume_track_pointer" class="track-pointer" on-track="_handleTrack">
-                    <div class="thumb"></div>
-                </div>
-              </div> -->
               <div id="volume_track" class="track volume" on-mousedown="_onMouseDown"> 
                 <div id="volume_track_slider" class="slider volume">
                   <div id="volume_track_thumb" class="thumb volume"></div>
@@ -729,46 +721,6 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     if (sliderIdPrefix !== 'volume_' && this.dragging.track) { //  dragging timeline
       console.log('Updating time');
       this._updateCurrentTime(value);
-    }
-  }
-
-  /**
-   * Handle gesture event on the track.
-   * @param {Event} event
-   * @private
-   */
-  _handleTrack(event) {
-    switch (event.detail.state) {
-      case 'start': {
-        this.dragging = true;
-        this.startleft = parseInt(event.currentTarget.style.left, 10) || 0;
-        this.muted = true;
-        break;
-      }
-      case 'track': {
-        let movedBy = this.startleft + event.detail.dx;
-        if (movedBy < 0) {
-          movedBy = 0;
-        }
-        const trackWidth = event.currentTarget.previousElementSibling.previousElementSibling.offsetWidth;
-        if (movedBy > trackWidth) {
-          movedBy = trackWidth;
-        }
-        const value = movedBy / trackWidth;
-        if (event.currentTarget.id === 'volume_track_pointer') {
-          this.volume = value;
-        } else {
-          this.elapsed = value;
-        }
-        break;
-      }
-      case 'end':
-        this.dragging = false;
-        this.muted = false;
-        break;
-      default: {
-        break;
-      }
     }
   }
 }
