@@ -133,12 +133,6 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         value: false,
         reflectToAttribute: true
       },
-      /* If the user is currently dragging the player track */
-      dragging: {
-        type: Boolean,
-        reflectToAttribute: true,
-        value: false
-      },
       /* If the audio is currently muted */
       muted: {
         type: Boolean,
@@ -166,7 +160,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
       /* The volume scaled from 0-1 */
       volume: {
         type: Number,
-        value: 0.5,
+        value: 0.35,
         observer: '_volumeChanged'
       },
       /* Time elapsed */
@@ -200,10 +194,17 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
 
   ready() {
     super.ready();
+    const fullscreenChangeEvent = this._prefix === 'ms' ? 'MSFullscreenchange' : `${this._prefix}fullscreenchange`;
+    this.min = 0;
+    this.step = 0.01;
+    this.toFixed = 8;
+    this.dragging = {
+      volume: false,
+      track: false
+    };
+    this.addEventListener(fullscreenChangeEvent, this._handleFullscreenChange.bind(this));
     window.addEventListener('resize', this._updateControlStyling.bind(this));
     window.addEventListener('keyup', this._handleKeyCode.bind(this));
-    const fullscreenChangeEvent = this._prefix === 'ms' ? 'MSFullscreenchange' : `${this._prefix}fullscreenchange`;
-    this.addEventListener(fullscreenChangeEvent, this._handleFullscreenChange.bind(this));
   }
 
   /**
@@ -422,13 +423,31 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    * @param {Event} event
    * @private
    */
-  _handleTimeUpdate() {
+  _handleTimeUpdate(e) {
+    if (this.playing && !this.dragging.track) {
+      const { currentTarget: { currentTime } } = e;
+      const thumb = this._getShadowElementById('track_thumb');
+      const slider = this._getShadowElementById('track_slider');
+      const maxHandlePos = slider.offsetWidth - thumb.offsetWidth;
+      this.grabX = thumb.offsetWidth / 2;
+      const max = this.duration;
+      const position = this.getPositionFromValue(currentTime, maxHandlePos, max);
+      this.setPosition(position);
+
+      // const fill = this._getShadowElementById('track_fill');
+      // const value = this.getValueFromPosition(this.between(position, 0, maxHandlePos), maxHandlePos, max);
+      // const newPos = this.getPositionFromValue(value, maxHandlePos, max);
+      // fill.style.width = `${newPos + this.grabX}px`;
+      // thumb.style.left = `${newPos}px`;
+    } else {
+      console.log('Not playing!'); // paused or dragging
+    }
     this._formatElapsedTime();
   }
 
   _updateCurrentTime(progress) {
     const video = this._getShadowElementById('video_player');
-    video.currentTime = video.duration * progress;
+    video.currentTime = progress;
   }
 
   _updateCurrentVolume(progress) {
@@ -603,35 +622,53 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     const { button, currentTarget } = e;
     if (button !== 0) return;
     const sliderIdPrefix = currentTarget.classList.contains('volume') ? 'volume_' : '';
-    const slider = this._getShadowElementById(`${sliderIdPrefix}track_slider`);
     const thumb = this._getShadowElementById(`${sliderIdPrefix}track_thumb`);
     const posX = this.getRelativePosition(e, sliderIdPrefix);
+    this.dragging.track = !currentTarget.classList.contains('volume');
+    this.dragging.volume = currentTarget.classList.contains('volume');
     this.grabX = thumb.offsetWidth / 2;
-    this.maxHandlePos = slider.offsetWidth - thumb.offsetWidth;
-    this.dragging = true;
     this._boundMouseMove = (event) => this._onMouseMove(event, sliderIdPrefix);
-    this._boundMouseUp = (event) => this._onMouseUp(event);
-    this.setPosition(posX - this.grabX, sliderIdPrefix);
+    this._boundMouseUp = (event) => this._onMouseUp(event, sliderIdPrefix);
+
     if (sliderIdPrefix === '') { // timeline
-      if (this.playing) {
-        this.prevPlaying = this.playing;
-        this.pause();
-      }
+      this.prevPlaying = this.playing;
+      if (this.playing) this.pause();
     }
+    this.setPosition(posX - this.grabX, sliderIdPrefix);
     document.addEventListener('mousemove', this._boundMouseMove);
     document.addEventListener('mouseup', this._boundMouseUp);
   }
 
-  getPositionFromValue(value) {
-    const percentage = (value - this.min) / (this.max - this.min);
-    const pos = percentage * this.maxHandlePos;
+  _onMouseMove(e, sliderIdPrefix) {
+    e.preventDefault();
+    if (this.dragging.track || this.dragging.volume) {
+      const posX = this.getRelativePosition(e, sliderIdPrefix);
+      const pos = posX - this.grabX;
+      this.setPosition(pos, sliderIdPrefix);
+    }
+  }
+
+  _onMouseUp(e, sliderIdPrefix) {
+    e.preventDefault();
+    const draggableItem = sliderIdPrefix === '' ? 'track' : 'volume';
+    this.dragging[draggableItem] = false;
+    document.removeEventListener('mousemove', this._boundMouseMove);
+    document.removeEventListener('mouseup', this._boundMouseUp);
+    if (sliderIdPrefix === '') { // timeline
+      if (this.prevPlaying) this.play();
+    }
+  }
+
+  getPositionFromValue(value, maxHandlePos, max) {
+    const percentage = (value - this.min) / (max - this.min);
+    const pos = percentage * maxHandlePos;
     // eslint-disable-next-line no-restricted-globals
     return isNaN(pos) ? 0 : pos;
   }
 
-  getValueFromPosition(pos) {
-    const percentage = ((pos) / (this.maxHandlePos || 1));
-    const value = this.step * Math.round((percentage * (this.max - this.min)) / this.step) + this.min;
+  getValueFromPosition(pos, maxHandlePos, max) {
+    const percentage = ((pos) / (maxHandlePos || 1));
+    const value = this.step * Math.round((percentage * (max - this.min)) / this.step) + this.min;
     return Number((value).toFixed(this.toFixed));
   }
 
@@ -673,45 +710,25 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     return pos;
   }
 
-  _onMouseMove(e, sliderIdPrefix) {
-    e.preventDefault();
-    if (this.dragging) {
-      const posX = this.getRelativePosition(e, sliderIdPrefix);
-      const pos = posX - this.grabX;
-      this.setPosition(pos, sliderIdPrefix);
-    }
-  }
-
-  _onMouseUp(e) {
-    e.preventDefault();
-    this.dragging = false;
-    document.removeEventListener('mousemove', this._boundMouseMove);
-    document.removeEventListener('mouseup', this._boundMouseUp);
-    if (this.prevPlaying) this.play();
-  }
-
-  setPosition(pos, sliderIdPrefix) {
+  setPosition(pos, sliderIdPrefix = '') {
     const slider = this._getShadowElementById(`${sliderIdPrefix}track_slider`);
     const thumb = this._getShadowElementById(`${sliderIdPrefix}track_thumb`);
     const fill = this._getShadowElementById(`${sliderIdPrefix}track_fill`);
-    this.maxHandlePos = slider.offsetWidth - thumb.offsetWidth;
-    this.max = sliderIdPrefix === 'volume_' ? 1 : this.duration;
-    this.min = 0;
-    this.step = 0.01;
-    this.toFixed = 8;
-    const value = this.getValueFromPosition(this.between(pos, 0, this.maxHandlePos));
-    const newPos = this.getPositionFromValue(value);
-    console.log(`Volume value ${value}`);
-    console.log(`Position from value ${newPos}`);
+    const maxHandlePos = slider.offsetWidth - thumb.offsetWidth;
+    // this.max = sliderIdPrefix === 'volume_' ? 1 : this.duration;
+    const max = sliderIdPrefix === 'volume_' ? 1 : this.duration;
+    const value = this.getValueFromPosition(this.between(pos, 0, maxHandlePos), maxHandlePos, max);
+    const newPos = this.getPositionFromValue(value, maxHandlePos, max);
     fill.style.width = `${newPos + this.grabX}px`;
     thumb.style.left = `${newPos}px`;
-    if (sliderIdPrefix === 'volume_') {
-      // update volume
+
+    if (sliderIdPrefix === 'volume_' && this.dragging.volume) { // dragging volume
+      console.log('Updating volume');
       this._updateCurrentVolume(value);
     }
-    if (sliderIdPrefix === '') {
+    if (sliderIdPrefix !== 'volume_' && this.dragging.track) { //  dragging timeline
+      console.log('Updating time');
       this._updateCurrentTime(value);
-      // update timeline
     }
   }
 
