@@ -425,14 +425,8 @@ class MP4VideoPlayer extends PolymerElement {
       const max = this.duration;
       const position = this.getPositionFromValue(currentTime, maxHandlePos, max);
       this.setPosition(position);
-
-      // const fill = this._getShadowElementById('track_fill');
-      // const value = this.getValueFromPosition(this.between(position, 0, maxHandlePos), maxHandlePos, max);
-      // const newPos = this.getPositionFromValue(value, maxHandlePos, max);
-      // fill.style.width = `${newPos + this.grabX}px`;
-      // thumb.style.left = `${newPos}px`;
     } else {
-      console.log('Not playing!'); // paused or dragging
+      console.log('Not playing!');
     }
     this._formatElapsedTime();
   }
@@ -707,7 +701,6 @@ class MP4VideoPlayer extends PolymerElement {
     const thumb = this._getShadowElementById(`${sliderIdPrefix}track_thumb`);
     const fill = this._getShadowElementById(`${sliderIdPrefix}track_fill`);
     const maxHandlePos = slider.offsetWidth - thumb.offsetWidth;
-    // this.max = sliderIdPrefix === 'volume_' ? 1 : this.duration;
     const max = sliderIdPrefix === 'volume_' ? 1 : this.duration;
     const value = this.getValueFromPosition(this.between(pos, 0, maxHandlePos), maxHandlePos, max);
     const newPos = this.getPositionFromValue(value, maxHandlePos, max);
