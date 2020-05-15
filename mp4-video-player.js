@@ -45,8 +45,7 @@ class MP4VideoPlayer extends PolymerElement {
             </button>
           </div>
           <div class="track" 
-            on-mouseenter="_toggleThumbnail" 
-            on-mousemove="_updateThumbnailPosition" 
+            on-mouseenter="_toggleThumbnail"
             on-mouseleave="_toggleThumbnail" 
             on-mousedown="_onMouseDown"> 
             <div id="track_slider" class="slider">
@@ -154,11 +153,6 @@ class MP4VideoPlayer extends PolymerElement {
         type: Number,
         value: 0.35,
         observer: '_volumeChanged'
-      },
-      /* Time elapsed */
-      elapsed: {
-        type: Number,
-        observer: '_elapsedChanged'
       },
       /* The formatted current position of the video playback in m:ss */
       _formattedCurrentTime: {
@@ -336,37 +330,14 @@ class MP4VideoPlayer extends PolymerElement {
    * @private
    */
   _updateControlStyling() {
-    const { currentTime, duration } = this._getShadowElementById('video_player');
-    const progress = currentTime / duration;
-    this._updateTimeline(progress);
-  }
-
-  /**
-   * Update thumbnail preview position on
-   * track
-   * @param {MouseEvent} event mouse-move event
-   * @private
-   */
-  _updateThumbnailPosition(event) {
-    if (this.showThumbnailPreview) {
-      const thumbnail = this._getShadowElementById('preview_thumbnail');
-      const containerRec = this._getShadowElementById('track_slider').getBoundingClientRect();
-      const thumbnailRec = thumbnail.getBoundingClientRect();
-      const progressBarRec = event.currentTarget.getBoundingClientRect();
-      const thumbnailWidth = thumbnailRec.width;
-      const minVal = containerRec.left - progressBarRec.left + 5;
-      const maxVal = containerRec.right - progressBarRec.left - thumbnailWidth - 5;
-      const mousePosX = event.pageX;
-      let previewPos = mousePosX - progressBarRec.left - thumbnailWidth / 2;
-      if (previewPos < minVal) {
-        previewPos = minVal;
-      }
-      if (previewPos > maxVal) {
-        previewPos = maxVal;
-      }
-      thumbnail.style.left = `${previewPos}px`;
-      this.xPosition = mousePosX;
-    }
+    const { currentTime } = this._getShadowElementById('video_player');
+    const thumb = this._getShadowElementById('track_thumb');
+    const slider = this._getShadowElementById('track_slider');
+    const maxHandlePos = slider.offsetWidth - thumb.offsetWidth;
+    this.grabX = thumb.offsetWidth / 2;
+    const max = this.duration;
+    const position = this.getPositionFromValue(currentTime, maxHandlePos, max);
+    this.setPosition(position);
   }
 
   /**
@@ -438,33 +409,6 @@ class MP4VideoPlayer extends PolymerElement {
 
   _updateCurrentVolume(progress) {
     this.volume = progress;
-  }
-
-  /**
-   * Update the current time of the video
-   * when clicking a position of the timeline
-   * @param {Number} progress
-   * @private
-   */
-  _elapsedChanged(progress) {
-    const video = this._getShadowElementById('video_player');
-    video.currentTime = video.duration * progress;
-    this._updateTimeline(progress);
-  }
-
-  /**
-   * Update the timeline fill length &
-   * track pointer positioning
-   * @private
-   * @param {Number} progress
-   */
-  _updateTimeline(progress) {
-    const offset = this.shadowRoot.querySelector('.track').offsetWidth * progress;
-    const thumb = this._getShadowElementById('track_pointer');
-    const fill = this._getShadowElementById('track_fill');
-    thumb.style.left = `${offset - thumb.offsetWidth}px`;
-    fill.style.width = `${offset}px`;
-    this._formatElapsedTime();
   }
 
   /**
