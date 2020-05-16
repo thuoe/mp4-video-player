@@ -189,7 +189,7 @@ class MP4VideoPlayer extends PolymerElement {
       track: false
     };
     this.addEventListener(fullscreenChangeEvent, this._handleFullscreenChange.bind(this));
-    window.addEventListener('resize', this._updateControlStyling.bind(this));
+    window.addEventListener('resize', this._setTrackPosition.bind(this));
     window.addEventListener('keyup', this._handleKeyCode.bind(this));
   }
 
@@ -325,11 +325,7 @@ class MP4VideoPlayer extends PolymerElement {
     menu.hidden = !menu.hidden;
   }
 
-  /**
-   * Update control styling
-   * @private
-   */
-  _updateControlStyling() {
+  _setTrackPosition() {
     const { currentTime } = this._getShadowElementById('video_player');
     const thumb = this._getShadowElementById('track_thumb');
     const slider = this._getShadowElementById('track_slider');
@@ -386,16 +382,9 @@ class MP4VideoPlayer extends PolymerElement {
    * @param {Event} event
    * @private
    */
-  _handleTimeUpdate(e) {
+  _handleTimeUpdate() {
     if (this.playing && !this.dragging.track) {
-      const { currentTarget: { currentTime } } = e;
-      const thumb = this._getShadowElementById('track_thumb');
-      const slider = this._getShadowElementById('track_slider');
-      const maxHandlePos = slider.offsetWidth - thumb.offsetWidth;
-      this.grabX = thumb.offsetWidth / 2;
-      const max = this.duration;
-      const position = this.getPositionFromValue(currentTime, maxHandlePos, max);
-      this.setPosition(position);
+      this._setTrackPosition();
     } else {
       console.log('Not playing!');
     }
