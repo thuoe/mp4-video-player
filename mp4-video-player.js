@@ -184,10 +184,7 @@ class MP4VideoPlayer extends PolymerElement {
     this.min = 0;
     this.step = 0.01;
     this.toFixed = 8;
-    this.dragging = {
-      volume: false,
-      track: false
-    };
+    this.dragging = { volume: false, track: false };
     this.addEventListener(fullscreenChangeEvent, this._handleFullscreenChange.bind(this));
     window.addEventListener('resize', this._setTrackPosition.bind(this));
     window.addEventListener('keyup', this._handleKeyCode.bind(this));
@@ -606,8 +603,8 @@ class MP4VideoPlayer extends PolymerElement {
     } else if (typeof e.originalEvent !== 'undefined') {
       if (typeof e.originalEvent[pagePositionProperty] !== 'undefined') {
         pageOffset = e.originalEvent[pagePositionProperty];
-      } else if (e.originalEvent.touches && e.originalEvent.touches[0] &&
-        typeof e.originalEvent.touches[0][pagePositionProperty] !== 'undefined') {
+      } else if (e.originalEvent.touches && e.originalEvent.touches[0]
+        && typeof e.originalEvent.touches[0][pagePositionProperty] !== 'undefined') {
         pageOffset = e.originalEvent.touches[0][pagePositionProperty];
       }
     } else if (e.touches && e.touches[0] && typeof e.touches[0][pagePositionProperty] !== 'undefined') {
