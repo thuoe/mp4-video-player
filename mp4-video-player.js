@@ -190,7 +190,10 @@ class MP4VideoPlayer extends PolymerElement {
     super.ready();
     this.addEventListener(this.ullscreenChangeEvent, this._handleFullscreenChange.bind(this));
     this._createPropertyObserver('volume', '_volumeChanged', true); // create observer after the video has rendered..
-    window.addEventListener('resize', this._setTrackPosition.bind(this));
+    window.addEventListener('resize', () => {
+      const { currentTime, duration } = this._getShadowElementById('video_player');
+      this._setTrackPosition(currentTime, duration);
+    });
     window.addEventListener('keyup', this._handleKeyCode.bind(this));
   }
 
@@ -326,15 +329,13 @@ class MP4VideoPlayer extends PolymerElement {
     menu.hidden = !menu.hidden;
   }
 
-  _setTrackPosition() {
-    const { currentTime } = this._getShadowElementById('video_player');
-    const thumb = this._getShadowElementById('track_thumb');
-    const slider = this._getShadowElementById('track_slider');
+  _setTrackPosition(value, maxValue, sliderIdPrefix = '') {
+    const thumb = this._getShadowElementById(`${sliderIdPrefix}track_thumb`);
+    const slider = this._getShadowElementById(`${sliderIdPrefix}track_slider`);
     const maxHandlePos = slider.offsetWidth - thumb.offsetWidth;
     this.grabX = thumb.offsetWidth / 2;
-    const max = this.duration;
-    const position = this.getPositionFromValue(currentTime, maxHandlePos, max);
-    this.setPosition(position);
+    const position = this.getPositionFromValue(value, maxHandlePos, maxValue);
+    this.setPosition(position, sliderIdPrefix);
   }
 
   /**
@@ -385,7 +386,8 @@ class MP4VideoPlayer extends PolymerElement {
    */
   _handleTimeUpdate() {
     if (this.playing && !this.dragging.track) {
-      this._setTrackPosition();
+      const { currentTime, duration } = this._getShadowElementById('video_player');
+      this._setTrackPosition(currentTime, duration);
     } else {
       console.log('Not playing!');
     }
@@ -397,8 +399,8 @@ class MP4VideoPlayer extends PolymerElement {
     video.currentTime = progress;
   }
 
-  _updateCurrentVolume() {
-    // TODO:
+  _updateCurrentVolume(volume) {
+    this.volume = volume;
   }
 
   /**
@@ -515,19 +517,14 @@ class MP4VideoPlayer extends PolymerElement {
    * @private
    */
   _volumeChanged(newVolume, oldVolume) {
+    const maxVolume = 1;
     this.prevVolume = oldVolume;
     if (newVolume === 0) {
       this.muted = true;
     } else {
       this.muted = false;
     }
-    const thumb = this._getShadowElementById('volume_track_thumb');
-    const slider = this._getShadowElementById('volume_track_slider');
-    const maxHandlePos = slider.offsetWidth - thumb.offsetWidth;
-    this.grabX = thumb.offsetWidth / 2;
-    const max = 1;
-    const position = this.getPositionFromValue(newVolume, maxHandlePos, max);
-    this.setPosition(position, 'volume_');
+    this._setTrackPosition(newVolume, maxVolume, 'volume_');
     this._getShadowElementById('video_player').volume = newVolume;
   }
 
@@ -550,6 +547,7 @@ class MP4VideoPlayer extends PolymerElement {
     if (button !== 0) return;
     const sliderIdPrefix = currentTarget.classList.contains('volume') ? 'volume_' : '';
     const thumb = this._getShadowElementById(`${sliderIdPrefix}track_thumb`);
+    const slider = this._getShadowElementById(`${sliderIdPrefix}track_slider`);
     const posX = this.getRelativePosition(e, sliderIdPrefix);
     this.dragging.track = !currentTarget.classList.contains('volume');
     this.dragging.volume = currentTarget.classList.contains('volume');
@@ -560,8 +558,13 @@ class MP4VideoPlayer extends PolymerElement {
     if (sliderIdPrefix === '') { // timeline
       this.prevPlaying = this.playing;
       if (this.playing) this.pause();
+      this.setPosition(posX - this.grabX, sliderIdPrefix);
+    } else {
+      const maxHandlePos = slider.offsetWidth - thumb.offsetWidth;
+      const maxVolume = 1;
+      const newVolume = this.getValueFromPosition(this.between(posX - this.grabX, 0, maxHandlePos), maxHandlePos, maxVolume);
+      this.volume = newVolume; // call volumeChanged
     }
-    this.setPosition(posX - this.grabX, sliderIdPrefix);
     document.addEventListener('mousemove', this._boundMouseMove);
     document.addEventListener('mouseup', this._boundMouseUp);
   }
@@ -569,9 +572,18 @@ class MP4VideoPlayer extends PolymerElement {
   _onMouseMove(e, sliderIdPrefix) {
     e.preventDefault();
     if (this.dragging.track || this.dragging.volume) {
+      const thumb = this._getShadowElementById(`${sliderIdPrefix}track_thumb`);
+      const slider = this._getShadowElementById(`${sliderIdPrefix}track_slider`);
       const posX = this.getRelativePosition(e, sliderIdPrefix);
       const pos = posX - this.grabX;
-      this.setPosition(pos, sliderIdPrefix);
+      if (sliderIdPrefix === '') {
+        this.setPosition(pos, sliderIdPrefix);
+      } else {
+        const maxHandlePos = slider.offsetWidth - thumb.offsetWidth;
+        const maxVolume = 1;
+        const newVolume = this.getValueFromPosition(this.between(pos, 0, maxHandlePos), maxHandlePos, maxVolume);
+        this.volume = newVolume; // call volumeChanged
+      }
     }
   }
 
@@ -586,16 +598,16 @@ class MP4VideoPlayer extends PolymerElement {
     }
   }
 
-  getPositionFromValue(value, maxHandlePos, max) {
-    const percentage = (value - this.min) / (max - this.min);
+  getPositionFromValue(value, maxHandlePos, maxValue) {
+    const percentage = (value - this.min) / (maxValue - this.min);
     const pos = percentage * maxHandlePos;
     // eslint-disable-next-line no-restricted-globals
     return isNaN(pos) ? 0 : pos;
   }
 
-  getValueFromPosition(pos, maxHandlePos, max) {
+  getValueFromPosition(pos, maxHandlePos, maxValue) {
     const percentage = ((pos) / (maxHandlePos || 1));
-    const value = this.step * Math.round((percentage * (max - this.min)) / this.step) + this.min;
+    const value = this.step * Math.round((percentage * (maxValue - this.min)) / this.step) + this.min;
     return Number((value).toFixed(this.toFixed));
   }
 
