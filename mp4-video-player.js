@@ -151,8 +151,7 @@ class MP4VideoPlayer extends PolymerElement {
       /* The volume scaled from 0-1 */
       volume: {
         type: Number,
-        value: 0.35,
-        observer: '_volumeChanged'
+        value: 0.5
       },
       /* The formatted current position of the video playback in m:ss */
       _formattedCurrentTime: {
@@ -178,14 +177,19 @@ class MP4VideoPlayer extends PolymerElement {
     };
   }
 
-  ready() {
-    super.ready();
-    const fullscreenChangeEvent = this._prefix === 'ms' ? 'MSFullscreenchange' : `${this._prefix}fullscreenchange`;
+  constructor() {
+    super();
     this.min = 0;
     this.step = 0.01;
     this.toFixed = 8;
     this.dragging = { volume: false, track: false };
-    this.addEventListener(fullscreenChangeEvent, this._handleFullscreenChange.bind(this));
+    this.fullscreenChangeEvent = this._prefix === 'ms' ? 'MSFullscreenchange' : `${this._prefix}fullscreenchange`;
+  }
+
+  ready() {
+    super.ready();
+    this.addEventListener(this.ullscreenChangeEvent, this._handleFullscreenChange.bind(this));
+    this._createPropertyObserver('volume', '_volumeChanged', true); // create observer after the video has rendered..
     window.addEventListener('resize', this._setTrackPosition.bind(this));
     window.addEventListener('keyup', this._handleKeyCode.bind(this));
   }
@@ -393,8 +397,8 @@ class MP4VideoPlayer extends PolymerElement {
     video.currentTime = progress;
   }
 
-  _updateCurrentVolume(progress) {
-    this.volume = progress;
+  _updateCurrentVolume() {
+    // TODO:
   }
 
   /**
@@ -517,6 +521,13 @@ class MP4VideoPlayer extends PolymerElement {
     } else {
       this.muted = false;
     }
+    const thumb = this._getShadowElementById('volume_track_thumb');
+    const slider = this._getShadowElementById('volume_track_slider');
+    const maxHandlePos = slider.offsetWidth - thumb.offsetWidth;
+    this.grabX = thumb.offsetWidth / 2;
+    const max = 1;
+    const position = this.getPositionFromValue(newVolume, maxHandlePos, max);
+    this.setPosition(position, 'volume_');
     this._getShadowElementById('video_player').volume = newVolume;
   }
 
@@ -591,7 +602,6 @@ class MP4VideoPlayer extends PolymerElement {
   getRelativePosition(e, sliderIdPrefix) {
     const slider = this._getShadowElementById(`${sliderIdPrefix}track_slider`);
     const boundingClientRect = slider.getBoundingClientRect();
-
     // Get the offset relative to the viewport
     const rangeSize = boundingClientRect.left;
     let pageOffset = 0;
