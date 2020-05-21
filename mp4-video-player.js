@@ -153,6 +153,10 @@ class MP4VideoPlayer extends PolymerElement {
         type: Number,
         value: 0.5
       },
+      time: {
+        type: Number,
+        value: 0
+      },
       /* The formatted current position of the video playback in m:ss */
       _formattedCurrentTime: {
         type: String,
@@ -189,7 +193,8 @@ class MP4VideoPlayer extends PolymerElement {
   ready() {
     super.ready();
     this.addEventListener(this.ullscreenChangeEvent, this._handleFullscreenChange.bind(this));
-    this._createPropertyObserver('volume', '_volumeChanged', true); // create observer after the video has rendered..
+    this._createPropertyObserver('volume', '_volumeChanged', true);
+    this._createPropertyObserver('time', '_timeChanged', true);
     window.addEventListener('resize', () => {
       const { currentTime, duration } = this._getShadowElementById('video_player');
       this._setTrackPosition(currentTime, duration);
@@ -510,6 +515,20 @@ class MP4VideoPlayer extends PolymerElement {
     }
   }
 
+  _timeChanged(newTime) {
+    const video = this._getShadowElementById('video_player');
+    const { duration } = video;
+    if (newTime === this.duration) {
+      this.ended = true;
+    } else {
+      this.ended = false;
+    }
+    this._setTrackPosition(newTime, duration);
+    if (!this.dragging.track) {
+      video.currentTime = 0;
+    }
+  }
+
   /**
    * Change the volume of the video
    * @param {Number} newVolume new volume level
@@ -549,6 +568,7 @@ class MP4VideoPlayer extends PolymerElement {
     const thumb = this._getShadowElementById(`${sliderIdPrefix}track_thumb`);
     const slider = this._getShadowElementById(`${sliderIdPrefix}track_slider`);
     const posX = this.getRelativePosition(e, sliderIdPrefix);
+    const maxHandlePos = slider.offsetWidth - thumb.offsetWidth;
     this.dragging.track = !currentTarget.classList.contains('volume');
     this.dragging.volume = currentTarget.classList.contains('volume');
     this.grabX = thumb.offsetWidth / 2;
@@ -558,9 +578,9 @@ class MP4VideoPlayer extends PolymerElement {
     if (sliderIdPrefix === '') { // timeline
       this.prevPlaying = this.playing;
       if (this.playing) this.pause();
-      this.setPosition(posX - this.grabX, sliderIdPrefix);
+      const newTime = this.getValueFromPosition(this.between(posX - this.grabX, 0, maxHandlePos), maxHandlePos, this.duration);
+      this.time = newTime; // call timeChanged
     } else {
-      const maxHandlePos = slider.offsetWidth - thumb.offsetWidth;
       const maxVolume = 1;
       const newVolume = this.getValueFromPosition(this.between(posX - this.grabX, 0, maxHandlePos), maxHandlePos, maxVolume);
       this.volume = newVolume; // call volumeChanged
@@ -575,11 +595,12 @@ class MP4VideoPlayer extends PolymerElement {
       const thumb = this._getShadowElementById(`${sliderIdPrefix}track_thumb`);
       const slider = this._getShadowElementById(`${sliderIdPrefix}track_slider`);
       const posX = this.getRelativePosition(e, sliderIdPrefix);
+      const maxHandlePos = slider.offsetWidth - thumb.offsetWidth;
       const pos = posX - this.grabX;
       if (sliderIdPrefix === '') {
-        this.setPosition(pos, sliderIdPrefix);
+        const newTime = this.getValueFromPosition(this.between(pos, 0, maxHandlePos), maxHandlePos, this.duration);
+        this.time = newTime; // call timeChanged
       } else {
-        const maxHandlePos = slider.offsetWidth - thumb.offsetWidth;
         const maxVolume = 1;
         const newVolume = this.getValueFromPosition(this.between(pos, 0, maxHandlePos), maxHandlePos, maxVolume);
         this.volume = newVolume; // call volumeChanged
