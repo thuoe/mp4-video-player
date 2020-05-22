@@ -46,6 +46,7 @@ class MP4VideoPlayer extends PolymerElement {
           </div>
           <div class="track" 
             on-mouseenter="_toggleThumbnail"
+            on-mousemove="_updateThumbnailPosition"
             on-mouseleave="_toggleThumbnail" 
             on-mousedown="_onMouseDown"> 
             <div id="track_slider" class="slider">
@@ -332,6 +333,34 @@ class MP4VideoPlayer extends PolymerElement {
   _toggleMenu() {
     const menu = this._getShadowElementById('menu');
     menu.hidden = !menu.hidden;
+  }
+
+  /**
+   * Update thumbnail preview position on
+   * track
+   * @param {MouseEvent} event mouse-move event
+   * @private
+   */
+  _updateThumbnailPosition(event) {
+    if (this.showThumbnailPreview) {
+      const thumbnail = this._getShadowElementById('preview_thumbnail');
+      const containerRec = this._getShadowElementById('video_container').getBoundingClientRect();
+      const thumbnailRec = thumbnail.getBoundingClientRect();
+      const progressBarRec = event.currentTarget.getBoundingClientRect();
+      const thumbnailWidth = thumbnailRec.width;
+      const minVal = containerRec.left - progressBarRec.left + 10;
+      const maxVal = containerRec.right - progressBarRec.left - thumbnailWidth - 10;
+      const mousePosX = event.pageX;
+      let previewPos = mousePosX - progressBarRec.left - thumbnailWidth / 2;
+      if (previewPos < minVal) {
+        previewPos = minVal;
+      }
+      if (previewPos > maxVal) {
+        previewPos = maxVal;
+      }
+      thumbnail.style.left = `${previewPos}px`;
+      this.xPosition = mousePosX;
+    }
   }
 
   _setTrackPosition(value, maxValue, sliderIdPrefix = '') {
