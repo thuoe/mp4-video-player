@@ -423,8 +423,6 @@ class MP4VideoPlayer extends PolymerElement {
     if (this.playing && !this.dragging.track) {
       const { currentTime, duration } = this._getShadowElementById('video_player');
       this._setTrackPosition(currentTime, duration);
-    } else {
-      console.log('Not playing!');
     }
     this._formatElapsedTime();
   }
@@ -709,11 +707,9 @@ class MP4VideoPlayer extends PolymerElement {
     thumb.style.left = `${newPos}px`;
 
     if (sliderIdPrefix === 'volume_' && this.dragging.volume) { // dragging volume
-      console.log('Updating volume');
       this._updateCurrentVolume(value);
     }
     if (sliderIdPrefix !== 'volume_' && this.dragging.track) { //  dragging timeline
-      console.log('Updating time');
       this._updateCurrentTime(value);
     }
   }
