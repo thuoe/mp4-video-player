@@ -47,8 +47,9 @@ class MP4VideoPlayer extends PolymerElement {
           <div class="track" 
             on-mouseenter="_toggleThumbnail"
             on-mousemove="_updateThumbnailPosition"
-            on-mouseleave="_toggleThumbnail" 
-            on-mousedown="_onMouseDown"> 
+            on-mouseleave="_toggleThumbnail"
+            on-mousedown="_handleDown"
+            on-touchstart="_handleDown"> 
             <div id="track_slider" class="slider">
               <div id="track_thumb" class="thumb"></div>
             </div>
@@ -84,7 +85,7 @@ class MP4VideoPlayer extends PolymerElement {
                 </template>
                 <span class="tooltip">[[_tooltipCaptions.volumeButton]]</span>
               </div>
-              <div id="volume_track" class="track volume" on-mousedown="_onMouseDown"> 
+              <div id="volume_track" class="track volume" on-mousedown="_handleDown" on-touchstart="_handleDown"> 
                 <div id="volume_track_slider" class="slider volume">
                   <div id="volume_track_thumb" class="thumb volume"></div>
                   <div id="volume_track_fill" class="fill volume"></div>
@@ -589,10 +590,12 @@ class MP4VideoPlayer extends PolymerElement {
     }
   }
 
-  _onMouseDown(e) {
+  _handleDown(e) {
     e.preventDefault();
-    const { button, currentTarget } = e;
-    if (button !== 0) return;
+    const { button, touches, currentTarget } = e;
+    if (touches === undefined && button !== 0) return;
+    const eventPrefix = e.type === 'touchstart' ? 'touch' : 'mouse';
+    const eventReleasePrefix = e.type === 'touchstart' ? 'end' : 'up';
     const sliderIdPrefix = currentTarget.classList.contains('volume') ? 'volume_' : '';
     const thumb = this._getShadowElementById(`${sliderIdPrefix}track_thumb`);
     const slider = this._getShadowElementById(`${sliderIdPrefix}track_slider`);
@@ -604,18 +607,16 @@ class MP4VideoPlayer extends PolymerElement {
     this._boundMouseMove = (event) => this._onMouseMove(event, sliderIdPrefix);
     this._boundMouseUp = (event) => this._onMouseUp(event, sliderIdPrefix);
 
-    if (sliderIdPrefix === '') { // timeline
+    if (sliderIdPrefix === '') {
       this.prevPlaying = this.playing;
       if (this.playing) this.pause();
-      const newTime = this.getValueFromPosition(this.between(posX - this.grabX, 0, maxHandlePos), maxHandlePos, this.duration);
-      this.time = newTime; // call timeChanged
+      this.time = this.getValueFromPosition(this.between(posX - this.grabX, 0, maxHandlePos), maxHandlePos, this.duration);
     } else {
       const maxVolume = 1;
-      const newVolume = this.getValueFromPosition(this.between(posX - this.grabX, 0, maxHandlePos), maxHandlePos, maxVolume);
-      this.volume = newVolume; // call volumeChanged
+      this.volume = this.getValueFromPosition(this.between(posX - this.grabX, 0, maxHandlePos), maxHandlePos, maxVolume);
     }
-    document.addEventListener('mousemove', this._boundMouseMove);
-    document.addEventListener('mouseup', this._boundMouseUp);
+    document.addEventListener(`${eventPrefix}move`, this._boundMouseMove);
+    document.addEventListener(`${eventPrefix + eventReleasePrefix}`, this._boundMouseUp);
   }
 
   _onMouseMove(e, sliderIdPrefix) {
@@ -627,12 +628,10 @@ class MP4VideoPlayer extends PolymerElement {
       const maxHandlePos = slider.offsetWidth - thumb.offsetWidth;
       const pos = posX - this.grabX;
       if (sliderIdPrefix === '') {
-        const newTime = this.getValueFromPosition(this.between(pos, 0, maxHandlePos), maxHandlePos, this.duration);
-        this.time = newTime; // call timeChanged
+        this.time = this.getValueFromPosition(this.between(pos, 0, maxHandlePos), maxHandlePos, this.duration);
       } else {
         const maxVolume = 1;
-        const newVolume = this.getValueFromPosition(this.between(pos, 0, maxHandlePos), maxHandlePos, maxVolume);
-        this.volume = newVolume; // call volumeChanged
+        this.volume = this.getValueFromPosition(this.between(pos, 0, maxHandlePos), maxHandlePos, maxVolume);
       }
     }
   }
