@@ -46,16 +46,18 @@
       });
 
       suite('player props', () => {
-        test('poster path can be set', () => {
+        test('poster path can be set', (done) => {
           const path = player.poster;
           expect(path).not.to.be.undefined;
           expect(path).to.be.an('string');
+          done();
         });
 
-        test('download path can be set', () => {
+        test('download path can be set', (done) => {
           const filePath = player.videoFilePath;
           expect(filePath).not.to.be.undefined;
           expect(filePath).to.be.an('string');
+          done();
         });
       });
 
@@ -88,31 +90,59 @@
         }); */
       });
 
-      suite('track controls', () => {
-        test('toggle play/pause button');
-        test('toggle volume/mute button');
-        test('clicking download button');
+      suite('toggling functionality', () => {
+        test('toggle play', (done) => {
+          player.play = () => Promise.resolve();
+          player.pause = () => Promise.resolve();
+          const playSpy = sinon.spy(player, 'play');
+          const pauseSpy = sinon.spy(player, 'pause');
 
-        test('toggle fullscreen', () => {
+          player._togglePlay();
+      
+          expect(player.playing).to.equal(true);
+          assert(playSpy.calledOnce);
+
+          player._togglePlay();
+
+          expect(player.playing).to.equal(false);
+          assert(pauseSpy.calledOnce);
+          done();
+        });
+      
+        test('toggle mute', (done) => {
+          const prevVolume = player.volume;
+          player._toggleMute();
+          expect(player.muted).to.equal(true);
+          expect(player.volume).to.equal(0);
+          player._toggleMute();
+          expect(player.muted).to.equal(false);
+          expect(player.volume).to.equal(prevVolume);
+          done();
+        });
+      
+        test('toggle fullscreen', (done) => {
           player._enterFullscreen = () => Promise.resolve();
           player._exitFullscreen = () => Promise.resolve();
           const enterSpy = sinon.spy(player, '_enterFullscreen');
           const exitSpy = sinon.spy(player, '_exitFullscreen');
       
           player._toggleFullscreen();
-
+      
           expect(player.fullscreen).to.equal(true);
           assert(enterSpy.calledOnce);
       
           player._toggleFullscreen();
-      
+
           expect(player.fullscreen).to.equal(false);
           assert(exitSpy.calledOnce);
+          done();
         });
+
+        test('toggle picture-in-picture');
       });
 
       suite('player styling', () => {
-        test('CSS properties are being applied..', () => {
+        test('CSS properties are being applied..', (done) => {
           player.updateStyles({
             '--video-min-width': '750px',
             '--video-min-height': '300px',
@@ -150,16 +180,18 @@
 
           const tooltip = player.shadowRoot.querySelector('.tooltip');
           assertComputed(tooltip, 'Magenta', '--video-tooltip-background-color');
+          done();
         });
       });
 
       suite('settings menu controls', () => {
-        test('request Picture-In-Picture', () => {
+        test('request Picture-In-Picture', (done) => {
           const video = player._getShadowElementById('video_player');
           video.requestPictureInPicture = () => Promise.resolve();
           const spyPIP = sinon.spy(video, 'requestPictureInPicture');
           player._togglePictureInPicture();
           assert(spyPIP.calledOnce);
+          done();
         });
 
         test('request Captions');
