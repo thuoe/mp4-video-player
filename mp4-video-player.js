@@ -129,8 +129,7 @@ class MP4VideoPlayer extends PolymerElement {
       /* If the audio is currently muted */
       muted: {
         type: Boolean,
-        value: false,
-        reflectToAttribute: true
+        computed: '_isMuted(volume)'
       },
       /* If the video playback has ended */
       ended: {
@@ -246,6 +245,10 @@ class MP4VideoPlayer extends PolymerElement {
 
   get _F_KEY() {
     return 70;
+  }
+
+  _isMuted(volume) {
+    return volume === 0;
   }
 
   /**
@@ -484,6 +487,13 @@ class MP4VideoPlayer extends PolymerElement {
   }
 
   /**
+   * Mute the audio
+   */
+  mute() {
+    this.volume = 0;
+  }
+
+  /**
    * Dispatch a custom event when the video has
    * ended
    * @private
@@ -566,11 +576,6 @@ class MP4VideoPlayer extends PolymerElement {
   _volumeChanged(newVolume, oldVolume) {
     const maxVolume = 1;
     this.prevVolume = oldVolume;
-    if (newVolume === 0) {
-      this.muted = true;
-    } else {
-      this.muted = false;
-    }
     this._setTrackPosition(newVolume, maxVolume, 'volume_');
     this._getShadowElementById('video_player').volume = newVolume;
   }
@@ -580,9 +585,8 @@ class MP4VideoPlayer extends PolymerElement {
    * @private
    */
   _toggleMute() {
-    this.muted = !this.muted;
-    if (this.muted) {
-      this.volume = 0;
+    if (this.volume !== 0) {
+      this.mute();
     } else {
       this.volume = this.prevVolume;
     }
@@ -640,7 +644,7 @@ class MP4VideoPlayer extends PolymerElement {
     this.dragging[draggableItem] = false;
     document.removeEventListener('mousemove', this._boundMouseMove);
     document.removeEventListener('mouseup', this._boundMouseUp);
-    if (sliderIdPrefix === '') { // timeline
+    if (sliderIdPrefix === '') {
       if (this.prevPlaying) this.play();
     }
   }
