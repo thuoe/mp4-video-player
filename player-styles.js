@@ -92,22 +92,9 @@ const playerStyles = html`
       box-sizing: border-box;
     }
 
-    .track-bar {
-      position: absolute;
-      width: 100%;
-      height: 4px;
-      bottom: 0;
-      background: var(--video-track-bar-color, rgba(255,255,255,.55));
-      border-radius: 25px;
-    }
-
     .extra {
       background: none;
       height: 16px;
-    }
-
-    .track-bar.large, .track-fill.large {
-      height: 6px;
     }
 
     .track {
@@ -156,7 +143,7 @@ const playerStyles = html`
       top: 50%;
       transform: translateY(-50%);
       transition: box-shadow .3s ease;
-      background: #fff;
+      background: var(--video-thumb-color, #fff);
       border-radius: 20px;
       cursor: pointer;
       z-index: 3;
