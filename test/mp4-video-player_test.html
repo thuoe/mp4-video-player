@@ -39,55 +39,38 @@
         assert.equal(expected, actual);
       };
 
-      let player;
+      const createStub = (target, func) => sinon.stub(target, func);
 
+      let player;
+      let playStub;
+      let pauseStub;
+      let enterFullscreenStub;
+      let exitFullscreenStub;
+      
       setup(() => {
         player = fixture('video-player-basic');
+        playStub = createStub(player, 'play');
+        pauseStub = createStub(player, 'pause');
+        enterFullscreenStub = createStub(player, '_enterFullscreen');
+        exitFullscreenStub = createStub(player, '_exitFullscreen');
+        playStub.returns(Promise.resolve('Played'));
+        pauseStub.returns(Promise.resolve('Paused'));
+        enterFullscreenStub.returns(Promise.resolve('Enter Fullscreen'));
+        exitFullscreenStub.returns(Promise.resolve('Exit Fullscreen'));
       });
 
       suite('player props', () => {
-        test('poster path can be set', (done) => {
+        test('poster path can be set', () => {
           const path = player.poster;
           expect(path).not.to.be.undefined;
           expect(path).to.be.an('string');
-          done();
         });
 
-        test('download path can be set', (done) => {
+        test('download path can be set', () => {
           const filePath = player.videoFilePath;
           expect(filePath).not.to.be.undefined;
           expect(filePath).to.be.an('string');
-          done();
         });
-      });
-
-      suite('player shortcuts', () => {
-        /* test('space bar calls "_togglePlay()"', () => {
-          pressSpace(player);
-          expect(player.playing).to.equal(true);
-          pressSpace(player);
-          expect(player.playing).to.equal(false);
-        });
-
-        test('p key calls "_togglePlay()"', () => {
-          pressAndReleaseKeyOn(player, P_KEY);
-          expect(player.playing).to.equal(true);
-          pressAndReleaseKeyOn(player, P_KEY);
-          expect(player.playing).to.equal(false);
-        });
-
-        test('m key calls "_toggleMute()"', () => {
-          expect(player.muted).to.equal(true);
-          pressAndReleaseKeyOn(player, M_KEY);
-          expect(player.muted).to.equal(false);
-        });
-
-        test('f key calls "_toggleFullscreen()"', () => {
-          pressAndReleaseKeyOn(player, F_KEY);
-          expect(player.fullscreen).to.equal(true);
-          pressAndReleaseKeyOn(player, F_KEY);
-          expect(player.fullscreen).to.equal(false);
-        }); */
       });
 
       suite('toggling functionality', () => {
@@ -139,6 +122,52 @@
         });
 
         test('toggle picture-in-picture');
+      });
+
+      suite('player shortcuts', () => {
+        test('space bar calls "_togglePlay()"', () => {
+          pressSpace(window);
+
+          expect(player.playing).to.equal(true);
+          sinon.assert.calledOnce(playStub);
+      
+          pressSpace(window);
+      
+          expect(player.playing).to.equal(false);
+          sinon.assert.calledOnce(pauseStub);
+        });
+
+        test('p key calls "_togglePlay()"', () => {
+          pressAndReleaseKeyOn(window, P_KEY);
+
+          expect(player.playing).to.equal(true);
+          sinon.assert.calledOnce(playStub);
+
+          pressAndReleaseKeyOn(window, P_KEY);
+      
+          expect(player.playing).to.equal(false);
+          sinon.assert.calledOnce(pauseStub);
+        });
+
+        test('m key calls "_toggleMute()"', () => {
+          const prevVolume = player.volume;
+          pressAndReleaseKeyOn(window, M_KEY);
+          expect(player.volume).to.equal(0);
+          pressAndReleaseKeyOn(window, M_KEY);
+          expect(player.volume).to.equal(prevVolume);
+        });
+
+        test('f key calls "_toggleFullscreen()"', () => {
+          pressAndReleaseKeyOn(window, F_KEY);
+
+          expect(player.fullscreen).to.equal(true);
+          sinon.assert.calledOnce(enterFullscreenStub);
+
+          pressAndReleaseKeyOn(window, F_KEY);
+
+          expect(player.fullscreen).to.equal(false);
+          sinon.assert.calledOnce(exitFullscreenStub);
+        });
       });
 
       suite('player styling', () => {
