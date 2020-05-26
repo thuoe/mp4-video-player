@@ -113,17 +113,21 @@ class MP4VideoPlayer extends PolymerElement {
 
   static get properties() {
     return {
-      duration: Number,
       /* The title displayed on the top of video player */
       title: String,
       /* File path to .mp4 video */
       videoFilePath: String,
       /* File path to poster image. It can be a relative or absolute URL */
       poster: String,
+      duration: {
+        type: Number,
+        readOnly: true
+      },
       /* If the video is currently playing */
       playing: {
         type: Boolean,
         value: false,
+        readOnly: true,
         reflectToAttribute: true
       },
       /* If the audio is currently muted */
@@ -131,16 +135,11 @@ class MP4VideoPlayer extends PolymerElement {
         type: Boolean,
         computed: '_isMuted(volume)'
       },
-      /* If the video playback has ended */
-      ended: {
-        type: Boolean,
-        value: false,
-        reflectToAttribute: true
-      },
       /* If the player is in fullscreen mode */
       fullscreen: {
         type: Boolean,
         value: false,
+        readOnly: true,
         reflectToAttribute: true
       },
       /* Determines if the timeline preview above the track appears when hovering */
@@ -384,7 +383,7 @@ class MP4VideoPlayer extends PolymerElement {
    */
   _metadetaLoaded(event) {
     const { duration } = event.currentTarget;
-    this.duration = duration;
+    this._setDuration(duration);
     this._formattedDuration = this._formatTime(duration);
   }
 
@@ -467,7 +466,7 @@ class MP4VideoPlayer extends PolymerElement {
    * @private
    */
   _handleFullscreenChange() {
-    this.fullscreen = !!document.fullscreenElement;
+    this.setFullscreen(!!document.fullscreenElement);
   }
 
   /**
@@ -475,7 +474,7 @@ class MP4VideoPlayer extends PolymerElement {
    */
   play() {
     this._getShadowElementById('video_player').play();
-    this.playing = true;
+    this._setPlaying(true);
   }
 
   /**
@@ -483,7 +482,7 @@ class MP4VideoPlayer extends PolymerElement {
    */
   pause() {
     this._getShadowElementById('video_player').pause();
-    this.playing = false;
+    this._setPlaying(false);
   }
 
   /**
@@ -507,7 +506,7 @@ class MP4VideoPlayer extends PolymerElement {
    * @private
    */
   _togglePlay() {
-    this.playing = !this.playing;
+    this._setPlaying(!this.playing);
     if (this.playing) {
       this.play();
     } else {
@@ -545,7 +544,7 @@ class MP4VideoPlayer extends PolymerElement {
    * @private
    */
   _toggleFullscreen() {
-    this.fullscreen = !this.fullscreen;
+    this._setFullscreen(!this.fullscreen);
     if (this.fullscreen) {
       this._enterFullscreen();
     } else {
@@ -556,11 +555,6 @@ class MP4VideoPlayer extends PolymerElement {
   _timeChanged(newTime) {
     const video = this._getShadowElementById('video_player');
     const { duration } = video;
-    if (newTime === this.duration) {
-      this.ended = true;
-    } else {
-      this.ended = false;
-    }
     this._setTrackPosition(newTime, duration);
     if (!this.dragging.track) {
       video.currentTime = 0;
