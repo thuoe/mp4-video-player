@@ -74,7 +74,7 @@
       });
 
       suite('toggling functionality', () => {
-        test('toggle play', (done) => {
+        test('toggle play', () => {
           player.play = () => Promise.resolve();
           player.pause = () => Promise.resolve();
           const playSpy = sinon.spy(player, 'play');
@@ -89,10 +89,9 @@
 
           expect(player.playing).to.equal(false);
           assert(pauseSpy.calledOnce);
-          done();
         });
       
-        test('toggle mute', (done) => {
+        test('toggle mute', () => {
           const prevVolume = player.volume;
           player._toggleMute();
           expect(player.muted).to.equal(true);
@@ -100,10 +99,9 @@
           player._toggleMute();
           expect(player.muted).to.equal(false);
           expect(player.volume).to.equal(prevVolume);
-          done();
         });
       
-        test('toggle fullscreen', (done) => {
+        test('toggle fullscreen', () => {
           player._enterFullscreen = () => Promise.resolve();
           player._exitFullscreen = () => Promise.resolve();
           const enterSpy = sinon.spy(player, '_enterFullscreen');
@@ -118,7 +116,6 @@
 
           expect(player.fullscreen).to.equal(false);
           assert(exitSpy.calledOnce);
-          done();
         });
 
         test('toggle picture-in-picture', () => {
@@ -177,7 +174,7 @@
       });
 
       suite('player styling', () => {
-        test('CSS properties are being applied..', (done) => {
+        test('CSS properties are being applied..', () => {
           player.updateStyles({
             '--video-min-width': '750px',
             '--video-min-height': '300px',
@@ -215,18 +212,16 @@
 
           const tooltip = player.shadowRoot.querySelector('.tooltip');
           assertComputed(tooltip, 'Magenta', '--video-tooltip-background-color');
-          done();
         });
       });
 
       suite('settings menu controls', () => {
-        test('request Picture-In-Picture', (done) => {
+        test('request Picture-In-Picture', () => {
           const video = player._getShadowElementById('video_player');
           video.requestPictureInPicture = () => Promise.resolve();
           const spyPIP = sinon.spy(video, 'requestPictureInPicture');
           player._togglePictureInPicture();
           assert(spyPIP.calledOnce);
-          done();
         });
 
         test('request Captions');
