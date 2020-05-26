@@ -372,8 +372,8 @@ class MP4VideoPlayer extends PolymerElement {
     const slider = this._getShadowElementById(`${sliderIdPrefix}track_slider`);
     const maxHandlePos = slider.offsetWidth - thumb.offsetWidth;
     this.grabX = thumb.offsetWidth / 2;
-    const position = this.getPositionFromValue(value, maxHandlePos, maxValue);
-    this.setPosition(position, sliderIdPrefix);
+    const position = this._getPositionFromValue(value, maxHandlePos, maxValue);
+    this._setPosition(position, sliderIdPrefix);
   }
 
   /**
@@ -601,7 +601,7 @@ class MP4VideoPlayer extends PolymerElement {
     const sliderIdPrefix = currentTarget.classList.contains('volume') ? 'volume_' : '';
     const thumb = this._getShadowElementById(`${sliderIdPrefix}track_thumb`);
     const slider = this._getShadowElementById(`${sliderIdPrefix}track_slider`);
-    const posX = this.getRelativePosition(e, sliderIdPrefix);
+    const posX = this._getRelativePosition(e, sliderIdPrefix);
     const maxHandlePos = slider.offsetWidth - thumb.offsetWidth;
     this.dragging.track = !currentTarget.classList.contains('volume');
     this.dragging.volume = currentTarget.classList.contains('volume');
@@ -612,10 +612,10 @@ class MP4VideoPlayer extends PolymerElement {
     if (sliderIdPrefix === '') {
       this.prevPlaying = this.playing;
       if (this.playing) this.pause();
-      this.time = this.getValueFromPosition(this.between(posX - this.grabX, 0, maxHandlePos), maxHandlePos, this.duration);
+      this.time = this._getValueFromPosition(this._between(posX - this.grabX, 0, maxHandlePos), maxHandlePos, this.duration);
     } else {
       const maxVolume = 1;
-      this.volume = this.getValueFromPosition(this.between(posX - this.grabX, 0, maxHandlePos), maxHandlePos, maxVolume);
+      this.volume = this._getValueFromPosition(this._between(posX - this.grabX, 0, maxHandlePos), maxHandlePos, maxVolume);
     }
     document.addEventListener(`${eventPrefix}move`, this._boundMouseMove);
     document.addEventListener(`${eventPrefix + eventReleasePrefix}`, this._boundMouseUp);
@@ -626,14 +626,14 @@ class MP4VideoPlayer extends PolymerElement {
     if (this.dragging.track || this.dragging.volume) {
       const thumb = this._getShadowElementById(`${sliderIdPrefix}track_thumb`);
       const slider = this._getShadowElementById(`${sliderIdPrefix}track_slider`);
-      const posX = this.getRelativePosition(e, sliderIdPrefix);
+      const posX = this._getRelativePosition(e, sliderIdPrefix);
       const maxHandlePos = slider.offsetWidth - thumb.offsetWidth;
       const pos = posX - this.grabX;
       if (sliderIdPrefix === '') {
-        this.time = this.getValueFromPosition(this.between(pos, 0, maxHandlePos), maxHandlePos, this.duration);
+        this.time = this._getValueFromPosition(this._between(pos, 0, maxHandlePos), maxHandlePos, this.duration);
       } else {
         const maxVolume = 1;
-        this.volume = this.getValueFromPosition(this.between(pos, 0, maxHandlePos), maxHandlePos, maxVolume);
+        this.volume = this._getValueFromPosition(this._between(pos, 0, maxHandlePos), maxHandlePos, maxVolume);
       }
     }
   }
@@ -649,20 +649,20 @@ class MP4VideoPlayer extends PolymerElement {
     }
   }
 
-  getPositionFromValue(value, maxHandlePos, maxValue) {
+  _getPositionFromValue(value, maxHandlePos, maxValue) {
     const percentage = (value - this.min) / (maxValue - this.min);
     const pos = percentage * maxHandlePos;
     // eslint-disable-next-line no-restricted-globals
     return isNaN(pos) ? 0 : pos;
   }
 
-  getValueFromPosition(pos, maxHandlePos, maxValue) {
+  _getValueFromPosition(pos, maxHandlePos, maxValue) {
     const percentage = ((pos) / (maxHandlePos || 1));
     const value = this.step * Math.round((percentage * (maxValue - this.min)) / this.step) + this.min;
     return Number((value).toFixed(this.toFixed));
   }
 
-  getRelativePosition(e, sliderIdPrefix) {
+  _getRelativePosition(e, sliderIdPrefix) {
     const slider = this._getShadowElementById(`${sliderIdPrefix}track_slider`);
     const boundingClientRect = slider.getBoundingClientRect();
     // Get the offset relative to the viewport
@@ -689,7 +689,7 @@ class MP4VideoPlayer extends PolymerElement {
     return this.vertical ? rangeSize - pageOffset : pageOffset - rangeSize;
   }
 
-  between(pos, min, max) {
+  _between(pos, min, max) {
     if (pos < min) {
       return min;
     }
@@ -699,14 +699,14 @@ class MP4VideoPlayer extends PolymerElement {
     return pos;
   }
 
-  setPosition(pos, sliderIdPrefix = '') {
+  _setPosition(pos, sliderIdPrefix = '') {
     const slider = this._getShadowElementById(`${sliderIdPrefix}track_slider`);
     const thumb = this._getShadowElementById(`${sliderIdPrefix}track_thumb`);
     const fill = this._getShadowElementById(`${sliderIdPrefix}track_fill`);
     const maxHandlePos = slider.offsetWidth - thumb.offsetWidth;
     const max = sliderIdPrefix === 'volume_' ? 1 : this.duration;
-    const value = this.getValueFromPosition(this.between(pos, 0, maxHandlePos), maxHandlePos, max);
-    const newPos = this.getPositionFromValue(value, maxHandlePos, max);
+    const value = this._getValueFromPosition(this._between(pos, 0, maxHandlePos), maxHandlePos, max);
+    const newPos = this._getPositionFromValue(value, maxHandlePos, max);
     fill.style.width = `${newPos + this.grabX}px`;
     thumb.style.left = `${newPos}px`;
 
