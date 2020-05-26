@@ -587,7 +587,7 @@ class MP4VideoPlayer extends PolymerElement {
   }
 
   _handleDown(e) {
-    e.preventDefault();
+    if (e.cancelable) e.preventDefault();
     const { button, touches, currentTarget } = e;
     if (touches === undefined && button !== 0) return;
     const eventPrefix = e.type === 'touchstart' ? 'touch' : 'mouse';
@@ -616,7 +616,7 @@ class MP4VideoPlayer extends PolymerElement {
   }
 
   _onMouseMove(e, sliderIdPrefix) {
-    e.preventDefault();
+    if (e.cancelable) e.preventDefault();
     if (this.dragging.track || this.dragging.volume) {
       const thumb = this._getShadowElementById(`${sliderIdPrefix}track_thumb`);
       const slider = this._getShadowElementById(`${sliderIdPrefix}track_slider`);
@@ -633,11 +633,13 @@ class MP4VideoPlayer extends PolymerElement {
   }
 
   _onMouseUp(e, sliderIdPrefix) {
-    e.preventDefault();
+    if (e.cancelable) e.preventDefault();
+    const eventPrefix = e.type === 'touchend' ? 'touch' : 'mouse';
+    const eventReleasePrefix = e.type === 'touchend' ? 'end' : 'up';
     const draggableItem = sliderIdPrefix === '' ? 'track' : 'volume';
     this.dragging[draggableItem] = false;
-    document.removeEventListener('mousemove', this._boundMouseMove);
-    document.removeEventListener('mouseup', this._boundMouseUp);
+    document.removeEventListener(`${eventPrefix}move`, this._boundMouseMove);
+    document.removeEventListener(`${eventPrefix + eventReleasePrefix}`, this._boundMouseUp);
     if (sliderIdPrefix === '') {
       if (this.prevPlaying) this.play();
     }
