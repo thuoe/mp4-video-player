@@ -121,7 +121,13 @@
           done();
         });
 
-        test('toggle picture-in-picture');
+        test('toggle picture-in-picture', () => {
+          const video = player.shadowRoot.querySelector('#video_player');
+          video.requestPictureInPicture = () => Promise.resolve();
+          const requestPIP = sinon.spy(video, 'requestPictureInPicture');
+          player._togglePictureInPicture();
+          assert(requestPIP.calledOnce);
+        });
       });
 
       suite('player shortcuts', () => {
