@@ -119,6 +119,7 @@ class MP4VideoPlayer extends PolymerElement {
       videoFilePath: String,
       /* File path to poster image. It can be a relative or absolute URL */
       poster: String,
+      /* Duration of the video */
       duration: {
         type: Number,
         readOnly: true
@@ -153,6 +154,7 @@ class MP4VideoPlayer extends PolymerElement {
         type: Number,
         value: 0.5
       },
+      /* Current time of video playback */
       time: {
         type: Number,
         value: 0
@@ -246,6 +248,12 @@ class MP4VideoPlayer extends PolymerElement {
     return 70;
   }
 
+  /**
+   * Computes the value of the `muted` prop based on the current volume.
+   * @param {number} volume current volume
+   * @return {boolean} if the current volume is 0
+   * @private
+   */
   _isMuted(volume) {
     return volume === 0;
   }
@@ -366,6 +374,13 @@ class MP4VideoPlayer extends PolymerElement {
     }
   }
 
+  /**
+   * Calculate and set the track thumb position & track fill.
+   * @param {*} value  current value on track
+   * @param {*} maxValue  maximum value on track
+   * @param {*} sliderIdPrefix id prefix of the slider that is being targeted (volume or otherwise)
+   * @private
+   */
   _setTrackPosition(value, maxValue, sliderIdPrefix = '') {
     const thumb = this._getShadowElementById(`${sliderIdPrefix}track_thumb`);
     const slider = this._getShadowElementById(`${sliderIdPrefix}track_slider`);
@@ -429,11 +444,21 @@ class MP4VideoPlayer extends PolymerElement {
     this._formatElapsedTime();
   }
 
+  /**
+   * Update the current time of the video
+   * @param {number} progress current progress
+   * @private
+   */
   _updateCurrentTime(progress) {
     const video = this._getShadowElementById('video_player');
     video.currentTime = progress;
   }
 
+  /**
+   * Update the volume of the video player
+   * @param {number} volume  current volume
+   * @private
+   */
   _updateCurrentVolume(volume) {
     this.volume = volume;
   }
@@ -586,6 +611,12 @@ class MP4VideoPlayer extends PolymerElement {
     }
   }
 
+  /**
+   * Calculate video playback, slider thumb & slider fill positioning
+   * when the user has begun pressing or tapping within a region of the slider (volume or otherwise)
+   * @param {TouchEvent| MouseEvent} e touchstart or mousedown event
+   * @private
+   */
   _handleDown(e) {
     if (e.cancelable) e.preventDefault();
     const { button, touches, currentTarget } = e;
@@ -600,8 +631,8 @@ class MP4VideoPlayer extends PolymerElement {
     this.dragging.track = !currentTarget.classList.contains('volume');
     this.dragging.volume = currentTarget.classList.contains('volume');
     this.grabX = thumb.offsetWidth / 2;
-    this._boundMouseMove = (event) => this._onMouseMove(event, sliderIdPrefix);
-    this._boundMouseUp = (event) => this._onMouseUp(event, sliderIdPrefix);
+    this._boundMouseMove = (event) => this._handleMove(event, sliderIdPrefix);
+    this._boundMouseUp = (event) => this._handleRelease(event, sliderIdPrefix);
 
     if (sliderIdPrefix === '') {
       this.prevPlaying = this.playing;
@@ -615,7 +646,15 @@ class MP4VideoPlayer extends PolymerElement {
     document.addEventListener(`${eventPrefix + eventReleasePrefix}`, this._boundMouseUp);
   }
 
-  _onMouseMove(e, sliderIdPrefix) {
+  /**
+   * Calculate video playback, slider thumb & slider fill positioning
+   * when the user begins dragging within of the document (volume or otherwise)
+   * whilst still pressing down.
+   * @param {TouchEvent| MouseEvent} e mousemove or touchmove event
+   * @param {string} sliderIdPrefix id prefix of the slider being targeted
+   * @private
+   */
+  _handleMove(e, sliderIdPrefix) {
     if (e.cancelable) e.preventDefault();
     if (this.dragging.track || this.dragging.volume) {
       const thumb = this._getShadowElementById(`${sliderIdPrefix}track_thumb`);
@@ -632,7 +671,12 @@ class MP4VideoPlayer extends PolymerElement {
     }
   }
 
-  _onMouseUp(e, sliderIdPrefix) {
+  /**
+   * @param {TouchEvent| MouseEvent} e mouseup or touchend event
+   * @param {string} sliderIdPrefix id prefix of the slider being targeted
+   * @private
+   */
+  _handleRelease(e, sliderIdPrefix) {
     if (e.cancelable) e.preventDefault();
     const eventPrefix = e.type === 'touchend' ? 'touch' : 'mouse';
     const eventReleasePrefix = e.type === 'touchend' ? 'end' : 'up';
@@ -645,6 +689,14 @@ class MP4VideoPlayer extends PolymerElement {
     }
   }
 
+  /**
+   * Derive the positioning on a slider based on a value
+   * @param {number} value current value
+   * @param {number} maxHandlePos maximum handle position of slider
+   * @param {number} maxValue maximum value
+   * @return {number} position in pixels
+   * @private
+   */
   _getPositionFromValue(value, maxHandlePos, maxValue) {
     const percentage = (value - this.min) / (maxValue - this.min);
     const pos = percentage * maxHandlePos;
@@ -652,12 +704,28 @@ class MP4VideoPlayer extends PolymerElement {
     return isNaN(pos) ? 0 : pos;
   }
 
+  /**
+   * Derive the value on a slider based on the current position
+   * @param {number} pos current position in pixels
+   * @param {number} maxHandlePos maximum handle position of slider
+   * @param {number} maxValue maximum value
+   * @return {number} value
+   * @private
+   */
   _getValueFromPosition(pos, maxHandlePos, maxValue) {
     const percentage = ((pos) / (maxHandlePos || 1));
     const value = this.step * Math.round((percentage * (maxValue - this.min)) / this.step) + this.min;
     return Number((value).toFixed(this.toFixed));
   }
 
+  /**
+   * Retreive the relative positioning on a slider when a user presses or taps
+   * within its region.
+   * @param {TouchEvent| MouseEvent} e
+   * @param {string} sliderIdPrefix id prefix of the slider being targeted
+   * @return {number} relative position in pixels
+   * @private
+   */
   _getRelativePosition(e, sliderIdPrefix) {
     const slider = this._getShadowElementById(`${sliderIdPrefix}track_slider`);
     const boundingClientRect = slider.getBoundingClientRect();
@@ -685,6 +753,16 @@ class MP4VideoPlayer extends PolymerElement {
     return this.vertical ? rangeSize - pageOffset : pageOffset - rangeSize;
   }
 
+  /**
+   * Return the same position if it is within the maximum and minimum values.
+   * Otherwise set to maximum and minimum values if the position is greater than or less
+   * than respectively.
+   * @param {number} pos current position
+   * @param {number} min minimum position
+   * @param {number} max maximum position
+   * @return position
+   * @private
+   */
   _between(pos, min, max) {
     if (pos < min) {
       return min;
@@ -695,6 +773,12 @@ class MP4VideoPlayer extends PolymerElement {
     return pos;
   }
 
+  /**
+   * Position a slider's elements appropriately
+   * @param {number} pos current position
+   * @param {string} sliderIdPrefix id prefix of the slider that is being targeted
+   * @private
+   */
   _setPosition(pos, sliderIdPrefix = '') {
     const slider = this._getShadowElementById(`${sliderIdPrefix}track_slider`);
     const thumb = this._getShadowElementById(`${sliderIdPrefix}track_thumb`);
