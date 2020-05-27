@@ -39,10 +39,24 @@
         assert.equal(expected, actual);
       };
 
-      let player;
+      const createStub = (target, func) => sinon.stub(target, func);
 
+      let player;
+      let playStub;
+      let pauseStub;
+      let enterFullscreenStub;
+      let exitFullscreenStub;
+      
       setup(() => {
         player = fixture('video-player-basic');
+        playStub = createStub(player, 'play');
+        pauseStub = createStub(player, 'pause');
+        enterFullscreenStub = createStub(player, '_enterFullscreen');
+        exitFullscreenStub = createStub(player, '_exitFullscreen');
+        playStub.returns(Promise.resolve('Played'));
+        pauseStub.returns(Promise.resolve('Paused'));
+        enterFullscreenStub.returns(Promise.resolve('Enter Fullscreen'));
+        exitFullscreenStub.returns(Promise.resolve('Exit Fullscreen'));
       });
 
       suite('player props', () => {
@@ -59,41 +73,34 @@
         });
       });
 
-      suite('player shortcuts', () => {
-        test('space bar calls "_togglePlay()"', () => {
-          pressSpace(player);
-          expect(player.playing).to.equal(true);
-          pressSpace(player);
-          expect(player.playing).to.equal(false);
-        });
+      suite('toggling functionality', () => {
+        test('toggle play', () => {
+          player.play = () => Promise.resolve();
+          player.pause = () => Promise.resolve();
+          const playSpy = sinon.spy(player, 'play');
+          const pauseSpy = sinon.spy(player, 'pause');
 
-        test('p key calls "_togglePlay()"', () => {
-          pressAndReleaseKeyOn(player, P_KEY);
+          player._togglePlay();
+      
           expect(player.playing).to.equal(true);
-          pressAndReleaseKeyOn(player, P_KEY);
-          expect(player.playing).to.equal(false);
-        });
+          assert(playSpy.calledOnce);
 
-        test('m key calls "_toggleMute()"', () => {
-          pressAndReleaseKeyOn(player, M_KEY);
+          player._togglePlay();
+
+          expect(player.playing).to.equal(false);
+          assert(pauseSpy.calledOnce);
+        });
+      
+        test('toggle mute', () => {
+          const prevVolume = player.volume;
+          player._toggleMute();
           expect(player.muted).to.equal(true);
-          pressAndReleaseKeyOn(player, M_KEY);
+          expect(player.volume).to.equal(0);
+          player._toggleMute();
           expect(player.muted).to.equal(false);
+          expect(player.volume).to.equal(prevVolume);
         });
-
-        test('f key calls "_toggleFullscreen()"', () => {
-          pressAndReleaseKeyOn(player, F_KEY);
-          expect(player.fullscreen).to.equal(true);
-          pressAndReleaseKeyOn(player, F_KEY);
-          expect(player.fullscreen).to.equal(false);
-        });
-      });
-
-      suite('track controls', () => {
-        test('toggle play/pause button');
-        test('toggle volume/mute button');
-        test('clicking download button');
-
+      
         test('toggle fullscreen', () => {
           player._enterFullscreen = () => Promise.resolve();
           player._exitFullscreen = () => Promise.resolve();
@@ -101,14 +108,68 @@
           const exitSpy = sinon.spy(player, '_exitFullscreen');
       
           player._toggleFullscreen();
-
+      
           expect(player.fullscreen).to.equal(true);
           assert(enterSpy.calledOnce);
       
           player._toggleFullscreen();
-      
+
           expect(player.fullscreen).to.equal(false);
           assert(exitSpy.calledOnce);
+        });
+
+        test('toggle picture-in-picture', () => {
+          const video = player.shadowRoot.querySelector('#video_player');
+          video.requestPictureInPicture = () => Promise.resolve();
+          const requestPIP = sinon.spy(video, 'requestPictureInPicture');
+          player._togglePictureInPicture();
+          assert(requestPIP.calledOnce);
+        });
+      });
+
+      suite('player shortcuts', () => {
+        test('space bar calls "_togglePlay()"', () => {
+          pressSpace(window);
+
+          expect(player.playing).to.equal(true);
+          sinon.assert.calledOnce(playStub);
+      
+          pressSpace(window);
+      
+          expect(player.playing).to.equal(false);
+          sinon.assert.calledOnce(pauseStub);
+        });
+
+        test('p key calls "_togglePlay()"', () => {
+          pressAndReleaseKeyOn(window, P_KEY);
+
+          expect(player.playing).to.equal(true);
+          sinon.assert.calledOnce(playStub);
+
+          pressAndReleaseKeyOn(window, P_KEY);
+      
+          expect(player.playing).to.equal(false);
+          sinon.assert.calledOnce(pauseStub);
+        });
+
+        test('m key calls "_toggleMute()"', () => {
+          const prevVolume = player.volume;
+          pressAndReleaseKeyOn(window, M_KEY);
+          expect(player.volume).to.equal(0);
+          pressAndReleaseKeyOn(window, M_KEY);
+          expect(player.volume).to.equal(prevVolume);
+        });
+
+        test('f key calls "_toggleFullscreen()"', () => {
+          pressAndReleaseKeyOn(window, F_KEY);
+
+          expect(player.fullscreen).to.equal(true);
+          sinon.assert.calledOnce(enterFullscreenStub);
+
+          pressAndReleaseKeyOn(window, F_KEY);
+
+          expect(player.fullscreen).to.equal(false);
+          sinon.assert.calledOnce(exitFullscreenStub);
         });
       });
 
@@ -120,7 +181,7 @@
             '--video-title-color': 'red',
             '--video-track-bar-color': 'blue',
             '--video-track-fill-color': 'green',
-            '--video-pointer-color': 'yellow',
+            '--video-thumb-color': 'yellow',
             '--video-thumbnail-background-color': 'orange',
             '--video-menu-background-color': 'pink',
             '--video-menu-item-color': 'Cyan',
@@ -133,15 +194,12 @@
 
           const title = player.shadowRoot.querySelector('.title');
           assertComputed(title, 'red', '--video-title-color');
-
-          const trackBar = player.shadowRoot.querySelector('.track-bar');
-          assertComputed(trackBar, 'blue', '--video-track-bar-color');
       
           const trackFill = player.shadowRoot.querySelector('.fill');
           assertComputed(trackFill, 'green', '--video-track-fill-color');
 
-          const pointer = player.shadowRoot.querySelector('.track-pointer');
-          assertComputed(pointer, 'yellow', '--video-pointer-color');
+          const trackThumb = player.shadowRoot.querySelector('.thumb');
+          assertComputed(trackThumb, 'yellow', '--video-thumb-color');
       
           const menu = player.shadowRoot.querySelector('.dropdown-menu');
           assertComputed(menu, 'pink', '--video-menu-background-color');
