@@ -50,14 +50,14 @@ Custom property | Description | Default Value
 `--video-title-color`                     | Color of the video title                | `rgba(255,255,255,.9)`
 `--video-min-width`                       | The minimum width of the video player   | `600px`
 `--video-min-height`                      | The minimum height of the video player  | `400px`
-`--video-track-fill-color`                | Track fill color                        | `#29b6f6`
+`--video-track-fill-color`                | Track fill color                        | `#d32f2f`
 `--video-thumb-color`                     | Thumb color used for dragging           | `#fff`
-`--video-control-icons-background-hover-color` | Control icons background hover color  | `#29b6f6`
+`--video-control-icons-background-hover-color` | Control icons background hover color  | `#d32f2f`
 `--video-thumbnail-background-color`      | Thumbnail track background color        | `rgba(255,255,255,.9)`
 `--video-menu-background-color`           | Menu background color                   | `rgba(255,255,255,.9)`
 `--video-menu-item-color`                 | Menu item background color              | `rgba(255,255,255,.9)`
 `--video-menu-item-icon-color`            | Menu icon color                         | `black`
-`--video-menu-item-hover-color`           | Menu item hover color                   | `#29b6f6`
+`--video-menu-item-hover-color`           | Menu item hover color                   | `#d32f2f`
 `--video-menu-item-icon-hover-color`      | Menu icon hover color                   | `white`
 `--video-tooltip-background-color`        | Tooltip background color                | `rgba(255,255,255,.9)`
 

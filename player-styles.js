@@ -131,7 +131,7 @@ const playerStyles = html`
       position: absolute;
       pointer-events: none;
       border-radius: 5px;
-      background: var(--video-track-fill-color, #29b6f6);
+      background: var(--video-track-fill-color, #d32f2f);
       bottom: 0;
       height: 5px;
     }
@@ -163,7 +163,7 @@ const playerStyles = html`
     }
 
     .control-icons:hover {
-      background: var(--video-control-icons-background-hover-color, #29b6f6);
+      background: var(--video-control-icons-background-hover-color, #d32f2f);
       border-radius: 3px;
     }
 
@@ -277,7 +277,7 @@ const playerStyles = html`
     }
 
     .menu-item:hover {
-      background: var(--video-menu-item-hover-color, #29b6f6);
+      background: var(--video-menu-item-hover-color, #d32f2f);
       color: white; 
     }
 
