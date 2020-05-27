@@ -29,17 +29,28 @@ $ npm run lint
 
 ## Video Player Properties
 
-The following properties are accessible to use:
+The following properties below are accessible and writable to use:
 
 | Property               | Description                                                        | Type    | Default Value |
 |------------------------|--------------------------------------------------------------------|---------|---------------|
 | `title`                | Title positioned on top of the video player                        | String  | `undefined`   |
 | `videoFilePath`        | Relative file path to .mp4 video                                   | String  | `undefined`   |
 | `poster`               | File path to poster image. It can be a relative or absolute URL    | String  | `undefined`   |
-| `playing`              | If the video is playing                                            | Boolean | `false`       |
-| `muted`                | If the video is muted                                              | Boolean | `false`       |
 | `showThumbnailPreview` | Determines if the thumbnail previews show above the timeline track | Boolean | `false`       |
 | `volume`               | The volume scaled from 0-1                                         | Number  | `0.5`         |
+| `time`                 | The current time in seconds of the video playback                  | Number  | `0`           |
+
+
+## Video Player Read-Only Properties
+
+The following properties below are accessible but cannot be altered dynamically:
+
+| Read-only property | Description                                              | Type    | Default Value |
+|--------------------|----------------------------------------------------------|---------|---------------|
+| `duration`         | The total duration of the video file after it has loaded | Number  | `0`           |
+| `playing`          | If the video is playing                                  | Boolean | `false`       |
+| `muted`            | If the video is muted                                    | Boolean | `false`       |
+| `fullscreen`       | If the video is in fullscreen mode                       | Boolean | `false`       |
 
 ## Custom CSS Properties
 
