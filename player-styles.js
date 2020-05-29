@@ -57,8 +57,8 @@ const playerStyles = html`
 
     .large-btn {
       position: absolute;
-      width: 150px;
-      height: 150px;
+      width: 100px;
+      height: 100px;
       border-radius: 50%;
       background: var(--video-large-play-button-color, #d32f2f);
       cursor: pointer;
@@ -66,6 +66,14 @@ const playerStyles = html`
       left: 50%;
       transform: translate(-50%, -50%);
       transition: background .2s ease-in-out;
+    }
+
+    .large-btn > iron-icon {
+      width: 70px;
+      height: 70px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
     }
 
     .large-btn:hover {
