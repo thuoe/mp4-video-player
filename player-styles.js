@@ -13,6 +13,10 @@ const playerStyles = html`
       width: 100%;
       height: 100%;
     }
+    
+    :host([playing]) .large-btn {
+      display: none;
+    }
 
     iron-icon {
       fill: white;
