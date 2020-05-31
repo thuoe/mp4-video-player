@@ -13,6 +13,10 @@ const playerStyles = html`
       width: 100%;
       height: 100%;
     }
+    
+    :host([playing]) .large-btn {
+      display: none;
+    }
 
     iron-icon {
       fill: white;
@@ -53,6 +57,31 @@ const playerStyles = html`
 
     .title:hover {
       opacity: 1;
+    }
+
+    .large-btn {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: var(--video-large-play-button-color, #d32f2f);
+      cursor: pointer;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      transition: background .2s ease-in-out;
+    }
+
+    .large-btn > iron-icon {
+      width: 70px;
+      height: 70px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .large-btn:hover {
+      background: var(--video-large-play-button-hover-color, #9a0007);
     }
 
     .container {
