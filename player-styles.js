@@ -81,7 +81,7 @@ const playerStyles = html`
     }
 
     .large-btn:hover {
-      background: var(--video-large-play-button--hover-color, #9a0007);
+      background: var(--video-large-play-button-hover-color, #9a0007);
     }
 
     .container {
