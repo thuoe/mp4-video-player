@@ -1,8 +1,14 @@
 # \<mp4-video-player\>
 
-[![Build Status](https://travis-ci.org/Eddie-Thuo/mp4-video-player.svg?branch=master)](https://travis-ci.org/Eddie-Thuo/mp4-video-player)
+<p align="center">
+  <a href="https://travis-ci.org/Eddie-Thuo/mp4-video-player">
+    <img src="https://travis-ci.org/Eddie-Thuo/mp4-video-player.svg?" alt="Build Status on mp4-video-player" />
+  </a>
+</p>
 
-Simple MP4 Video Player Element
+<p align="center">A simple and customizable MP4 video player web component created using Polymer 3.</p>
+
+![Player](player-screenshot.png)
 
 ## Install the Polymer-CLI
 
