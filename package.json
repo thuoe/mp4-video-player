@@ -8,6 +8,7 @@
   },
   "main": "mp4-video-player.js",
   "scripts": {
+    "start": "polymer serve",
     "lint": "eslint './**/*.{html,js}' -o ./report/eslint.html -f html",
     "test": "polymer test -l chrome"
   },
