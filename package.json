@@ -1,6 +1,6 @@
 {
-  "name": "mp4-video-player",
-  "version": "1.0.0",
+  "name": "@thuoe/mp4-video-player",
+  "version": "0.0.1",
   "description": "Simple MP4 Video Player Element",
   "repository": {
     "type": "git",
