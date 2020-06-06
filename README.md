@@ -8,6 +8,10 @@
 
 <p align="center">A simple and customizable MP4 video player web component created using Polymer 3.</p>
 
+> ## 🛠 Status: In Development
+> This component is currently in development. It's on the fast track to a 1.0.0 release, so I encourage you to use it and give feedback, but there are things that haven't been finalized yet and you can expect some changes.
+
+
 ![Player](player-screenshot.png)
 
 ## Install the Polymer-CLI
