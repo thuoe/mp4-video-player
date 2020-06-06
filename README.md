@@ -29,7 +29,7 @@ This involves using the Polymer CLI  command `polymer serve`.
 
 First, make sure you have the [Polymer CLI](https://www.npmjs.com/package/polymer-cli) and npm (packaged with [Node.js](https://nodejs.org)) installed. Run `npm install` to install the element's dependencies. This development server will transpile ES6 code to ES5 using [Babel](https://babeljs.io/) during runtime.
 
-The live demo page will be available to view via `http://127.0.0.1:8081/components/mp4-video-player/`
+The live demo page will be available to view via `http://127.0.0.1:8081/components/@thuoe/mp4-video-player/`
 
 ## Running Tests
 
