@@ -1,8 +1,8 @@
 # \<mp4-video-player\>
 
 <p align="center">
-  <a href="https://travis-ci.org/Eddie-Thuo/mp4-video-player">
-    <img src="https://travis-ci.org/Eddie-Thuo/mp4-video-player.svg?" alt="Build Status on mp4-video-player" />
+  <a href="https://travis-ci.org/thuoe/mp4-video-player">
+    <img src="https://travis-ci.org/thuoe/mp4-video-player.svg?branch=master" alt="Build Status on mp4-video-player" />
   </a>
 </p>
 

@@ -8,10 +8,10 @@
     "polymer",
     "mp4"
   ],
-  "homepage": "https://github.com/Eddie-Thuo/mp4-video-player",
+  "homepage": "https://github.com/thuoe/mp4-video-player",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Eddie-Thuo/mp4-video-player.git"
+    "url": "https://github.com/thuoe/mp4-video-player.git"
   },
   "license": "MIT",
   "main": "mp4-video-player.js",
