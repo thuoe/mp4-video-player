@@ -7,6 +7,9 @@
   <a href="https://david-dm.org/thuoe/mp4-video-player" title="dependencies status">
     <img src="https://david-dm.org/thuoe/mp4-video-player/status.svg"/>
   </a>
+  <a href="https://david-dm.org/thuoe/mp4-video-player?type=dev" title="devDependencies status">
+    <img src="https://david-dm.org/thuoe/mp4-video-player/dev-status.svg"/>
+  </a>
 </p>
 
 <p align="center">A simple and customizable MP4 video player web component created using Polymer 3.</p>
