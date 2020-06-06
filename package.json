@@ -2,14 +2,22 @@
   "name": "@thuoe/mp4-video-player",
   "version": "0.0.1",
   "description": "Simple MP4 Video Player Element",
+  "keywords": [
+    "web-components",
+    "video-player",
+    "polymer",
+    "mp4"
+  ],
+  "homepage": "https://github.com/Eddie-Thuo/mp4-video-player",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Eddie-Thuo/mp4-video-player"
+    "url": "https://github.com/Eddie-Thuo/mp4-video-player.git"
   },
+  "license": "MIT",
   "main": "mp4-video-player.js",
   "scripts": {
-    "start": "polymer serve",
     "lint": "eslint './**/*.{html,js}' -o ./report/eslint.html -f html",
+    "start": "polymer serve",
     "test": "polymer test -l chrome"
   },
   "husky": {
