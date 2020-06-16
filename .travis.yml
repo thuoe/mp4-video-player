@@ -10,5 +10,4 @@ jobs:
         - npm install -g polymer-cli
       script: 
         - npm run lint
-      script: 
         - xvfb-run polymer test --module-resolution=node --npm --local firefox
