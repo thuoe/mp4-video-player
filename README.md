@@ -14,11 +14,29 @@
 
 <p align="center">A simple and customizable MP4 video player web component created using Polymer 3.</p>
 
-> ## 🛠 Status: In Development
-> This component is currently in development. It's on the fast track to a 1.0.0 release, so I encourage you to use it and give feedback, but there are things that haven't been finalized yet and you can expect some changes.
-
-
 ![Player](player-screenshot.png)
+
+## Installation
+
+```
+$ npm install --save @thuoe/mp4-video-player
+```
+
+## Import within a Polymer 3 element
+
+```js
+import { PolymerElement, html } from '@polymer/polymer';
+import '@thuoe/mp4-video-player';
+
+class SampleElement extends PolymerElement {
+  static get template() {
+    return html`
+      <mp4-video-player></mp4-video-player>
+    `;
+  }
+}
+customElements.define('sample-element', SampleElement);
+```
 
 ## Running Demo
 
