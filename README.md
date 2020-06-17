@@ -1,4 +1,4 @@
-<h1 style="text-align:center">&lt;mp4-video-player&gt;</h1>
+<h1 align="center">&lt;mp4-video-player&gt;</h1>
 
 <p align="center">A simple and customizable MP4 video player web component created using Polymer 3.</p>
 
