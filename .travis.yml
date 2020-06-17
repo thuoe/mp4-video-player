@@ -11,3 +11,12 @@ jobs:
       script: 
         - npm run lint
         - xvfb-run polymer test --module-resolution=node --npm --local firefox
+    - stage: Release
+      script: skip   # usually you do not want to rerun any tests
+      deploy:
+        provider: script
+        skip_cleanup: true
+        script:
+          - npm run semantic-release
+        on:
+          branch: master
