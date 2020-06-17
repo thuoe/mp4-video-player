@@ -1,4 +1,6 @@
-# \<mp4-video-player\>
+<h1 style="text-align:center">&lt;mp4-video-player&gt;</h1>
+
+<p align="center">A simple and customizable MP4 video player web component created using Polymer 3.</p>
 
 <p align="center">
   <a href="https://travis-ci.org/thuoe/mp4-video-player">
@@ -10,9 +12,11 @@
   <a href="https://david-dm.org/thuoe/mp4-video-player?type=dev" title="devDependencies status">
     <img src="https://david-dm.org/thuoe/mp4-video-player/dev-status.svg"/>
   </a>
+  <a>
+    <img alt="npm" src="https://img.shields.io/npm/dm/@thuoe/mp4-video-player">
+  </a>
 </p>
 
-<p align="center">A simple and customizable MP4 video player web component created using Polymer 3.</p>
 
 ![Player](player-screenshot.png)
 
@@ -122,7 +126,7 @@ Custom property | Description | Default Value
         import '@webcomponents/webcomponentsjs/webcomponents-loader.js';
         // custom-style element invokes the custom properties polyfill
         import '@polymer/polymer/lib/elements/custom-style.js';
-        import '../mp4-video-player.js'
+        import '@thuoe/mp4-video-player/mp4-video-player.js'
     </script>
 </head>
 <body>
