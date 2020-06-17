@@ -1,25 +1,57 @@
-# \<mp4-video-player\>
-
-<p align="center">
-  <a href="https://travis-ci.org/Eddie-Thuo/mp4-video-player">
-    <img src="https://travis-ci.org/Eddie-Thuo/mp4-video-player.svg?" alt="Build Status on mp4-video-player" />
-  </a>
-</p>
+<h1 align="center">&lt;mp4-video-player&gt;</h1>
 
 <p align="center">A simple and customizable MP4 video player web component created using Polymer 3.</p>
 
+<p align="center">
+  <a href="https://travis-ci.org/thuoe/mp4-video-player">
+    <img src="https://travis-ci.org/thuoe/mp4-video-player.svg?branch=master" alt="Build Status on mp4-video-player" />
+  </a>
+  <a href="https://david-dm.org/thuoe/mp4-video-player" title="dependencies status">
+    <img src="https://david-dm.org/thuoe/mp4-video-player/status.svg"/>
+  </a>
+  <a href="https://david-dm.org/thuoe/mp4-video-player?type=dev" title="devDependencies status">
+    <img src="https://david-dm.org/thuoe/mp4-video-player/dev-status.svg"/>
+  </a>
+  <a>
+    <img alt="npm" src="https://img.shields.io/npm/dm/@thuoe/mp4-video-player">
+  </a>
+</p>
+
+
 ![Player](player-screenshot.png)
 
-## Install the Polymer-CLI
-
-First, make sure you have the [Polymer CLI](https://www.npmjs.com/package/polymer-cli) and npm (packaged with [Node.js](https://nodejs.org)) installed. Run `npm install` to install your element's dependencies, then run `polymer serve` to serve your element locally.
-
-## Viewing Your Element
+## Installation
 
 ```
-$ polymer serve
+$ npm install --save @thuoe/mp4-video-player
 ```
-The live demo page will be available to view via `http://127.0.0.1:8081/components/mp4-video-player/`
+
+## Import within a Polymer 3 element
+
+```js
+import { PolymerElement, html } from '@polymer/polymer';
+import '@thuoe/mp4-video-player';
+
+class SampleElement extends PolymerElement {
+  static get template() {
+    return html`
+      <mp4-video-player></mp4-video-player>
+    `;
+  }
+}
+customElements.define('sample-element', SampleElement);
+```
+
+## Running Demo
+
+```
+$ npm start
+```
+This involves using the Polymer CLI  command `polymer serve`. 
+
+First, make sure you have the [Polymer CLI](https://www.npmjs.com/package/polymer-cli) and npm (packaged with [Node.js](https://nodejs.org)) installed. Run `npm install` to install the element's dependencies. This development server will transpile ES6 code to ES5 using [Babel](https://babeljs.io/) during runtime.
+
+The live demo page will be available to view via `http://127.0.0.1:8081/components/@thuoe/mp4-video-player/`
 
 ## Running Tests
 
@@ -94,7 +126,7 @@ Custom property | Description | Default Value
         import '@webcomponents/webcomponentsjs/webcomponents-loader.js';
         // custom-style element invokes the custom properties polyfill
         import '@polymer/polymer/lib/elements/custom-style.js';
-        import '../mp4-video-player.js'
+        import '@thuoe/mp4-video-player/mp4-video-player.js'
     </script>
 </head>
 <body>
