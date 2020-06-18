@@ -3,6 +3,9 @@
 <p align="center">A simple and customizable MP4 video player web component created using Polymer 3.</p>
 
 <p align="center">
+  <a href="https://www.npmjs.com/package/@thuoe/mp4-video-player">
+    <img alt="npm (scoped with tag)" src="https://img.shields.io/npm/v/@thuoe/mp4-video-player/latest">
+  </a>
   <a href="https://travis-ci.org/thuoe/mp4-video-player">
     <img src="https://travis-ci.org/thuoe/mp4-video-player.svg?branch=master" alt="Build Status on mp4-video-player" />
   </a>
@@ -12,7 +15,7 @@
   <a href="https://david-dm.org/thuoe/mp4-video-player?type=dev" title="devDependencies status">
     <img src="https://david-dm.org/thuoe/mp4-video-player/dev-status.svg"/>
   </a>
-  <a>
+  <a href="https://www.npmjs.com/package/@thuoe/mp4-video-player">
     <img alt="npm" src="https://img.shields.io/npm/dm/@thuoe/mp4-video-player">
   </a>
 </p>
