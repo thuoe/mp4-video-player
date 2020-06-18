@@ -3,6 +3,9 @@
 <p align="center">A simple and customizable MP4 video player web component created using Polymer 3.</p>
 
 <p align="center">
+  <a href="https://www.npmjs.com/package/@thuoe/mp4-video-player">
+    <img alt="npm (scoped with tag)" src="https://img.shields.io/npm/v/@thuoe/mp4-video-player/latest">
+  </a>
   <a href="https://travis-ci.org/thuoe/mp4-video-player">
     <img src="https://travis-ci.org/thuoe/mp4-video-player.svg?branch=master" alt="Build Status on mp4-video-player" />
   </a>
@@ -12,7 +15,7 @@
   <a href="https://david-dm.org/thuoe/mp4-video-player?type=dev" title="devDependencies status">
     <img src="https://david-dm.org/thuoe/mp4-video-player/dev-status.svg"/>
   </a>
-  <a>
+  <a href="https://www.npmjs.com/package/@thuoe/mp4-video-player">
     <img alt="npm" src="https://img.shields.io/npm/dm/@thuoe/mp4-video-player">
   </a>
 </p>
@@ -69,14 +72,15 @@ $ npm run lint
 
 The following properties below are accessible and writable to use:
 
-| Property               | Description                                                        | Type    | Default Value |
-|------------------------|--------------------------------------------------------------------|---------|---------------|
-| `title`                | Title positioned on top of the video player                        | String  | `undefined`   |
-| `videoFilePath`        | Relative file path to .mp4 video                                   | String  | `undefined`   |
-| `poster`               | File path to poster image. It can be a relative or absolute URL    | String  | `undefined`   |
-| `showThumbnailPreview` | Determines if the thumbnail previews show above the timeline track | Boolean | `false`       |
-| `volume`               | The volume scaled from 0-1                                         | Number  | `0.5`         |
-| `time`                 | The current time in seconds of the video playback                  | Number  | `0`           |
+| Property               | Description                                                                                           | Type    | Default Value |
+|------------------------|-------------------------------------------------------------------------------------------------------|---------|---------------| 
+| `title`                | Title positioned on top of the video player                                                           | String  | `undefined`   |
+| `videoFilePath`        | Relative file path to .mp4 video                                                                      | String  | `undefined`   |
+| `poster`               | File path to poster image. It can be a relative or absolute URL                                       | String  | `undefined`   |
+| `showThumbnailPreview` | Determines if the thumbnail previews show above the timeline track                                    | Boolean | `false`       |
+| `volume`               | The volume scaled from 0-1                                                                            | Number  | `0.5`         |
+| `time`                 | The current time in seconds of the video playback                                                     | Number  | `0`           |
+| `skipBy`               | Skip ahead or behind (in seconds) the current time based on the right or left arrow keys respectively | Number  | `5`           |
 
 
 ## Video Player Read-Only Properties
@@ -171,3 +175,5 @@ playback experience:
 | `space` or `p`    | Toggle play       |
 | `m`               | Toggle mute       |
 | `f`               | Toggle fullscreen |
+| `→`               | Skip ahead        |
+| `←`               | Skip behind       |
