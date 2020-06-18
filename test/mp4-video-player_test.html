@@ -22,7 +22,12 @@
 
     <test-fixture id="video-player-basic">
       <template>
-        <mp4-video-player poster="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.jpg" video-file-path="../assets/sample.mp4" show-thumbnail-preview></mp4-video-player>
+        <mp4-video-player 
+          poster="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.jpg" 
+          video-file-path="../assets/sample.mp4"
+          skipBy=10
+          show-thumbnail-preview>
+        </mp4-video-player>
       </template>
     </test-fixture>
 
@@ -74,6 +79,12 @@
           const filePath = player.videoFilePath;
           expect(filePath).not.to.be.undefined;
           expect(filePath).to.be.an('string');
+        });
+      
+        test('skipBy prop can be set', () => {
+          const { skipBy } = player.skipBy;
+          expect(skipBy).not.to.be.undefined;
+          expect(skipBy).to.be.an('number');
         });
       });
 
