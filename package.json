@@ -1,14 +1,24 @@
 {
-  "name": "mp4-video-player",
-  "version": "1.0.0",
+  "name": "@thuoe/mp4-video-player",
+  "version": "0.0.0-development",
   "description": "Simple MP4 Video Player Element",
+  "keywords": [
+    "web-components",
+    "video-player",
+    "polymer",
+    "mp4"
+  ],
+  "homepage": "https://github.com/thuoe/mp4-video-player",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Eddie-Thuo/mp4-video-player"
+    "url": "https://github.com/thuoe/mp4-video-player.git"
   },
+  "license": "MIT",
   "main": "mp4-video-player.js",
   "scripts": {
     "lint": "eslint './**/*.{html,js}' -o ./report/eslint.html -f html",
+    "semantic-release": "semantic-release",
+    "start": "polymer serve",
     "test": "polymer test -l chrome"
   },
   "husky": {
@@ -22,7 +32,7 @@
     "player-icons": "1.3.0"
   },
   "devDependencies": {
-    "@polymer/iron-component-page": "^3.0.0-pre.20",
+    "@polymer/iron-component-page": "^4.0.0",
     "@polymer/iron-demo-helpers": "^3.0.0-pre.19",
     "@polymer/test-fixture": "^4.0.2",
     "@webcomponents/webcomponentsjs": "^2.0.0",
@@ -33,7 +43,11 @@
     "eslint-plugin-import": "^2.20.2",
     "husky": "^4.2.3",
     "mocha": "^5.2.0",
+    "semantic-release": "^17.0.8",
     "sinon": "^9.0.1",
     "wct-mocha": "^1.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

@@ -13,6 +13,10 @@ const playerStyles = html`
       width: 100%;
       height: 100%;
     }
+    
+    :host([playing]) .large-btn {
+      display: none;
+    }
 
     iron-icon {
       fill: white;
@@ -55,6 +59,31 @@ const playerStyles = html`
       opacity: 1;
     }
 
+    .large-btn {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: var(--video-large-play-button-color, #d32f2f);
+      cursor: pointer;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      transition: background .2s ease-in-out;
+    }
+
+    .large-btn > iron-icon {
+      width: 70px;
+      height: 70px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .large-btn:hover {
+      background: var(--video-large-play-button-hover-color, #9a0007);
+    }
+
     .container {
       position: relative;
       display: flex;
@@ -71,6 +100,8 @@ const playerStyles = html`
       width: 100%;
       bottom: 0;
       background: linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.7));
+      box-sizing: border-box;
+      padding: 0px 5px 0px 5px;
       opacity: 1;
       transition: opacity .3s ease-in-out, transform .3s ease-in-out;
     }
@@ -85,17 +116,9 @@ const playerStyles = html`
     }
 
     .track{
-      position: relative;
       width: 100%;
-    }
-
-    .track-bar {
-      position: absolute;
-      width: 100%;
-      height: 4px;
-      bottom: 0;
-      background: var(--video-track-bar-color, rgba(255,255,255,.55));
-      border-radius: 25px;
+      height: 20px;
+      box-sizing: border-box;
     }
 
     .extra {
@@ -103,39 +126,56 @@ const playerStyles = html`
       height: 16px;
     }
 
-    .fill {
-      pointer-events: none;
-      background: var(--video-track-fill-color, #29b6f6);
-      width: 0px;
-    }
-
-    .track-bar.large, .track-fill.large {
-      height: 6px;
-    }
-    .track-pointer {
-      position: absolute;
-      height: 24px;
-      width: 24px;
-      padding: 6px;
-      cursor: pointer;
+    .track {
+      position: relative;
+      width: 100%;
+      height: 20px;
       box-sizing: border-box;
-      margin-left: -12px;
-      bottom: -10px;
-      outline: none;
     }
 
-    .track-pointer span {
+    .track:active .thumb {
+      box-shadow: 0 1px 1px rgba(35,40,47,.15), 0 0 0 1px rgba(35,40,47,.2), 0 0 0 3px rgba(255,255,255,.5)
+    }
+
+    .track.volume {
+      height: 24px;
+    }
+    
+    .slider {
       position: absolute;
-      top: calc(50% - 6px);
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: var(--video-pointer-color, #29b6f6);
-      transition: all 200ms;
+      border-radius: 5px;
+      background: var(--video-track-bar-color, rgba(255,255,255,.55));
+      bottom: 0;
+      width: 100%;
+      height: 5px;
+      cursor: pointer;
     }
 
-    .track-pointer span:active {
-      transform: scale(1.5);
+    .slider.volume {
+      bottom: 50%;
+      transform: translateY(50%);
+    }
+    
+    .fill {
+      position: absolute;
+      pointer-events: none;
+      border-radius: 5px;
+      background: var(--video-track-fill-color, #d32f2f);
+      bottom: 0;
+      height: 5px;
+    }
+
+    .thumb {
+      width: 20px;
+      height: 20px;
+      position: relative;
+      top: 50%;
+      transform: translateY(-50%);
+      transition: box-shadow .3s ease;
+      background: var(--video-thumb-color, #fff);
+      border-radius: 20px;
+      cursor: pointer;
+      z-index: 3;
     }
 
     .track, .track-bar {
@@ -146,21 +186,13 @@ const playerStyles = html`
       height: 45px;
     }
 
-    #volume_track_bar, #volume_track_fill {
-      top: calc(50% - 2px);
-    }
-
-    #volume_track_pointer {
-      bottom: 0;
-    }
-
     .control-icons {
       cursor: pointer;
       position: relative;
     }
 
     .control-icons:hover {
-      background: var(--video-control-icons-background-hover-color, #29b6f6);
+      background: var(--video-control-icons-background-hover-color, #d32f2f);
       border-radius: 3px;
     }
 
@@ -206,7 +238,6 @@ const playerStyles = html`
       box-shadow: 0 1px 2px rgba(0,0,0,.15);
       bottom: 100%;
       border-radius: 5px;
-      margin-bottom: 25px;
       text-align: center;
       opacity: 0;
     }
@@ -216,7 +247,6 @@ const playerStyles = html`
       top: 100%;
       left: 50%;
       content: '';
-      margin-left: -5px;
       border-width: 5px;
       border-style: solid;
       border-color: var(--video-thumbnail-background-color, rgba(255,255,255,.9)) transparent transparent transparent;
@@ -276,7 +306,7 @@ const playerStyles = html`
     }
 
     .menu-item:hover {
-      background: var(--video-menu-item-hover-color, #29b6f6);
+      background: var(--video-menu-item-hover-color, #d32f2f);
       color: white; 
     }
 

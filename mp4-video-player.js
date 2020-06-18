@@ -1,8 +1,7 @@
-import { GestureEventListeners } from '@polymer/polymer/lib/mixins/gesture-event-listeners';
-import { html, PolymerElement } from '@polymer/polymer/polymer-element';
-import playerStyles from './player-styles';
 import '@polymer/iron-icon/iron-icon';
+import { html, PolymerElement } from '@polymer/polymer/polymer-element';
 import 'player-icons/player-icons';
+import playerStyles from './player-styles';
 
 /**
  * `mp4-video-player`
@@ -12,7 +11,7 @@ import 'player-icons/player-icons';
  * @polymer
  * @demo demo/index.html
  */
-class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
+class MP4VideoPlayer extends PolymerElement {
   static get template() {
     return html`
       ${playerStyles}
@@ -20,7 +19,10 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
         <div class="title">
           <h3 id="video_title">[[title]]</h3>
         </div>
-        <video id="video_player" preload="metadata" poster$="[[poster]]" on-loadedmetadata="_metadetaLoaded" on-timeupdate="_updateTrack" on-ended="_handleEnd">
+        <div class="large-btn" on-click="play">
+          <iron-icon icon="player-icons:play-arrow"></iron-icon>
+        </div>
+        <video id="video_player" playsinline preload="metadata" poster$="[[poster]]" on-loadedmetadata="_metadetaLoaded" on-timeupdate="_handleTimeUpdate" on-ended="_handleEnd">
           <source src$="{{videoFilePath}}" type="video/mp4">
         </video>
         <div class="video-controls">
@@ -45,17 +47,16 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
               <span>DOWNLOAD</span>
             </button>
           </div>
-          <div id="playback_track" class="track">
-            <div id="track_bar_extra" class="track-bar extra" on-click="_handleTimelineClick"></div>
-            <div id="track_bar" class="track-bar"on-click="_handleTimelineClick" 
-              on-mouseenter="_toggleThumbnail"
-              on-mousemove="_updateThumbnailPosition" 
-              on-mouseleave="_toggleThumbnail">
+          <div class="track" 
+            on-mouseenter="_toggleThumbnail"
+            on-mousemove="_updateThumbnailPosition"
+            on-mouseleave="_toggleThumbnail"
+            on-mousedown="_handleDown"
+            on-touchstart="_handleDown"> 
+            <div id="track_slider" class="slider">
+              <div id="track_thumb" class="thumb"></div>
             </div>
-            <div id="track_fill" class="track-bar fill"></div>
-            <div id="track_pointer" class="track-pointer" on-track="_handleTrack">
-              <span></span>
-            </div>
+            <div id="track_fill" class="fill"></div>
           </div>
           <div class="lower-controls">
             <div class="left">
@@ -87,11 +88,10 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
                 </template>
                 <span class="tooltip">[[_tooltipCaptions.volumeButton]]</span>
               </div>
-              <div id="volume_track" class="track" on-click="_handleTimelineClick">
-                <div id="volume_track_bar" class="track-bar" on-click="_handleTimelineClick"></div>
-                <div id="volume_track_fill" class="track-bar fill"></div>
-                <div id="volume_track_pointer" class="track-pointer" on-track="_handleTrack">
-                <span></span>
+              <div id="volume_track" class="track volume" on-mousedown="_handleDown" on-touchstart="_handleDown"> 
+                <div id="volume_track_slider" class="slider volume">
+                  <div id="volume_track_thumb" class="thumb volume"></div>
+                  <div id="volume_track_fill" class="fill volume"></div>
                 </div>
               </div>
               <div id="fullscreen_icons" class="control-icons" on-click="_toggleFullscreen">
@@ -122,52 +122,45 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
       videoFilePath: String,
       /* File path to poster image. It can be a relative or absolute URL */
       poster: String,
+      /* Duration of the video */
+      duration: {
+        type: Number,
+        readOnly: true
+      },
       /* If the video is currently playing */
       playing: {
         type: Boolean,
         value: false,
+        readOnly: true,
         reflectToAttribute: true
-      },
-      /* If the user is currently dragging the player track */
-      dragging: {
-        type: Boolean,
-        reflectToAttribute: true,
-        value: false
       },
       /* If the audio is currently muted */
       muted: {
         type: Boolean,
-        value: false,
-        reflectToAttribute: true
-      },
-      /* If the video playback has ended */
-      ended: {
-        type: Boolean,
-        value: false,
-        reflectToAttribute: true
+        computed: '_isMuted(volume)'
       },
       /* If the player is in fullscreen mode */
       fullscreen: {
         type: Boolean,
         value: false,
+        readOnly: true,
         reflectToAttribute: true
       },
       /* Determines if the timeline preview above the track appears when hovering */
       showThumbnailPreview: {
         type: Boolean,
-        value: false,
+        value: true,
         reflectToAttribute: true
       },
       /* The volume scaled from 0-1 */
       volume: {
         type: Number,
-        value: 0.75,
-        observer: '_volumeChanged'
+        value: 0.5
       },
-      /* Time elapsed */
-      elapsed: {
+      /* Current time of video playback */
+      time: {
         type: Number,
-        observer: '_elapsedChanged'
+        value: 0
       },
       /* The formatted current position of the video playback in m:ss */
       _formattedCurrentTime: {
@@ -193,12 +186,25 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
     };
   }
 
+  constructor() {
+    super();
+    this.min = 0;
+    this.step = 0.01;
+    this.toFixed = 8;
+    this.dragging = { volume: false, track: false };
+    this.fullscreenChangeEvent = this._prefix === 'ms' ? 'MSFullscreenchange' : `${this._prefix}fullscreenchange`;
+  }
+
   ready() {
     super.ready();
-    window.addEventListener('resize', this._updateControlStyling.bind(this));
+    this.addEventListener(this.ullscreenChangeEvent, this._handleFullscreenChange.bind(this));
+    this._createPropertyObserver('volume', '_volumeChanged', true);
+    this._createPropertyObserver('time', '_timeChanged', true);
+    window.addEventListener('resize', () => {
+      const { currentTime, duration } = this._getShadowElementById('video_player');
+      this._setTrackPosition(currentTime, duration);
+    });
     window.addEventListener('keyup', this._handleKeyCode.bind(this));
-    const fullscreenChangeEvent = this._prefix === 'ms' ? 'MSFullscreenchange' : `${this._prefix}fullscreenchange`;
-    this.addEventListener(fullscreenChangeEvent, this._handleFullscreenChange.bind(this));
   }
 
   /**
@@ -243,6 +249,16 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
 
   get _F_KEY() {
     return 70;
+  }
+
+  /**
+   * Computes the value of the `muted` prop based on the current volume.
+   * @param {number} volume current volume
+   * @return {boolean} if the current volume is 0
+   * @private
+   */
+  _isMuted(volume) {
+    return volume === 0;
   }
 
   /**
@@ -334,16 +350,6 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
   }
 
   /**
-   * Update control styling
-   * @private
-   */
-  _updateControlStyling() {
-    const { currentTime, duration } = this._getShadowElementById('video_player');
-    const progress = currentTime / duration;
-    this._updateTimeline(progress);
-  }
-
-  /**
    * Update thumbnail preview position on
    * track
    * @param {MouseEvent} event mouse-move event
@@ -372,6 +378,22 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
   }
 
   /**
+   * Calculate and set the track thumb position & track fill.
+   * @param {*} value  current value on track
+   * @param {*} maxValue  maximum value on track
+   * @param {*} sliderIdPrefix id prefix of the slider that is being targeted (volume or otherwise)
+   * @private
+   */
+  _setTrackPosition(value, maxValue, sliderIdPrefix = '') {
+    const thumb = this._getShadowElementById(`${sliderIdPrefix}track_thumb`);
+    const slider = this._getShadowElementById(`${sliderIdPrefix}track_slider`);
+    const maxHandlePos = slider.offsetWidth - thumb.offsetWidth;
+    this.grabX = thumb.offsetWidth / 2;
+    const position = this._getPositionFromValue(value, maxHandlePos, maxValue);
+    this._setPosition(position, sliderIdPrefix);
+  }
+
+  /**
    * When video metadata is completely loaded
    * total duration is then formatted onto the player
    * @param {Event} event when the video has loaded metadeta
@@ -379,6 +401,7 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    */
   _metadetaLoaded(event) {
     const { duration } = event.currentTarget;
+    this._setDuration(duration);
     this._formattedDuration = this._formatTime(duration);
   }
 
@@ -412,42 +435,35 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
 
   /**
    * Update the track positioning when the
-   * current video time updates
-   * is playing
+   * current video curentTime property updates
    * @param {Event} event
    * @private
    */
-  _updateTrack(event) {
-    if ((!this.dragging && this.playing) || document.pictureInPictureElement) {
-      const { currentTime, duration } = event.currentTarget;
-      const progress = currentTime / duration;
-      this._updateTimeline(progress);
+  _handleTimeUpdate() {
+    if (this.playing && !this.dragging.track) {
+      const { currentTime, duration } = this._getShadowElementById('video_player');
+      this._setTrackPosition(currentTime, duration);
     }
+    this._formatElapsedTime();
   }
 
   /**
    * Update the current time of the video
-   * when clicking a position of the timeline
-   * @param {Number} progress
+   * @param {number} progress current progress
    * @private
    */
-  _elapsedChanged(progress) {
+  _updateCurrentTime(progress) {
     const video = this._getShadowElementById('video_player');
-    video.currentTime = video.duration * progress;
-    this._updateTimeline(progress);
+    video.currentTime = progress;
   }
 
   /**
-   * Update the timeline fill length &
-   * track pointer positioning
+   * Update the volume of the video player
+   * @param {number} volume  current volume
    * @private
-   * @param {Number} progress
    */
-  _updateTimeline(progress) {
-    const offset = this.shadowRoot.querySelector('.track').offsetWidth * progress;
-    this._getShadowElementById('track_pointer').style.left = `${offset}px`;
-    this._getShadowElementById('track_fill').style.width = `${offset}px`;
-    this._formatElapsedTime();
+  _updateCurrentVolume(volume) {
+    this.volume = volume;
   }
 
   /**
@@ -478,7 +494,30 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    * @private
    */
   _handleFullscreenChange() {
-    this.fullscreen = !!document.fullscreenElement;
+    this.setFullscreen(!!document.fullscreenElement);
+  }
+
+  /**
+   * Play the video
+   */
+  play() {
+    this._getShadowElementById('video_player').play();
+    this._setPlaying(true);
+  }
+
+  /**
+   * Pause the video
+   */
+  pause() {
+    this._getShadowElementById('video_player').pause();
+    this._setPlaying(false);
+  }
+
+  /**
+   * Mute the audio
+   */
+  mute() {
+    this.volume = 0;
   }
 
   /**
@@ -495,12 +534,11 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    * @private
    */
   _togglePlay() {
-    const video = this._getShadowElementById('video_player');
-    this.playing = !this.playing;
+    this._setPlaying(!this.playing);
     if (this.playing) {
-      video.play();
+      this.play();
     } else {
-      video.pause();
+      this.pause();
     }
   }
 
@@ -534,11 +572,20 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    * @private
    */
   _toggleFullscreen() {
-    this.fullscreen = !this.fullscreen;
+    this._setFullscreen(!this.fullscreen);
     if (this.fullscreen) {
       this._enterFullscreen();
     } else {
       this._exitFullscreen();
+    }
+  }
+
+  _timeChanged(newTime) {
+    const video = this._getShadowElementById('video_player');
+    const { duration } = video;
+    this._setTrackPosition(newTime, duration);
+    if (!this.dragging.track) {
+      video.currentTime = 0;
     }
   }
 
@@ -549,15 +596,9 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    * @private
    */
   _volumeChanged(newVolume, oldVolume) {
+    const maxVolume = 1;
     this.prevVolume = oldVolume;
-    if (newVolume === 0) {
-      this.muted = true;
-    } else {
-      this.muted = false;
-    }
-    const offset = this._getShadowElementById('volume_track').offsetWidth * newVolume;
-    this._getShadowElementById('volume_track_fill').style.width = `${offset}px`;
-    this._getShadowElementById('volume_track_pointer').style.left = `${offset}px`;
+    this._setTrackPosition(newVolume, maxVolume, 'volume_');
     this._getShadowElementById('video_player').volume = newVolume;
   }
 
@@ -566,67 +607,197 @@ class MP4VideoPlayer extends GestureEventListeners(PolymerElement) {
    * @private
    */
   _toggleMute() {
-    this.muted = !this.muted;
-    if (this.muted) {
-      this.volume = 0;
+    if (this.volume !== 0) {
+      this.mute();
     } else {
       this.volume = this.prevVolume;
     }
   }
 
   /**
-   * Calculates the click positioning of the timeline
-   * @param {Object} event
+   * Calculate video playback, slider thumb & slider fill positioning
+   * when the user has begun pressing or tapping within a region of the slider (volume or otherwise)
+   * @param {TouchEvent| MouseEvent} e touchstart or mousedown event
    * @private
    */
-  _handleTimelineClick(event) {
-    const { id } = event.currentTarget;
-    const clickPos = event.offsetX / event.currentTarget.offsetWidth;
-    if (id === 'volume_track_bar' || id === 'volume_track') {
-      this.volume = clickPos;
+  _handleDown(e) {
+    if (e.cancelable) e.preventDefault();
+    const { button, touches, currentTarget } = e;
+    if (touches === undefined && button !== 0) return;
+    const eventPrefix = e.type === 'touchstart' ? 'touch' : 'mouse';
+    const eventReleasePrefix = e.type === 'touchstart' ? 'end' : 'up';
+    const sliderIdPrefix = currentTarget.classList.contains('volume') ? 'volume_' : '';
+    const thumb = this._getShadowElementById(`${sliderIdPrefix}track_thumb`);
+    const slider = this._getShadowElementById(`${sliderIdPrefix}track_slider`);
+    const posX = this._getRelativePosition(e, sliderIdPrefix);
+    const maxHandlePos = slider.offsetWidth - thumb.offsetWidth;
+    this.dragging.track = !currentTarget.classList.contains('volume');
+    this.dragging.volume = currentTarget.classList.contains('volume');
+    this.grabX = thumb.offsetWidth / 2;
+    this._boundMouseMove = (event) => this._handleMove(event, sliderIdPrefix);
+    this._boundMouseUp = (event) => this._handleRelease(event, sliderIdPrefix);
+
+    if (sliderIdPrefix === '') {
+      this.prevPlaying = this.playing;
+      if (this.playing) this.pause();
+      this.time = this._getValueFromPosition(this._between(posX - this.grabX, 0, maxHandlePos), maxHandlePos, this.duration);
     } else {
-      this.elapsed = clickPos;
+      const maxVolume = 1;
+      this.volume = this._getValueFromPosition(this._between(posX - this.grabX, 0, maxHandlePos), maxHandlePos, maxVolume);
+    }
+    document.addEventListener(`${eventPrefix}move`, this._boundMouseMove);
+    document.addEventListener(`${eventPrefix + eventReleasePrefix}`, this._boundMouseUp);
+  }
+
+  /**
+   * Calculate video playback, slider thumb & slider fill positioning
+   * when the user begins dragging within of the document (volume or otherwise)
+   * whilst still pressing down.
+   * @param {TouchEvent| MouseEvent} e mousemove or touchmove event
+   * @param {string} sliderIdPrefix id prefix of the slider being targeted
+   * @private
+   */
+  _handleMove(e, sliderIdPrefix) {
+    if (e.cancelable) e.preventDefault();
+    if (this.dragging.track || this.dragging.volume) {
+      const thumb = this._getShadowElementById(`${sliderIdPrefix}track_thumb`);
+      const slider = this._getShadowElementById(`${sliderIdPrefix}track_slider`);
+      const posX = this._getRelativePosition(e, sliderIdPrefix);
+      const maxHandlePos = slider.offsetWidth - thumb.offsetWidth;
+      const pos = posX - this.grabX;
+      if (sliderIdPrefix === '') {
+        this.time = this._getValueFromPosition(this._between(pos, 0, maxHandlePos), maxHandlePos, this.duration);
+      } else {
+        const maxVolume = 1;
+        this.volume = this._getValueFromPosition(this._between(pos, 0, maxHandlePos), maxHandlePos, maxVolume);
+      }
     }
   }
 
   /**
-   * Handle gesture event on the track.
-   * @param {Event} event
+   * @param {TouchEvent| MouseEvent} e mouseup or touchend event
+   * @param {string} sliderIdPrefix id prefix of the slider being targeted
    * @private
    */
-  _handleTrack(event) {
-    const video = this._getShadowElementById('video_player');
-    switch (event.detail.state) {
-      case 'start': {
-        this.dragging = true;
-        this.startleft = parseInt(event.currentTarget.style.left, 10) || 0;
-        video.muted = true;
-        break;
+  _handleRelease(e, sliderIdPrefix) {
+    if (e.cancelable) e.preventDefault();
+    const eventPrefix = e.type === 'touchend' ? 'touch' : 'mouse';
+    const eventReleasePrefix = e.type === 'touchend' ? 'end' : 'up';
+    const draggableItem = sliderIdPrefix === '' ? 'track' : 'volume';
+    this.dragging[draggableItem] = false;
+    document.removeEventListener(`${eventPrefix}move`, this._boundMouseMove);
+    document.removeEventListener(`${eventPrefix + eventReleasePrefix}`, this._boundMouseUp);
+    if (sliderIdPrefix === '') {
+      if (this.prevPlaying) this.play();
+    }
+  }
+
+  /**
+   * Derive the positioning on a slider based on a value
+   * @param {number} value current value
+   * @param {number} maxHandlePos maximum handle position of slider
+   * @param {number} maxValue maximum value
+   * @return {number} position in pixels
+   * @private
+   */
+  _getPositionFromValue(value, maxHandlePos, maxValue) {
+    const percentage = (value - this.min) / (maxValue - this.min);
+    const pos = percentage * maxHandlePos;
+    // eslint-disable-next-line no-restricted-globals
+    return isNaN(pos) ? 0 : pos;
+  }
+
+  /**
+   * Derive the value on a slider based on the current position
+   * @param {number} pos current position in pixels
+   * @param {number} maxHandlePos maximum handle position of slider
+   * @param {number} maxValue maximum value
+   * @return {number} value
+   * @private
+   */
+  _getValueFromPosition(pos, maxHandlePos, maxValue) {
+    const percentage = ((pos) / (maxHandlePos || 1));
+    const value = this.step * Math.round((percentage * (maxValue - this.min)) / this.step) + this.min;
+    return Number((value).toFixed(this.toFixed));
+  }
+
+  /**
+   * Retreive the relative positioning on a slider when a user presses or taps
+   * within its region.
+   * @param {TouchEvent| MouseEvent} e
+   * @param {string} sliderIdPrefix id prefix of the slider being targeted
+   * @return {number} relative position in pixels
+   * @private
+   */
+  _getRelativePosition(e, sliderIdPrefix) {
+    const slider = this._getShadowElementById(`${sliderIdPrefix}track_slider`);
+    const boundingClientRect = slider.getBoundingClientRect();
+    // Get the offset relative to the viewport
+    const rangeSize = boundingClientRect.left;
+    let pageOffset = 0;
+
+    const pagePositionProperty = this.vertical ? 'pageY' : 'pageX';
+
+    if (typeof e[pagePositionProperty] !== 'undefined') {
+      pageOffset = (e.touches && e.touches.length) ? e.touches[0][pagePositionProperty] : e[pagePositionProperty];
+    } else if (typeof e.originalEvent !== 'undefined') {
+      if (typeof e.originalEvent[pagePositionProperty] !== 'undefined') {
+        pageOffset = e.originalEvent[pagePositionProperty];
+      } else if (e.originalEvent.touches && e.originalEvent.touches[0]
+        && typeof e.originalEvent.touches[0][pagePositionProperty] !== 'undefined') {
+        pageOffset = e.originalEvent.touches[0][pagePositionProperty];
       }
-      case 'track': {
-        let movedBy = this.startleft + event.detail.dx;
-        if (movedBy < 0) {
-          movedBy = 0;
-        }
-        const trackWidth = event.currentTarget.previousElementSibling.previousElementSibling.offsetWidth;
-        if (movedBy > trackWidth) {
-          movedBy = trackWidth;
-        }
-        const value = movedBy / trackWidth;
-        if (event.currentTarget.id === 'volume_track_pointer') {
-          this.volume = value;
-        } else {
-          this.elapsed = value;
-        }
-        break;
-      }
-      case 'end':
-        this.dragging = false;
-        video.muted = false;
-        break;
-      default: {
-        break;
-      }
+    } else if (e.touches && e.touches[0] && typeof e.touches[0][pagePositionProperty] !== 'undefined') {
+      pageOffset = e.touches[0][pagePositionProperty];
+    } else if (e.currentPoint && (typeof e.currentPoint.x !== 'undefined' || typeof e.currentPoint.y !== 'undefined')) {
+      pageOffset = this.vertical ? e.currentPoint.y : e.currentPoint.x;
+    }
+
+    return this.vertical ? rangeSize - pageOffset : pageOffset - rangeSize;
+  }
+
+  /**
+   * Return the same position if it is within the maximum and minimum values.
+   * Otherwise set to maximum and minimum values if the position is greater than or less
+   * than respectively.
+   * @param {number} pos current position
+   * @param {number} min minimum position
+   * @param {number} max maximum position
+   * @return position
+   * @private
+   */
+  _between(pos, min, max) {
+    if (pos < min) {
+      return min;
+    }
+    if (pos > max) {
+      return max;
+    }
+    return pos;
+  }
+
+  /**
+   * Position a slider's elements appropriately
+   * @param {number} pos current position
+   * @param {string} sliderIdPrefix id prefix of the slider that is being targeted
+   * @private
+   */
+  _setPosition(pos, sliderIdPrefix = '') {
+    const slider = this._getShadowElementById(`${sliderIdPrefix}track_slider`);
+    const thumb = this._getShadowElementById(`${sliderIdPrefix}track_thumb`);
+    const fill = this._getShadowElementById(`${sliderIdPrefix}track_fill`);
+    const maxHandlePos = slider.offsetWidth - thumb.offsetWidth;
+    const max = sliderIdPrefix === 'volume_' ? 1 : this.duration;
+    const value = this._getValueFromPosition(this._between(pos, 0, maxHandlePos), maxHandlePos, max);
+    const newPos = this._getPositionFromValue(value, maxHandlePos, max);
+    fill.style.width = `${newPos + this.grabX}px`;
+    thumb.style.left = `${newPos}px`;
+
+    if (sliderIdPrefix === 'volume_' && this.dragging.volume) { // dragging volume
+      this._updateCurrentVolume(value);
+    }
+    if (sliderIdPrefix !== 'volume_' && this.dragging.track) { //  dragging timeline
+      this._updateCurrentTime(value);
     }
   }
 }
