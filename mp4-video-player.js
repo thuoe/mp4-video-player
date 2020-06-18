@@ -162,6 +162,11 @@ class MP4VideoPlayer extends PolymerElement {
         type: Number,
         value: 0
       },
+      /* Skip ahead or behind the current time based on the right or left arrow keys respectively */
+      skipBy: {
+        type: Number,
+        value: 5
+      },
       /* The formatted current position of the video playback in m:ss */
       _formattedCurrentTime: {
         type: String,
@@ -249,6 +254,14 @@ class MP4VideoPlayer extends PolymerElement {
 
   get _F_KEY() {
     return 70;
+  }
+
+  get _LEFT_ARROW() {
+    return 37;
+  }
+
+  get _RIGHT_ARROW() {
+    return 39;
   }
 
   /**
@@ -472,6 +485,7 @@ class MP4VideoPlayer extends PolymerElement {
    * @private
    */
   _handleKeyCode(event) {
+    const { currentTime } = this._getShadowElementById('video_player');
     switch (event.keyCode) {
       case this._SPACE_BAR_KEY:
       case this._P_KEY:
@@ -483,6 +497,14 @@ class MP4VideoPlayer extends PolymerElement {
       case this._F_KEY:
         this._toggleFullscreen();
         break;
+      case this._LEFT_ARROW: {
+        this._updateCurrentTime(currentTime - this.skipBy);
+        break;
+      }
+      case this._RIGHT_ARROW: {
+        this._updateCurrentTime(currentTime + this.skipBy);
+        break;
+      }
       default:
         break;
     }

@@ -33,6 +33,8 @@
       const P_KEY = 80;
       const M_KEY = 77;
       const F_KEY = 70;
+      const LEFT_ARROW = 37;
+      const RIGHT_ARROW = 39;
 
       const assertComputed = (node, expected, property) => {
         const actual = getComputedStyle(node).getPropertyValue(property).trim();
@@ -46,6 +48,7 @@
       let pauseStub;
       let enterFullscreenStub;
       let exitFullscreenStub;
+      let updateCurrentTimeStub;
       
       setup(() => {
         player = fixture('video-player-basic');
@@ -53,6 +56,7 @@
         pauseStub = createStub(player, 'pause');
         enterFullscreenStub = createStub(player, '_enterFullscreen');
         exitFullscreenStub = createStub(player, '_exitFullscreen');
+        updateCurrentTimeStub = createStub(player, '_updateCurrentTime');
         playStub.returns(Promise.resolve('Played'));
         pauseStub.returns(Promise.resolve('Paused'));
         enterFullscreenStub.returns(Promise.resolve('Enter Fullscreen'));
@@ -178,6 +182,16 @@
 
           expect(player.fullscreen).to.equal(false);
           sinon.assert.calledOnce(exitFullscreenStub);
+        });
+      
+        test('left arrow key calls "_updateCurrentTime()"', () => {
+          pressAndReleaseKeyOn(window, LEFT_ARROW);
+          sinon.assert.calledOnce(updateCurrentTimeStub);
+        });
+
+        test('right arrow key calls "_updateCurrentTime()"', () => {
+          pressAndReleaseKeyOn(window, RIGHT_ARROW);
+          sinon.assert.calledOnce(updateCurrentTimeStub);
         });
       });
 
