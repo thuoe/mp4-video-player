@@ -193,6 +193,7 @@ class MP4VideoPlayer extends PolymerElement {
 
   constructor() {
     super();
+    this.tabIndex = 0;
     this.min = 0;
     this.step = 0.01;
     this.toFixed = 8;
@@ -525,6 +526,7 @@ class MP4VideoPlayer extends PolymerElement {
   play() {
     this._getShadowElementById('video_player').play();
     this._setPlaying(true);
+    this.focus();
   }
 
   /**
