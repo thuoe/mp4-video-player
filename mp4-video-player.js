@@ -209,7 +209,7 @@ class MP4VideoPlayer extends PolymerElement {
       const { currentTime, duration } = this._getShadowElementById('video_player');
       this._setTrackPosition(currentTime, duration);
     });
-    window.addEventListener('keyup', this._handleKeyCode.bind(this));
+    window.addEventListener('keydown', this._handleKeyCode.bind(this));
   }
 
   /**
