@@ -40,6 +40,8 @@
       const F_KEY = 70;
       const LEFT_ARROW = 37;
       const RIGHT_ARROW = 39;
+      const UP_ARROW = 38;
+      const DOWN_ARROW = 40;
 
       const assertComputed = (node, expected, property) => {
         const actual = getComputedStyle(node).getPropertyValue(property).trim();
@@ -54,6 +56,7 @@
       let enterFullscreenStub;
       let exitFullscreenStub;
       let updateCurrentTimeStub;
+      let updateCurrentVolumeStub;
       
       setup(() => {
         player = fixture('video-player-basic');
@@ -62,6 +65,7 @@
         enterFullscreenStub = createStub(player, '_enterFullscreen');
         exitFullscreenStub = createStub(player, '_exitFullscreen');
         updateCurrentTimeStub = createStub(player, '_updateCurrentTime');
+        updateCurrentVolumeStub = createStub(player, '_updateCurrentVolume');
         playStub.returns(Promise.resolve('Played'));
         pauseStub.returns(Promise.resolve('Paused'));
         enterFullscreenStub.returns(Promise.resolve('Enter Fullscreen'));
@@ -203,6 +207,16 @@
         test('right arrow key calls "_updateCurrentTime()"', () => {
           pressAndReleaseKeyOn(window, RIGHT_ARROW);
           sinon.assert.calledOnce(updateCurrentTimeStub);
+        });
+
+        test('up arrow key calls "_updateCurrentVolume()"', () => {
+          pressAndReleaseKeyOn(window, UP_ARROW);
+          sinon.assert.calledOnce(updateCurrentVolumeStub);
+        });
+      
+        test('down arrow key calls "_updateCurrentVolume()"', () => {
+          pressAndReleaseKeyOn(window, DOWN_ARROW);
+          sinon.assert.calledOnce(updateCurrentVolumeStub);
         });
       });
 
