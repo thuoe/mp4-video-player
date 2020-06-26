@@ -6,7 +6,9 @@
     "web-components",
     "video-player",
     "polymer",
-    "mp4"
+    "mp4",
+    "video",
+    "player"
   ],
   "homepage": "https://github.com/thuoe/mp4-video-player",
   "repository": {
