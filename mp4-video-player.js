@@ -193,6 +193,7 @@ class MP4VideoPlayer extends PolymerElement {
 
   constructor() {
     super();
+    this.tabIndex = 0;
     this.min = 0;
     this.step = 0.01;
     this.toFixed = 8;
@@ -209,7 +210,7 @@ class MP4VideoPlayer extends PolymerElement {
       const { currentTime, duration } = this._getShadowElementById('video_player');
       this._setTrackPosition(currentTime, duration);
     });
-    window.addEventListener('keyup', this._handleKeyCode.bind(this));
+    window.addEventListener('keydown', this._handleKeyCode.bind(this));
   }
 
   /**
@@ -260,8 +261,16 @@ class MP4VideoPlayer extends PolymerElement {
     return 37;
   }
 
+  get _UP_ARROW() {
+    return 38;
+  }
+
   get _RIGHT_ARROW() {
     return 39;
+  }
+
+  get _DOWN_ARROW() {
+    return 40;
   }
 
   /**
@@ -479,13 +488,36 @@ class MP4VideoPlayer extends PolymerElement {
     this.volume = volume;
   }
 
+  _matches(element, selector) {
+    const matchMethod = element.matches
+    || element.webwebkitMatchesSelector
+    || element.msMatchesSelector
+    || element.mozMatchesSelector;
+    return matchMethod.call(element, selector);
+  }
+
   /**
    * Handle keycode video playback shortcuts
    * @param {KeyboardEvent} event key-up event
    * @private
    */
   _handleKeyCode(event) {
-    const { currentTime } = this._getShadowElementById('video_player');
+    const { keyCode } = event;
+    const { activeElement } = document;
+    const preventableCodes = [38, 40];
+    const editableSelectors = 'input, select, textarea';
+
+    if (activeElement instanceof Element) {
+      if (this._matches(activeElement, editableSelectors)) return;
+    }
+
+    if (preventableCodes.includes(keyCode)) {
+      event.preventDefault();
+    }
+
+    const maxVol = 1;
+    const minVol = 0;
+    const { currentTime, volume } = this._getShadowElementById('video_player');
     switch (event.keyCode) {
       case this._SPACE_BAR_KEY:
       case this._P_KEY:
@@ -503,6 +535,16 @@ class MP4VideoPlayer extends PolymerElement {
       }
       case this._RIGHT_ARROW: {
         this._updateCurrentTime(currentTime + this.skipBy);
+        break;
+      }
+      case this._UP_ARROW: {
+        const newVolume = this._between(volume + 0.05, minVol, maxVol);
+        this._updateCurrentVolume(newVolume);
+        break;
+      }
+      case this._DOWN_ARROW: {
+        const newVolume = this._between(volume - 0.05, minVol, maxVol);
+        this._updateCurrentVolume(newVolume);
         break;
       }
       default:
@@ -525,6 +567,7 @@ class MP4VideoPlayer extends PolymerElement {
   play() {
     this._getShadowElementById('video_player').play();
     this._setPlaying(true);
+    this.focus();
   }
 
   /**

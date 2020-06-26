@@ -65,6 +65,21 @@ export function keyEventOn(target, type, keyCode, modifiers, key) {
 }
 
 /**
+ * Fires a 'keydown' event on a specific node. This event bubbles and is
+ * cancellable.
+ *
+ * @param {!Element} target The node to fire the event on.
+ * @param {number} keyCode The keyCode for the event.
+ * @param {(string|Array<string>)=} modifiers The key modifiers for the event.
+ *     Accepted values are shift, ctrl, alt, meta.
+ * @param {string=} key The KeyboardEvent.key value for the event.
+ * @return {undefined}
+ */
+export function keyDownOn(target, keyCode, modifiers, key) {
+  keyEventOn(target, 'keydown', keyCode, modifiers, key);
+}
+
+/**
  * Fires a 'keyup' event on a specific node. This event bubbles and is
  * cancellable.
  *
@@ -91,6 +106,7 @@ export function keyUpOn(target, keyCode, modifiers, key) {
  * @return {undefined}
  */
 export function pressAndReleaseKeyOn(target, keyCode, modifiers, key) {
+  keyDownOn(target, keyCode, modifiers, key);
   keyUpOn(target, keyCode, modifiers, key);
 }
 
