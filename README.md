@@ -177,3 +177,5 @@ playback experience:
 | `f`               | Toggle fullscreen |
 | `→`               | Skip ahead        |
 | `←`               | Skip behind       |
+| `↑`               | Volume up         |
+| `↓`               | Volume down       |
