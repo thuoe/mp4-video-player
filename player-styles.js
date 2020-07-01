@@ -102,8 +102,8 @@ const playerStyles = html`
       background: linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.7));
       box-sizing: border-box;
       padding: 0px 5px 0px 5px;
-      opacity: 1;
-      transition: opacity .3s ease-in-out, transform .3s ease-in-out;
+      opacity: 0;
+      transition: opacity 0.2s ease-in-out, transform .3s ease-in-out;
     }
 
     .video-controls:hover {
