@@ -203,7 +203,8 @@ class MP4VideoPlayer extends PolymerElement {
 
   ready() {
     super.ready();
-    this.addEventListener(this.ullscreenChangeEvent, this._handleFullscreenChange.bind(this));
+    this.addEventListener(this.fullscreenChangeEvent, this._handleFullscreenChange.bind(this));
+    this.addEventListener('dblclick', this._toggleFullscreen.bind(this));
     this._createPropertyObserver('volume', '_volumeChanged', true);
     this._createPropertyObserver('time', '_timeChanged', true);
     window.addEventListener('resize', () => {
@@ -558,7 +559,7 @@ class MP4VideoPlayer extends PolymerElement {
    * @private
    */
   _handleFullscreenChange() {
-    this.setFullscreen(!!document.fullscreenElement);
+    this._setFullscreen(!!document.fullscreenElement);
   }
 
   /**

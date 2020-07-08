@@ -190,3 +190,15 @@ export function click(node, xy) {
   xy = xy || middleOfNode(node);
   makeMouseEvent('click', xy, node);
 }
+
+/**
+ * Generate a double click event on a given node, optionally at a given coordinate.
+ * @param {!Element} node The node to fire the click event on.
+ * @param {{ x: number, y: number }=} xy Optional. The (x,y) coordinates the
+ * mouse event should be fired from.
+ * @return {undefined}
+ */
+export function dblClick(node, xy) {
+  xy = xy || middleOfNode(node);
+  makeMouseEvent('dblclick', xy, node);
+}
