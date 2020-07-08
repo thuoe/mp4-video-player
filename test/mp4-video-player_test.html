@@ -33,7 +33,12 @@
 
     <script type="module">
       /* eslint-disable no-underscore-dangle, no-unused-expressions */
-      import { pressSpace, pressAndReleaseKeyOn, click } from './Interactions';
+      import {
+        pressSpace,
+        pressAndReleaseKeyOn,
+        click,
+        dblClick
+      } from './Interactions';
 
       const P_KEY = 80;
       const M_KEY = 77;
@@ -151,6 +156,13 @@
           const largePlayBtn = player.shadowRoot.querySelector('.large-btn');
           click(largePlayBtn);
           sinon.assert.calledOnce(playStub);
+        });
+
+        test('double clicking player toggles fullscreen', () => {
+          dblClick(player);
+          sinon.assert.calledOnce(enterFullscreenStub);
+          dblClick(player);
+          sinon.assert.calledOnce(exitFullscreenStub);
         });
       });
 
