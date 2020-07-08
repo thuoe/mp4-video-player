@@ -558,7 +558,7 @@ class MP4VideoPlayer extends PolymerElement {
    * @private
    */
   _handleFullscreenChange() {
-    this.setFullscreen(!!document.fullscreenElement);
+    this._setFullscreen(!!document.fullscreenElement);
   }
 
   /**
