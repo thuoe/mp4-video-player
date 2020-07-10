@@ -49,7 +49,7 @@ class MP4VideoPlayer extends PolymerElement {
           </div>
           <div class="track" 
             on-mouseenter="_toggleThumbnail"
-            on-mousemove="_updateThumbnailPosition"
+            on-mousemove="_updatePreviewPosition"
             on-mouseleave="_toggleThumbnail"
             on-mousedown="_handleDown"
             on-touchstart="_handleDown"> 
@@ -373,12 +373,11 @@ class MP4VideoPlayer extends PolymerElement {
   }
 
   /**
-   * Update thumbnail preview position on
-   * track
+   * Update preview position on track
    * @param {MouseEvent} event mouse-move event
    * @private
    */
-  _updateThumbnailPosition(event) {
+  _updatePreviewPosition(event) {
     if (this.showThumbnailPreview) {
       const thumbnail = this._getShadowElementById('preview_thumbnail');
       const containerRec = this._getShadowElementById('video_container').getBoundingClientRect();
