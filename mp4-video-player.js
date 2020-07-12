@@ -26,8 +26,8 @@ class MP4VideoPlayer extends PolymerElement {
           <source src$="{{videoFilePath}}" type="video/mp4">
         </video>
         <div class="video-controls">
-          <template is="dom-if" if={{showThumbnailPreview}}>
-            <div id="preview_thumbnail" class="thumbnail">THUMBNAIL PREVIEW MOUSE OVER POSITION: [[xPosition]]</div>
+          <template is="dom-if" if={{timelinePreview}}>
+            <div id="preview_thumbnail" class="thumbnail">[[previewTime]]</div>
           </template>
           <div id="menu" class="dropdown-menu" hidden>
             <button type="button" class="menu-item">
@@ -48,9 +48,9 @@ class MP4VideoPlayer extends PolymerElement {
             </button>
           </div>
           <div class="track" 
-            on-mouseenter="_toggleThumbnail"
+            on-mouseenter="_togglePreview"
             on-mousemove="_updatePreviewPosition"
-            on-mouseleave="_toggleThumbnail"
+            on-mouseleave="_togglePreview"
             on-mousedown="_handleDown"
             on-touchstart="_handleDown"> 
             <div id="track_slider" class="slider">
@@ -147,7 +147,7 @@ class MP4VideoPlayer extends PolymerElement {
         reflectToAttribute: true
       },
       /* Determines if the timeline preview above the track appears when hovering */
-      showThumbnailPreview: {
+      timelinePreview: {
         type: Boolean,
         value: true,
         reflectToAttribute: true
@@ -332,8 +332,8 @@ class MP4VideoPlayer extends PolymerElement {
    * @param {MouseEvent} event mouse-enter/leave event
    * @private
    */
-  _toggleThumbnail(event) {
-    if (this.showThumbnailPreview) {
+  _togglePreview(event) {
+    if (this.timelinePreview) {
       const thumbnail = this._getShadowElementById('preview_thumbnail');
       const { type } = event;
       let toggle = false;
@@ -378,9 +378,11 @@ class MP4VideoPlayer extends PolymerElement {
    * @private
    */
   _updatePreviewPosition(event) {
-    if (this.showThumbnailPreview) {
+    if (this.timelinePreview) {
+      const video = this._getShadowElementById('video_player');
       const thumbnail = this._getShadowElementById('preview_thumbnail');
-      const containerRec = this._getShadowElementById('video_container').getBoundingClientRect();
+      const container = this._getShadowElementById('video_container');
+      const containerRec = container.getBoundingClientRect();
       const thumbnailRec = thumbnail.getBoundingClientRect();
       const progressBarRec = event.currentTarget.getBoundingClientRect();
       const thumbnailWidth = thumbnailRec.width;
@@ -395,7 +397,7 @@ class MP4VideoPlayer extends PolymerElement {
         previewPos = maxVal;
       }
       thumbnail.style.left = `${previewPos}px`;
-      this.xPosition = mousePosX;
+      this.previewTime = this._formatTime(video.duration * (mousePosX / container.offsetWidth));
     }
   }
 
