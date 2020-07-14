@@ -232,24 +232,27 @@ const playerStyles = html`
     
     .thumbnail {
       position: absolute;
-      width: 168px;
-      height: 96px;
-      background: var(--video-thumbnail-background-color, rgba(255,255,255,.9));
+      width: 40px;
+      background: var(--video-thumbnail-background-color, #d32f2f);
       box-shadow: 0 1px 2px rgba(0,0,0,.15);
       bottom: 100%;
       border-radius: 5px;
+      color: white;
       text-align: center;
       opacity: 0;
     }
     
-    .thumbnail::after { 
+    .thumbnail::before {
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
       position: absolute;
       top: 100%;
       left: 50%;
       content: '';
       border-width: 5px;
       border-style: solid;
-      border-color: var(--video-thumbnail-background-color, rgba(255,255,255,.9)) transparent transparent transparent;
+      border-color: var(--video-thumbnail-background-color, #d32f2f) transparent transparent transparent;
+      transform: translateX(-50%);
     }
 
     .appear {
