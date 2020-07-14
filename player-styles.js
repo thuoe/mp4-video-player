@@ -233,7 +233,7 @@ const playerStyles = html`
     .preview {
       position: absolute;
       width: 50px;
-      background: var(--video-thumbnail-background-color, #d32f2f);
+      background: var(--video-time-preview-background-color, #d32f2f);
       box-shadow: 0 1px 2px rgba(0,0,0,.15);
       bottom: 100%;
       border-radius: 5px;
@@ -251,7 +251,7 @@ const playerStyles = html`
       content: '';
       border-width: 5px;
       border-style: solid;
-      border-color: var(--video-thumbnail-background-color, #d32f2f) transparent transparent transparent;
+      border-color: var(--video-time-preview-background-color, #d32f2f) transparent transparent transparent;
       transform: translateX(-50%);
     }
 
