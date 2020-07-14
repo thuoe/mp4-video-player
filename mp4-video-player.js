@@ -389,15 +389,16 @@ class MP4VideoPlayer extends PolymerElement {
       const minVal = containerRec.left - progressBarRec.left + 10;
       const maxVal = containerRec.right - progressBarRec.left - thumbnailWidth - 10;
       const mousePosX = event.pageX;
-      let previewPos = mousePosX - progressBarRec.left - thumbnailWidth / 2;
+      const relativePosX = mousePosX - progressBarRec.left;
+      let previewPos = relativePosX - thumbnailWidth / 2;
       if (previewPos < minVal) {
         previewPos = minVal;
       }
       if (previewPos > maxVal) {
         previewPos = maxVal;
       }
-      thumbnail.style.left = `${previewPos}px`;
-      this.previewTime = this._formatTime(video.duration * (mousePosX / container.offsetWidth));
+      thumbnail.style.left = `${previewPos + 5}px`; // TODO: very hacky. This is because of the 5px padding..
+      this.previewTime = this._formatTime(video.duration * (relativePosX / event.currentTarget.offsetWidth));
     }
   }
 

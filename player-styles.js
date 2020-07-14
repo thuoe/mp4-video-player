@@ -232,7 +232,7 @@ const playerStyles = html`
     
     .thumbnail {
       position: absolute;
-      width: 40px;
+      width: 50px;
       background: var(--video-thumbnail-background-color, #d32f2f);
       box-shadow: 0 1px 2px rgba(0,0,0,.15);
       bottom: 100%;
