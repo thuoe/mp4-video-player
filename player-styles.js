@@ -230,7 +230,7 @@ const playerStyles = html`
       display: flex;
     }
     
-    .thumbnail {
+    .preview {
       position: absolute;
       width: 50px;
       background: var(--video-thumbnail-background-color, #d32f2f);
@@ -242,7 +242,7 @@ const playerStyles = html`
       opacity: 0;
     }
     
-    .thumbnail::before {
+    .preview::before {
       border-left: 4px solid transparent;
       border-right: 4px solid transparent;
       position: absolute;
@@ -258,7 +258,6 @@ const playerStyles = html`
     .appear {
       opacity: 1;
     }
-
 
     .dropdown-menu {
       position: absolute;

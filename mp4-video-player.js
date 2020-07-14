@@ -27,7 +27,7 @@ class MP4VideoPlayer extends PolymerElement {
         </video>
         <div class="video-controls">
           <template is="dom-if" if={{timelinePreview}}>
-            <div id="preview_thumbnail" class="thumbnail">[[previewTime]]</div>
+            <div id="time_preview" class="preview">[[previewTime]]</div>
           </template>
           <div id="menu" class="dropdown-menu" hidden>
             <button type="button" class="menu-item">
@@ -334,7 +334,7 @@ class MP4VideoPlayer extends PolymerElement {
    */
   _togglePreview(event) {
     if (this.timelinePreview) {
-      const thumbnail = this._getShadowElementById('preview_thumbnail');
+      const thumbnail = this._getShadowElementById('time_preview');
       const { type } = event;
       let toggle = false;
       if (type === 'mouseenter') {
@@ -380,7 +380,7 @@ class MP4VideoPlayer extends PolymerElement {
   _updatePreviewPosition(event) {
     if (this.timelinePreview) {
       const video = this._getShadowElementById('video_player');
-      const thumbnail = this._getShadowElementById('preview_thumbnail');
+      const thumbnail = this._getShadowElementById('time_preview');
       const container = this._getShadowElementById('video_container');
       const containerRec = container.getBoundingClientRect();
       const thumbnailRec = thumbnail.getBoundingClientRect();
