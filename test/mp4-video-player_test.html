@@ -95,6 +95,12 @@
           expect(skipBy).not.to.be.undefined;
           expect(skipBy).to.be.an('number');
         });
+
+        test('timelinePreview prop can be set', () => {
+          const { timelinePreview } = player;
+          expect(timelinePreview).not.to.be.undefined;
+          expect(timelinePreview).to.be.an('boolean');
+        });
       });
 
       suite('toggling functionality', () => {
