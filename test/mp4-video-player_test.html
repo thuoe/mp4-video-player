@@ -26,7 +26,7 @@
           poster="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.jpg" 
           video-file-path="../assets/sample.mp4"
           skipBy=10
-          show-thumbnail-preview>
+          timeline-preview>
         </mp4-video-player>
       </template>
     </test-fixture>
@@ -94,6 +94,12 @@
           const { skipBy } = player;
           expect(skipBy).not.to.be.undefined;
           expect(skipBy).to.be.an('number');
+        });
+
+        test('timelinePreview prop can be set', () => {
+          const { timelinePreview } = player;
+          expect(timelinePreview).not.to.be.undefined;
+          expect(timelinePreview).to.be.an('boolean');
         });
       });
 
@@ -241,7 +247,7 @@
             '--video-track-bar-color': 'blue',
             '--video-track-fill-color': 'green',
             '--video-thumb-color': 'yellow',
-            '--video-thumbnail-background-color': 'orange',
+            '--video-time-preview-background-color': 'orange',
             '--video-menu-background-color': 'pink',
             '--video-menu-item-color': 'Cyan',
             '--video-menu-item-icon-color': 'DarkViolet',
@@ -260,6 +266,9 @@
 
           const trackThumb = player.shadowRoot.querySelector('.thumb');
           assertComputed(trackThumb, 'yellow', '--video-thumb-color');
+
+          const timePreview = player.shadowRoot.querySelector('.thumb');
+          assertComputed(timePreview, 'orange', '--video-time-preview-background-color');
       
           const menu = player.shadowRoot.querySelector('.dropdown-menu');
           assertComputed(menu, 'pink', '--video-menu-background-color');

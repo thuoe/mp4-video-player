@@ -77,7 +77,7 @@ The following properties below are accessible and writable to use:
 | `title`                | Title positioned on top of the video player                                                           | String  | `undefined`   |
 | `videoFilePath`        | Relative file path to .mp4 video                                                                      | String  | `undefined`   |
 | `poster`               | File path to poster image. It can be a relative or absolute URL                                       | String  | `undefined`   |
-| `showThumbnailPreview` | Determines if the thumbnail previews show above the timeline track                                    | Boolean | `false`       |
+| `timelinePreview`      | Determines if the timeline preview above the track appears when hovering                              | Boolean | `false`       |
 | `volume`               | The volume scaled from 0-1                                                                            | Number  | `0.5`         |
 | `time`                 | The current time in seconds of the video playback                                                     | Number  | `0`           |
 | `skipBy`               | Skip ahead or behind (in seconds) the current time based on the right or left arrow keys respectively | Number  | `5`           |
@@ -108,7 +108,7 @@ Custom property | Description | Default Value
 `--video-track-fill-color`                | Track fill color                        | `#d32f2f`
 `--video-thumb-color`                     | Thumb color used for dragging           | `#fff`
 `--video-control-icons-background-hover-color` | Control icons background hover color  | `#d32f2f`
-`--video-thumbnail-background-color`      | Thumbnail track background color        | `rgba(255,255,255,.9)`
+`---video-time-preview-background-color`  | Timeline preview background color       | `#d32f2f`
 `--video-menu-background-color`           | Menu background color                   | `rgba(255,255,255,.9)`
 `--video-menu-item-color`                 | Menu item background color              | `rgba(255,255,255,.9)`
 `--video-menu-item-icon-color`            | Menu icon color                         | `black`
