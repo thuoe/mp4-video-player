@@ -22,7 +22,7 @@ class MP4VideoPlayer extends PolymerElement {
         <div class="large-btn" on-click="play">
           <iron-icon icon="player-icons:play-arrow"></iron-icon>
         </div>
-        <video id="video_player" playsinline preload="metadata" poster$="[[poster]]" on-loadedmetadata="_metadetaLoaded" on-timeupdate="_handleTimeUpdate" on-ended="_handleEnd">
+        <video id="video_player" playsinline preload="metadata" src$="[[src]]" poster$="[[poster]]" on-loadedmetadata="_metadetaLoaded" on-timeupdate="_handleTimeUpdate" on-ended="_handleEnd">
           <source src$="{{videoFilePath}}" type="video/mp4">
         </video>
         <div class="video-controls">
@@ -118,8 +118,8 @@ class MP4VideoPlayer extends PolymerElement {
     return {
       /* The title displayed on the top of video player */
       title: String,
-      /* File path to .mp4 video */
-      videoFilePath: String,
+      /* Path to .mp4 video */
+      src: String,
       /* File path to poster image. It can be a relative or absolute URL */
       poster: String,
       /* Duration of the video */

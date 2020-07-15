@@ -75,7 +75,7 @@ The following properties below are accessible and writable to use:
 | Property               | Description                                                                                           | Type    | Default Value |
 |------------------------|-------------------------------------------------------------------------------------------------------|---------|---------------| 
 | `title`                | Title positioned on top of the video player                                                           | String  | `undefined`   |
-| `videoFilePath`        | Relative file path to .mp4 video                                                                      | String  | `undefined`   |
+| `src`                  | File path to .mp4 video                                                                               | String  | `undefined`   |
 | `poster`               | File path to poster image. It can be a relative or absolute URL                                       | String  | `undefined`   |
 | `timelinePreview`      | Determines if the timeline preview above the track appears when hovering                              | Boolean | `false`       |
 | `volume`               | The volume scaled from 0-1                                                                            | Number  | `0.5`         |

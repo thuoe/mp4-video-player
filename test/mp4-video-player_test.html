@@ -24,7 +24,7 @@
       <template>
         <mp4-video-player 
           poster="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.jpg" 
-          video-file-path="../assets/sample.mp4"
+          src="../assets/sample.mp4"
           skipBy=10
           timeline-preview>
         </mp4-video-player>
@@ -79,15 +79,15 @@
 
       suite('player props', () => {
         test('poster path can be set', () => {
-          const path = player.poster;
-          expect(path).not.to.be.undefined;
-          expect(path).to.be.an('string');
+          const { poster } = player;
+          expect(poster).not.to.be.undefined;
+          expect(poster).to.be.an('string');
         });
 
-        test('download path can be set', () => {
-          const filePath = player.videoFilePath;
-          expect(filePath).not.to.be.undefined;
-          expect(filePath).to.be.an('string');
+        test('src can be set', () => {
+          const { src } = player;
+          expect(src).not.to.be.undefined;
+          expect(src).to.be.an('string');
         });
       
         test('skipBy prop can be set', () => {
