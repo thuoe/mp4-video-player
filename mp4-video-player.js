@@ -22,7 +22,15 @@ class MP4VideoPlayer extends PolymerElement {
         <div class="large-btn" on-click="play">
           <iron-icon icon="player-icons:play-arrow"></iron-icon>
         </div>
-        <video id="video_player" playsinline preload="metadata" src$="[[src]]" poster$="[[poster]]" on-loadedmetadata="_metadetaLoaded" on-timeupdate="_handleTimeUpdate" on-ended="_handleEnd">
+        <video id="video_player" playsinline 
+          preload="metadata" 
+          src$="[[src]]" 
+          autoplay$="[[autoPlay]]" 
+          poster$="[[poster]]" 
+          on-play="_onPlay"
+          on-loadedmetadata="_metadetaLoaded"
+          on-timeupdate="_handleTimeUpdate"
+          on-ended="_handleEnd">
           <source src$="{{videoFilePath}}" type="video/mp4">
         </video>
         <div class="video-controls">
@@ -122,6 +130,8 @@ class MP4VideoPlayer extends PolymerElement {
       src: String,
       /* File path to poster image. It can be a relative or absolute URL */
       poster: String,
+      /* Whether the video should start playing as soon as it is loaded */
+      autoPlay: Boolean,
       /* Duration of the video */
       duration: {
         type: Number,
@@ -459,13 +469,22 @@ class MP4VideoPlayer extends PolymerElement {
   }
 
   /**
+   * When the video has started to play
+   */
+  _onPlay() {
+    if (this.autoPlay) {
+      this._setPlaying(true); // change the state of the track controls when initially playing..
+    }
+  }
+
+  /**
    * Update the track positioning when the
    * current video curentTime property updates
    * @param {Event} event
    * @private
    */
   _handleTimeUpdate() {
-    if (this.playing && !this.dragging.track) {
+    if ((this.playing) && !this.dragging.track) {
       const { currentTime, duration } = this._getShadowElementById('video_player');
       this._setTrackPosition(currentTime, duration);
     }

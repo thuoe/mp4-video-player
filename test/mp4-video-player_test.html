@@ -22,7 +22,8 @@
 
     <test-fixture id="video-player-basic">
       <template>
-        <mp4-video-player 
+        <mp4-video-player
+          auto-play
           poster="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.jpg" 
           src="../assets/sample.mp4"
           skipBy=10
@@ -100,6 +101,12 @@
           const { timelinePreview } = player;
           expect(timelinePreview).not.to.be.undefined;
           expect(timelinePreview).to.be.an('boolean');
+        });
+      
+        test('autoPlay prop can be set', () => {
+          const { autoPlay } = player;
+          expect(autoPlay).not.to.be.undefined;
+          expect(autoPlay).to.be.an('boolean');
         });
       });
 
