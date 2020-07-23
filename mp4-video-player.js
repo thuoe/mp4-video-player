@@ -526,7 +526,7 @@ class MP4VideoPlayer extends PolymerElement {
   _handleKeyCode(event) {
     const { keyCode } = event;
     const { activeElement } = document;
-    const preventableCodes = [38, 40];
+    const preventableCodes = [this._UP_ARROW, this._DOWN_ARROW, this._SPACE_BAR_KEY];
     const editableSelectors = 'input, select, textarea';
 
     if (activeElement instanceof Element) {
