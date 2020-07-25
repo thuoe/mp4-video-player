@@ -25,7 +25,8 @@ class MP4VideoPlayer extends PolymerElement {
         <video id="video_player" playsinline 
           preload="metadata" 
           src$="[[src]]" 
-          autoplay$="[[autoPlay]]" 
+          autoplay$="[[autoPlay]]"
+          loop$="[[loop]]"
           poster$="[[poster]]" 
           on-play="_onPlay"
           on-loadedmetadata="_metadetaLoaded"
@@ -132,6 +133,8 @@ class MP4VideoPlayer extends PolymerElement {
       poster: String,
       /* Whether the video should start playing as soon as it is loaded */
       autoPlay: Boolean,
+      /* Whether the video should start over again, every time it is finished */
+      loop: Boolean,
       /* Duration of the video */
       duration: {
         type: Number,

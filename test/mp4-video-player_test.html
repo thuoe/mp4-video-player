@@ -24,6 +24,7 @@
       <template>
         <mp4-video-player
           auto-play
+          loop
           poster="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.jpg" 
           src="../assets/sample.mp4"
           skipBy=10
@@ -107,6 +108,12 @@
           const { autoPlay } = player;
           expect(autoPlay).not.to.be.undefined;
           expect(autoPlay).to.be.an('boolean');
+        });
+
+        test('loop prop can be set', () => {
+          const { loop } = player;
+          expect(loop).not.to.be.undefined;
+          expect(loop).to.be.an('boolean');
         });
       });
 
