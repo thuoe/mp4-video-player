@@ -79,6 +79,7 @@ The following properties below are accessible and writable to use:
 | `poster`               | File path to poster image. It can be a relative or absolute URL                                       | String  | `undefined`   |
 | `timelinePreview`      | Determines if the timeline preview above the track appears when hovering                              | Boolean | `false`       |
 | `autoPlay`             | Whether the video should start playing as soon as it is loaded                                        | Boolean | `false`       |
+| `loop`                 | Whether the video should start over again, every time it is finished                                  | Boolean | `false`       |
 | `volume`               | The volume scaled from 0-1                                                                            | Number  | `0.5`         |
 | `time`                 | The current time in seconds of the video playback                                                     | Number  | `0`           |
 | `skipBy`               | Skip ahead or behind (in seconds) the current time based on the right or left arrow keys respectively | Number  | `5`           |
