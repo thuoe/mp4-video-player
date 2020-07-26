@@ -158,7 +158,7 @@ Or you can dynamically change the CSS properties at runtime..
 ```js
 window.addEventListener('WebComponentsReady', () => {
   // when the video player element has finished initializing..
-  const player = window.querySelector('mp4-video-player');
+  const player = document.querySelector('mp4-video-player');
   player.updateStyles({
       '--video-min-width': '750px',
       '--video-min-height': '300px',
