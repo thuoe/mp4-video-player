@@ -117,6 +117,30 @@
         });
       });
 
+      suite('player event listeners', () => {
+        test('fires a play event', (done) => {
+          player.addEventListener('play', (event) => {
+            expect(event.detail.currentTime).not.to.be.undefined;
+            done();
+          });
+          player.fireEvent('play');
+        });
+        test('fires a pause event', (done) => {
+          player.addEventListener('pause', (event) => {
+            expect(event.detail.currentTime).not.to.be.undefined;
+            done();
+          });
+          player.fireEvent('pause');
+        });
+        test('fires a ended event', (done) => {
+          player.addEventListener('ended', (event) => {
+            expect(event.detail.currentTime).not.to.be.undefined;
+            done();
+          });
+          player.fireEvent('ended');
+        });
+      });
+
       suite('toggling functionality', () => {
         test('toggle play', () => {
           player.play = () => Promise.resolve();
