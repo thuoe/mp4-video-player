@@ -490,6 +490,12 @@ class MP4VideoPlayer extends PolymerElement {
       case 'ended':
         this._fireEndedEvent();
         break;
+      case 'enterFullscreen':
+        this._fireEnterFullscreenEvent();
+        break;
+      case 'exitFullscreen':
+        this._fireExitFullscreenEvent();
+        break;
       default:
         break;
     }
@@ -520,6 +526,22 @@ class MP4VideoPlayer extends PolymerElement {
   _fireEndedEvent() {
     const { currentTime } = this._getShadowElementById('video_player');
     this.dispatchEvent(this._createEvent('ended', { currentTime }));
+  }
+
+  /**
+   * When the video has enter fullscreen
+   */
+  _fireEnterFullscreenEvent() {
+    const { currentTime } = this._getShadowElementById('video_player');
+    this.dispatchEvent(this._createEvent('enterFullscreen', { currentTime }));
+  }
+
+  /**
+   * When the video has exited fullscreen
+   */
+  _fireExitFullscreenEvent() {
+    const { currentTime } = this._getShadowElementById('video_player');
+    this.dispatchEvent(this._createEvent('exitFullscreen', { currentTime }));
   }
 
   /**
@@ -625,7 +647,13 @@ class MP4VideoPlayer extends PolymerElement {
    * @private
    */
   _handleFullscreenChange() {
-    this._setFullscreen(!!document.fullscreenElement);
+    const isFullscreen = !!document.fullscreenElement;
+    if (isFullscreen) {
+      this._fireEnterFullscreenEvent();
+    } else {
+      this._fireExitFullscreenEvent();
+    }
+    this._setFullscreen(isFullscreen);
   }
 
   /**
