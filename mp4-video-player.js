@@ -559,7 +559,7 @@ class MP4VideoPlayer extends PolymerElement {
   }
 
   /**
-   * When the video has exited fullscreen
+   * When the video has changed volume
    */
   _fireVolumeChangeEvent() {
     const { volume } = this._getShadowElementById('video_player');
