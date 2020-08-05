@@ -496,6 +496,9 @@ class MP4VideoPlayer extends PolymerElement {
       case 'exitFullscreen':
         this._fireExitFullscreenEvent();
         break;
+      case 'timeUpdated':
+        this._fireTimeUpdatedEvent();
+        break;
       default:
         break;
     }
@@ -545,6 +548,14 @@ class MP4VideoPlayer extends PolymerElement {
   }
 
   /**
+   * When the video has exited fullscreen
+   */
+  _fireTimeUpdatedEvent() {
+    const { currentTime } = this._getShadowElementById('video_player');
+    this.dispatchEvent(this._createEvent('timeUpdated', { currentTime }));
+  }
+
+  /**
    * Update the track positioning when the
    * current video curentTime property updates
    * @param {Event} event
@@ -565,6 +576,7 @@ class MP4VideoPlayer extends PolymerElement {
    */
   _updateCurrentTime(progress) {
     const video = this._getShadowElementById('video_player');
+    this._fireTimeUpdatedEvent();
     video.currentTime = progress;
   }
 

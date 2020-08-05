@@ -157,6 +157,14 @@
           });
           player.fireEvent('exitFullscreen');
         });
+      
+        test('fires timeUpdated event', (done) => {
+          player.addEventListener('timeUpdated', (event) => {
+            expect(event.detail.currentTime).not.to.be.undefined;
+            done();
+          });
+          player.fireEvent('timeUpdated');
+        });
       });
 
       suite('toggling functionality', () => {
