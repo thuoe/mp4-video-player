@@ -165,6 +165,18 @@
           });
           player.fireEvent('timeUpdated');
         });
+      
+        test('fires volumeChange event', (done) => {
+          let alreadyDone = false;
+          player.addEventListener('volumeChange', (event) => {
+            expect(event.detail.volume).not.to.be.undefined;
+            if (!alreadyDone) { // observer '_volumeChanged'
+              alreadyDone = true;
+              done();
+            }
+          });
+          player.fireEvent('volumeChange');
+        });
       });
 
       suite('toggling functionality', () => {

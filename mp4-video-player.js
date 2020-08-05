@@ -499,6 +499,9 @@ class MP4VideoPlayer extends PolymerElement {
       case 'timeUpdated':
         this._fireTimeUpdatedEvent();
         break;
+      case 'volumeChange':
+        this._fireVolumeChangeEvent();
+        break;
       default:
         break;
     }
@@ -553,6 +556,14 @@ class MP4VideoPlayer extends PolymerElement {
   _fireTimeUpdatedEvent() {
     const { currentTime } = this._getShadowElementById('video_player');
     this.dispatchEvent(this._createEvent('timeUpdated', { currentTime }));
+  }
+
+  /**
+   * When the video has exited fullscreen
+   */
+  _fireVolumeChangeEvent() {
+    const { volume } = this._getShadowElementById('video_player');
+    this.dispatchEvent(this._createEvent('volumeChange', { volume }));
   }
 
   /**
@@ -763,6 +774,7 @@ class MP4VideoPlayer extends PolymerElement {
     this.prevVolume = oldVolume;
     this._setTrackPosition(newVolume, maxVolume, 'volume_');
     this._getShadowElementById('video_player').volume = newVolume;
+    this._fireVolumeChangeEvent();
   }
 
   /**
