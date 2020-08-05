@@ -440,6 +440,7 @@ class MP4VideoPlayer extends PolymerElement {
    */
   _metadetaLoaded(event) {
     const { duration } = event.currentTarget;
+    this._fireLoadedmetadata();
     this._setDuration(duration);
     this._formattedDuration = this._formatTime(duration);
   }
@@ -481,6 +482,9 @@ class MP4VideoPlayer extends PolymerElement {
    */
   fireEvent(type) {
     switch (type) {
+      case 'loaded':
+        this._fireLoadedmetadata();
+        break;
       case 'play':
         this._firePlayEvent();
         break;
@@ -505,6 +509,14 @@ class MP4VideoPlayer extends PolymerElement {
       default:
         break;
     }
+  }
+
+  /**
+   * When the video has paused
+   */
+  _fireLoadedmetadata() {
+    const { duration } = this._getShadowElementById('video_player');
+    this.dispatchEvent(this._createEvent('loadedmetadata', { duration }));
   }
 
   /**

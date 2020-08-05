@@ -118,6 +118,14 @@
       });
 
       suite('player event listeners', () => {
+        test('fires loadedmetadata event', (done) => {
+          player.addEventListener('loadedmetadata', (event) => {
+            expect(event.detail.duration).not.to.be.undefined;
+            done();
+          });
+          player.fireEvent('loadedmetadata');
+        });
+      
         test('fires play event', (done) => {
           player.addEventListener('play', (event) => {
             expect(event.detail.currentTime).not.to.be.undefined;
