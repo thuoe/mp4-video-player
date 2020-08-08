@@ -28,10 +28,11 @@ class MP4VideoPlayer extends PolymerElement {
           autoplay$="[[autoPlay]]"
           loop$="[[loop]]"
           poster$="[[poster]]" 
-          on-play="_onPlay"
+          on-play="_firePlayEvent"
+          on-pause="_firePauseEvent"
+          on-ended="_fireEndedEvent"
           on-loadedmetadata="_metadetaLoaded"
-          on-timeupdate="_handleTimeUpdate"
-          on-ended="_handleEnd">
+          on-timeupdate="_handleTimeUpdate">
           <source src$="{{videoFilePath}}" type="video/mp4">
         </video>
         <div class="video-controls">
@@ -439,6 +440,7 @@ class MP4VideoPlayer extends PolymerElement {
    */
   _metadetaLoaded(event) {
     const { duration } = event.currentTarget;
+    this._fireLoadedmetadata();
     this._setDuration(duration);
     this._formattedDuration = this._formatTime(duration);
   }
@@ -471,13 +473,109 @@ class MP4VideoPlayer extends PolymerElement {
     return `${mins}:${secs}`;
   }
 
+  _createEvent(eventName, detail) {
+    return new CustomEvent(eventName, { bubbles: true, detail });
+  }
+
+  /**
+   * Fire the appropriate event based on event type
+   */
+  fireEvent(type) {
+    switch (type) {
+      case 'loaded':
+        this._fireLoadedmetadata();
+        break;
+      case 'play':
+        this._firePlayEvent();
+        break;
+      case 'pause':
+        this._firePauseEvent();
+        break;
+      case 'ended':
+        this._fireEndedEvent();
+        break;
+      case 'enterFullscreen':
+        this._fireEnterFullscreenEvent();
+        break;
+      case 'exitFullscreen':
+        this._fireExitFullscreenEvent();
+        break;
+      case 'timeUpdated':
+        this._fireTimeUpdatedEvent();
+        break;
+      case 'volumeChange':
+        this._fireVolumeChangeEvent();
+        break;
+      default:
+        break;
+    }
+  }
+
+  /**
+   * When the video has paused
+   */
+  _fireLoadedmetadata() {
+    const { duration } = this._getShadowElementById('video_player');
+    this.dispatchEvent(this._createEvent('loadedmetadata', { duration }));
+  }
+
   /**
    * When the video has started to play
    */
-  _onPlay() {
+  _firePlayEvent() {
+    const { currentTime } = this._getShadowElementById('video_player');
     if (this.autoPlay) {
       this._setPlaying(true); // change the state of the track controls when initially playing..
     }
+    this.dispatchEvent(this._createEvent('play', { currentTime }));
+  }
+
+  /**
+   * When the video has paused
+   */
+  _firePauseEvent() {
+    const { currentTime } = this._getShadowElementById('video_player');
+    this.dispatchEvent(this._createEvent('pause', { currentTime }));
+  }
+
+  /**
+   * When the video has ended
+   */
+  _fireEndedEvent() {
+    const { currentTime } = this._getShadowElementById('video_player');
+    this.dispatchEvent(this._createEvent('ended', { currentTime }));
+  }
+
+  /**
+   * When the video has enter fullscreen
+   */
+  _fireEnterFullscreenEvent() {
+    const { currentTime } = this._getShadowElementById('video_player');
+    this.dispatchEvent(this._createEvent('enterFullscreen', { currentTime }));
+  }
+
+  /**
+   * When the video has exited fullscreen
+   */
+  _fireExitFullscreenEvent() {
+    const { currentTime } = this._getShadowElementById('video_player');
+    this.dispatchEvent(this._createEvent('exitFullscreen', { currentTime }));
+  }
+
+  /**
+   * When the video has exited fullscreen
+   */
+  _fireTimeUpdatedEvent() {
+    const { currentTime } = this._getShadowElementById('video_player');
+    this.dispatchEvent(this._createEvent('timeUpdated', { currentTime }));
+  }
+
+  /**
+   * When the video has changed volume
+   */
+  _fireVolumeChangeEvent() {
+    const { volume } = this._getShadowElementById('video_player');
+    this.dispatchEvent(this._createEvent('volumeChange', { volume }));
   }
 
   /**
@@ -501,6 +599,7 @@ class MP4VideoPlayer extends PolymerElement {
    */
   _updateCurrentTime(progress) {
     const video = this._getShadowElementById('video_player');
+    this._fireTimeUpdatedEvent();
     video.currentTime = progress;
   }
 
@@ -583,7 +682,13 @@ class MP4VideoPlayer extends PolymerElement {
    * @private
    */
   _handleFullscreenChange() {
-    this._setFullscreen(!!document.fullscreenElement);
+    const isFullscreen = !!document.fullscreenElement;
+    if (isFullscreen) {
+      this._fireEnterFullscreenEvent();
+    } else {
+      this._fireExitFullscreenEvent();
+    }
+    this._setFullscreen(isFullscreen);
   }
 
   /**
@@ -608,15 +713,6 @@ class MP4VideoPlayer extends PolymerElement {
    */
   mute() {
     this.volume = 0;
-  }
-
-  /**
-   * Dispatch a custom event when the video has
-   * ended
-   * @private
-   */
-  _handleEnd() {
-    this.dispatchEvent(new CustomEvent('videoEnded', { detail: { ended: true } }));
   }
 
   /**
@@ -690,6 +786,7 @@ class MP4VideoPlayer extends PolymerElement {
     this.prevVolume = oldVolume;
     this._setTrackPosition(newVolume, maxVolume, 'volume_');
     this._getShadowElementById('video_player').volume = newVolume;
+    this._fireVolumeChangeEvent();
   }
 
   /**

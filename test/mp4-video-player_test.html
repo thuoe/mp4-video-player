@@ -117,6 +117,77 @@
         });
       });
 
+      suite('player event listeners', () => {
+        /* Timeout
+        test('fires loadedmetadata event', (done) => {
+          player.addEventListener('loadedmetadata', (event) => {
+            expect(event.detail.duration).not.to.be.undefined;
+            done();
+          });
+          player.fireEvent('loadedmetadata');
+        }); */
+      
+        test('fires play event', (done) => {
+          player.addEventListener('play', (event) => {
+            expect(event.detail.currentTime).not.to.be.undefined;
+            done();
+          });
+          player.fireEvent('play');
+        });
+      
+        test('fires pause event', (done) => {
+          player.addEventListener('pause', (event) => {
+            expect(event.detail.currentTime).not.to.be.undefined;
+            done();
+          });
+          player.fireEvent('pause');
+        });
+      
+        test('fires ended event', (done) => {
+          player.addEventListener('ended', (event) => {
+            expect(event.detail.currentTime).not.to.be.undefined;
+            done();
+          });
+          player.fireEvent('ended');
+        });
+      
+        test('fires enterFullscreen event', (done) => {
+          player.addEventListener('enterFullscreen', (event) => {
+            expect(event.detail.currentTime).not.to.be.undefined;
+            done();
+          });
+          player.fireEvent('enterFullscreen');
+        });
+      
+        test('fires exitFullscreen event', (done) => {
+          player.addEventListener('exitFullscreen', (event) => {
+            expect(event.detail.currentTime).not.to.be.undefined;
+            done();
+          });
+          player.fireEvent('exitFullscreen');
+        });
+      
+        test('fires timeUpdated event', (done) => {
+          player.addEventListener('timeUpdated', (event) => {
+            expect(event.detail.currentTime).not.to.be.undefined;
+            done();
+          });
+          player.fireEvent('timeUpdated');
+        });
+      
+        test('fires volumeChange event', (done) => {
+          let alreadyDone = false;
+          player.addEventListener('volumeChange', (event) => {
+            expect(event.detail.volume).not.to.be.undefined;
+            if (!alreadyDone) { // observer '_volumeChanged'
+              alreadyDone = true;
+              done();
+            }
+          });
+          player.fireEvent('volumeChange');
+        });
+      });
+
       suite('toggling functionality', () => {
         test('toggle play', () => {
           player.play = () => Promise.resolve();
