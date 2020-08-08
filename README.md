@@ -181,3 +181,28 @@ playback experience:
 | `←`               | Skip behind       |
 | `↑`               | Volume up         |
 | `↓`               | Volume down       |
+
+
+## Custom Events
+
+The player has a suite of events created using the CustomEvent API at your disposal to listen out for:
+
+
+| Event             | Description                                         | `event.detail` properties |
+|-------------------|-----------------------------------------------------|---------------------------|
+| `play`            | When the video begins to play                       | `currentTime`             |
+| `pause`           | When the video has been paused                      | `currentTime`             |
+| `ended`           | When the video has ended                            | `currentTime`             |
+| `exitFullscreen`  | When exiting fullscreen mode                        | `currentTime`             |
+| `enterFullscreen` | When entering fullscreen mode                       | `currentTime`             |
+| `timeUpdated`     | When the current time has updated to a new position | `currentTime`             |
+| `volumeChange`    | When the volume has been changed                    | `volume`                  |
+
+Code Example: 
+
+```js 
+const videoPlayer = document.querySelector('mp4-video-player');
+videoPlayer.addEventListener('timeUpdated', (event) => {
+  console.log('Time Updated!', event.detail.currentTime);
+});
+```
