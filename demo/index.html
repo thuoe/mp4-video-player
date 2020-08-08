@@ -32,5 +32,25 @@
         </template>
       </demo-snippet>
     </div>
+    <script>
+      window.addEventListener('WebComponentsReady', () => {
+        const player = document.querySelector('mp4-video-player');
+        player.addEventListener('exitFullscreen', (e) => {
+          console.log('Exit Fullscreen!', e.detail.currentTime);
+        });
+        player.addEventListener('enterFullscreen', (e) => {
+          console.log('Enter Fullscreen!', e.detail.currentTime);
+        });
+        player.addEventListener('timeUpdated', (e) => {
+          console.log('Time Updated!', e.detail.currentTime);
+        });
+        player.addEventListener('volumeChange', (e) => {
+          console.log('New Volume!', e.detail.volume);
+        });
+        player.addEventListener('loadedmetadata', (e) => {
+          console.log('Loaded!', e.detail.duration);
+        });
+      });
+    </script>
   </body>
 </html>
