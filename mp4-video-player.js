@@ -22,7 +22,10 @@ class MP4VideoPlayer extends PolymerElement {
         <div class="large-btn" on-click="play">
           <iron-icon icon="player-icons:play-arrow"></iron-icon>
         </div>
-        <video id="video_player" playsinline 
+        <video 
+          id="video_player" 
+          playsinline
+          on-dblclick="_toggleFullscreen"
           preload="metadata" 
           src$="[[src]]" 
           autoplay$="[[autoPlay]]"
@@ -218,7 +221,6 @@ class MP4VideoPlayer extends PolymerElement {
   ready() {
     super.ready();
     this.addEventListener(this.fullscreenChangeEvent, this._handleFullscreenChange.bind(this));
-    this.addEventListener('dblclick', this._toggleFullscreen.bind(this));
     this._createPropertyObserver('volume', '_volumeChanged', true);
     this._createPropertyObserver('time', '_timeChanged', true);
     window.addEventListener('resize', () => {
