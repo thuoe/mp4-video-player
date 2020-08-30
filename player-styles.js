@@ -26,6 +26,44 @@ const playerStyles = html`
       text-decoration: none;
     }
 
+    .pulse-icon {
+      position: absolute;
+      top: 50%;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin-top: -50px;
+      background: red;
+      box-shadow: 0 0 0 0 rgba(224,20,20, 1);
+      animation: pulse 1s ease-out;
+      animation-iteration-count: infinite;
+    }
+
+    .pulse-icon.icon-left {
+      margin-left: 20%;
+    }
+
+    .pulse-icon.icon-right {
+      right: 0;
+      margin-right: 20%;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(0.1, 0.1);
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 1;
+      }
+
+      100% {
+        transform: scale(1, 1);
+        opacity: 0;
+      }
+    }
+
     video {
       width: 100%;
       height: 100%;
