@@ -48,6 +48,15 @@ const playerStyles = html`
       margin-right: 20%;
     }
 
+    .pulse-icon > iron-icon {
+      position: relative;
+      top: 50%;
+      left: 50%;
+      width: 45px;
+      height: 45px;
+      transform: translate(-50%, -50%);
+    }
+
     @keyframes pulse {
       0% {
         transform: scale(0.1, 0.1);

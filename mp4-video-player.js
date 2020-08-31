@@ -20,10 +20,10 @@ class MP4VideoPlayer extends PolymerElement {
           <h3 id="video_title">[[title]]</h3>
         </div>
         <div class="pulse-icon icon-left">
-          SKIP BACK ICON
+          <iron-icon icon="player-icons:replay-5"></iron-icon>
         </div>
         <div class="pulse-icon icon-right">
-          SKIP AHEAD ICON
+          <iron-icon icon="player-icons:forward-5"></iron-icon>
         </div>
         <div class="large-btn" on-click="play">
           <iron-icon icon="player-icons:play-arrow"></iron-icon>
