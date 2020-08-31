@@ -60,11 +60,11 @@ const playerStyles = html`
     @keyframes pulse {
       0% {
         transform: scale(0.1, 0.1);
-        opacity: 1;
+        opacity: 0.3;
       }
 
       50% {
-        opacity: 1;
+        opacity: 0.5;
       }
 
       100% {
