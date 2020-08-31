@@ -19,10 +19,10 @@ class MP4VideoPlayer extends PolymerElement {
         <div class="title">
           <h3 id="video_title">[[title]]</h3>
         </div>
-        <div class="pulse-icon icon-left">
+        <div id="replay_pulse" class="pulse-icon icon-left">
           <iron-icon icon="player-icons:replay-5"></iron-icon>
         </div>
-        <div class="pulse-icon icon-right">
+        <div id="forward_pulse" class="pulse-icon icon-right">
           <iron-icon icon="player-icons:forward-5"></iron-icon>
         </div>
         <div class="large-btn" on-click="play">
@@ -650,6 +650,8 @@ class MP4VideoPlayer extends PolymerElement {
     const maxVol = 1;
     const minVol = 0;
     const { currentTime, volume } = this._getShadowElementById('video_player');
+    const forwardPulse = this._getShadowElementById('forward_pulse');
+    const replayPulse = this._getShadowElementById('replay_pulse');
     switch (event.keyCode) {
       case this._SPACE_BAR_KEY:
       case this._P_KEY:
@@ -663,10 +665,18 @@ class MP4VideoPlayer extends PolymerElement {
         break;
       case this._LEFT_ARROW: {
         this._updateCurrentTime(currentTime - this.skipBy);
+        replayPulse.classList.remove('on');
+        // eslint-disable-next-line no-unused-expressions
+        replayPulse.offsetWidth; // trigger reflow..
+        replayPulse.classList.add('on');
         break;
       }
       case this._RIGHT_ARROW: {
         this._updateCurrentTime(currentTime + this.skipBy);
+        forwardPulse.classList.remove('on');
+        // eslint-disable-next-line no-unused-expressions
+        forwardPulse.offsetWidth; // trigger reflow..
+        forwardPulse.classList.add('on');
         break;
       }
       case this._UP_ARROW: {

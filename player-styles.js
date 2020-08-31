@@ -33,10 +33,9 @@ const playerStyles = html`
       height: 100px;
       border-radius: 50%;
       margin-top: -50px;
-      background: red;
+      background: var(--video-pulse-icon-color, #d32f2f);
+      transform: scale(0);
       box-shadow: 0 0 0 0 rgba(224,20,20, 1);
-      animation: pulse 1s ease-out;
-      animation-iteration-count: infinite;
     }
 
     .pulse-icon.icon-left {
@@ -55,6 +54,10 @@ const playerStyles = html`
       width: 45px;
       height: 45px;
       transform: translate(-50%, -50%);
+    }
+
+    .pulse-icon.on {
+      animation: pulse 0.55s ease-out;
     }
 
     @keyframes pulse {
