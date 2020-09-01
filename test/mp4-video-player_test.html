@@ -329,7 +329,8 @@
             '--video-menu-item-color': 'Cyan',
             '--video-menu-item-icon-color': 'DarkViolet',
             '--video-tooltip-background-color': 'Magenta',
-            '--video-large-play-button-color': 'Azure'
+            '--video-large-play-button-color': 'Azure',
+            '--video-pulse-icon-color': 'LightSteelBlue'
           });
       
           assertComputed(player, '750px', '--video-min-width');
@@ -361,6 +362,12 @@
 
           const largePlayBtn = player.shadowRoot.querySelector('.tooltip');
           assertComputed(largePlayBtn, 'Azure', '--video-large-play-button-color');
+
+          const forwardPulse = player.shadowRoot.querySelector('#forward_pulse');
+          assertComputed(forwardPulse, 'LightSteelBlue', '--video-pulse-icon-color');
+
+          const replayPulse = player.shadowRoot.querySelector('#replay_pulse');
+          assertComputed(replayPulse, 'LightSteelBlue', '--video-pulse-icon-color');
         });
       });
 
