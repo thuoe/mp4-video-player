@@ -105,6 +105,20 @@ const playerStyles = html`
       z-index: 3;
     }
 
+    .tap-region {
+      position: absolute;
+      width: 50%;
+      height: 100%;
+    }
+
+    .tap-left {
+      left: 0;
+    }
+
+    .tap-right {
+      right: 0;
+    }
+
     .title:hover {
       opacity: 1;
     }

@@ -19,6 +19,10 @@ class MP4VideoPlayer extends PolymerElement {
         <div class="title">
           <h3 id="video_title">[[title]]</h3>
         </div>
+        <div id="region_left" class="tap-region tap-left" on-touchstart="_handleDblTap">
+        </div>
+        <div id="region_right" class="tap-region tap-right" on-touchstart="_handleDblTap">
+        </div>
         <div id="replay_pulse" class="pulse-icon icon-left">
           <iron-icon icon="player-icons:replay-5"></iron-icon>
         </div>
@@ -629,6 +633,47 @@ class MP4VideoPlayer extends PolymerElement {
   }
 
   /**
+   *  Skip forward or replay the current time of the video
+   * @param {Boolean} forward whether or not to skip forward
+   */
+  _skip(forward) {
+    const idPrefix = forward ? 'forward' : 'replay';
+    const skipBy = forward ? this.skipBy : -this.skipBy;
+    const { currentTime } = this._getShadowElementById('video_player');
+    const pulse = this._getShadowElementById(`${idPrefix}_pulse`);
+    this._updateCurrentTime(currentTime + skipBy);
+    pulse.classList.remove('on');
+    // eslint-disable-next-line no-unused-expressions
+    pulse.offsetWidth; // trigger reflow..
+    pulse.classList.add('on');
+  }
+
+  /**
+   * Handle double tap events on video container
+   * @param {TouchEvent} e touch event
+   */
+  _handleDblTap(e) {
+    const { currentTarget: { id } } = e;
+    const time = new Date().getTime();
+    const tapLength = time - this.lastTap;
+    let skipForward = true;
+
+    e.preventDefault();
+    clearTimeout(this.timeout);
+    if (tapLength < 500 && tapLength > 0) {
+      if (id === 'region_left') {
+        skipForward = false;
+      }
+      this._skip(skipForward);
+    } else {
+      this.timeout = setTimeout(() => {
+        clearTimeout(this.timeout);
+      }, 500);
+    }
+    this.lastTap = time;
+  }
+
+  /**
    * Handle keycode video playback shortcuts
    * @param {KeyboardEvent} event key-up event
    * @private
@@ -649,9 +694,7 @@ class MP4VideoPlayer extends PolymerElement {
 
     const maxVol = 1;
     const minVol = 0;
-    const { currentTime, volume } = this._getShadowElementById('video_player');
-    const forwardPulse = this._getShadowElementById('forward_pulse');
-    const replayPulse = this._getShadowElementById('replay_pulse');
+    const { volume } = this._getShadowElementById('video_player');
     switch (event.keyCode) {
       case this._SPACE_BAR_KEY:
       case this._P_KEY:
@@ -664,19 +707,11 @@ class MP4VideoPlayer extends PolymerElement {
         this._toggleFullscreen();
         break;
       case this._LEFT_ARROW: {
-        this._updateCurrentTime(currentTime - this.skipBy);
-        replayPulse.classList.remove('on');
-        // eslint-disable-next-line no-unused-expressions
-        replayPulse.offsetWidth; // trigger reflow..
-        replayPulse.classList.add('on');
+        this._skip(false);
         break;
       }
       case this._RIGHT_ARROW: {
-        this._updateCurrentTime(currentTime + this.skipBy);
-        forwardPulse.classList.remove('on');
-        // eslint-disable-next-line no-unused-expressions
-        forwardPulse.offsetWidth; // trigger reflow..
-        forwardPulse.classList.add('on');
+        this._skip(true);
         break;
       }
       case this._UP_ARROW: {
