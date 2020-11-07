@@ -694,9 +694,7 @@ class MP4VideoPlayer extends PolymerElement {
 
     const maxVol = 1;
     const minVol = 0;
-    const { currentTime, volume } = this._getShadowElementById('video_player');
-    const forwardPulse = this._getShadowElementById('forward_pulse');
-    const replayPulse = this._getShadowElementById('replay_pulse');
+    const { volume } = this._getShadowElementById('video_player');
     switch (event.keyCode) {
       case this._SPACE_BAR_KEY:
       case this._P_KEY:
@@ -709,19 +707,11 @@ class MP4VideoPlayer extends PolymerElement {
         this._toggleFullscreen();
         break;
       case this._LEFT_ARROW: {
-        this._updateCurrentTime(currentTime - this.skipBy);
-        replayPulse.classList.remove('on');
-        // eslint-disable-next-line no-unused-expressions
-        replayPulse.offsetWidth; // trigger reflow..
-        replayPulse.classList.add('on');
+        this._skip(false);
         break;
       }
       case this._RIGHT_ARROW: {
-        this._updateCurrentTime(currentTime + this.skipBy);
-        forwardPulse.classList.remove('on');
-        // eslint-disable-next-line no-unused-expressions
-        forwardPulse.offsetWidth; // trigger reflow..
-        forwardPulse.classList.add('on');
+        this._skip(true);
         break;
       }
       case this._UP_ARROW: {
