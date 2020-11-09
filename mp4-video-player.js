@@ -1,6 +1,7 @@
 import '@polymer/iron-icon/iron-icon';
 import { html, PolymerElement } from '@polymer/polymer/polymer-element';
 import 'player-icons/player-icons';
+import 'ua-parser-js';
 import playerStyles from './player-styles';
 
 /**
@@ -102,21 +103,23 @@ class MP4VideoPlayer extends PolymerElement {
               </div>
             </div>
             <div class="right">
-              <div id="volume_icons" class="control-icons" tabindex="0" on-click="_toggleMute">
-                <template is="dom-if" if={{muted}}>
-                <iron-icon icon="player-icons:volume-off"></iron-icon>
-                </template>
-                <template is="dom-if" if={{!muted}}>
-                <iron-icon icon="player-icons:volume-up"></iron-icon>
-                </template>
-                <span class="tooltip">[[_tooltipCaptions.volumeButton]]</span>
-              </div>
-              <div id="volume_track" class="track volume" on-mousedown="_handleDown" on-touchstart="_handleDown"> 
-                <div id="volume_track_slider" class="slider volume">
-                  <div id="volume_track_thumb" class="thumb volume"></div>
-                  <div id="volume_track_fill" class="fill volume"></div>
+              <template is="dom-if" if={{!isIOSDevice}}>
+                <div id="volume_icons" class="control-icons" tabindex="0" on-click="_toggleMute">
+                  <template is="dom-if" if={{muted}}>
+                  <iron-icon icon="player-icons:volume-off"></iron-icon>
+                  </template>
+                  <template is="dom-if" if={{!muted}}>
+                  <iron-icon icon="player-icons:volume-up"></iron-icon>
+                  </template>
+                  <span class="tooltip">[[_tooltipCaptions.volumeButton]]</span>
                 </div>
-              </div>
+                <div id="volume_track" class="track volume" on-mousedown="_handleDown" on-touchstart="_handleDown"> 
+                  <div id="volume_track_slider" class="slider volume">
+                    <div id="volume_track_thumb" class="thumb volume"></div>
+                    <div id="volume_track_fill" class="fill volume"></div>
+                  </div>
+                </div>
+              </template>
               <div id="fullscreen_icons" class="control-icons" on-click="_toggleFullscreen">
                 <template is="dom-if" if={{!fullscreen}}>
                   <iron-icon icon="player-icons:fullscreen"></iron-icon>
@@ -226,6 +229,8 @@ class MP4VideoPlayer extends PolymerElement {
     this.toFixed = 8;
     this.dragging = { volume: false, track: false };
     this.fullscreenChangeEvent = this._prefix === 'ms' ? 'MSFullscreenchange' : `${this._prefix}fullscreenchange`;
+    this.parser = new UAParser();
+    this.isIOSDevice = this.parser.getOS().name === 'iOS';
   }
 
   ready() {
