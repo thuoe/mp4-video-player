@@ -282,6 +282,10 @@ const playerStyles = html`
       margin-right: 7px;
     }
 
+    :host([touch-device]) .right {
+      justify-content: flex-end;
+    }
+
     .time-elapsed {
       margin-left: 25px;
       line-height: 24px;

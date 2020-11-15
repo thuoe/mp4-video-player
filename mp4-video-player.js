@@ -103,7 +103,7 @@ class MP4VideoPlayer extends PolymerElement {
               </div>
             </div>
             <div class="right">
-              <template is="dom-if" if={{!isIOSDevice}}>
+              <template is="dom-if" if={{!touchDevice}}>
                 <div id="volume_icons" class="control-icons" tabindex="0" on-click="_toggleMute">
                   <template is="dom-if" if={{muted}}>
                   <iron-icon icon="player-icons:volume-off"></iron-icon>
@@ -217,6 +217,13 @@ class MP4VideoPlayer extends PolymerElement {
         type: Boolean,
         value: () => document.pictureInPictureEnabled,
         readOnly: true
+      },
+      /* If operating on a touch device */
+      touchDevice: {
+        type: Boolean,
+        value: false,
+        readOnly: true,
+        reflectToAttribute: true
       }
     };
   }
@@ -230,12 +237,12 @@ class MP4VideoPlayer extends PolymerElement {
     this.dragging = { volume: false, track: false };
     this.fullscreenChangeEvent = this._prefix === 'ms' ? 'MSFullscreenchange' : `${this._prefix}fullscreenchange`;
     this.parser = new UAParser();
-    this.isIOSDevice = this.parser.getOS().name === 'iOS';
   }
 
   ready() {
     super.ready();
     this.addEventListener(this.fullscreenChangeEvent, this._handleFullscreenChange.bind(this));
+    this._setTouchDevice(this._isTouchDevice());
     this._createPropertyObserver('volume', '_volumeChanged', true);
     this._createPropertyObserver('time', '_timeChanged', true);
     window.addEventListener('resize', () => {
@@ -243,6 +250,16 @@ class MP4VideoPlayer extends PolymerElement {
       this._setTrackPosition(currentTime, duration);
     });
     window.addEventListener('keydown', this._handleKeyCode.bind(this));
+  }
+
+  /**
+   * Determine if the browser is operating on a touch
+   * device based on operating system.
+   * @return {boolean} if operating on touch device
+   */
+  _isTouchDevice() {
+    const { name } = this.parser.getOS();
+    return name === 'iOS' || name === 'Android';
   }
 
   /**
