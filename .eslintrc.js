@@ -25,5 +25,6 @@ module.exports = {
     'no-underscore-dangle': ['error', { 'allowAfterThis': true }],
     'class-methods-use-this': 'off',
     'max-len': 'off',
+    'no-undef': 'off'
   }
 };

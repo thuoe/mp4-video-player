@@ -119,51 +119,63 @@
 
       suite('player event listeners', () => {
         test('fires play event', (done) => {
-          player.addEventListener('play', (event) => {
-            expect(event.detail.currentTime).not.to.be.undefined;
-            done();
+          flush(() => {
+            player.addEventListener('play', (event) => {
+              expect(event.detail.currentTime).not.to.be.undefined;
+              done();
+            });
+            player.fireEvent('play');
           });
-          player.fireEvent('play');
         });
       
         test('fires pause event', (done) => {
-          player.addEventListener('pause', (event) => {
-            expect(event.detail.currentTime).not.to.be.undefined;
-            done();
+          flush(() => {
+            player.addEventListener('pause', (event) => {
+              expect(event.detail.currentTime).not.to.be.undefined;
+              done();
+            });
+            player.fireEvent('pause');
           });
-          player.fireEvent('pause');
         });
       
         test('fires ended event', (done) => {
-          player.addEventListener('ended', (event) => {
-            expect(event.detail.currentTime).not.to.be.undefined;
-            done();
+          flush(() => {
+            player.addEventListener('ended', (event) => {
+              expect(event.detail.currentTime).not.to.be.undefined;
+              done();
+            });
+            player.fireEvent('ended');
           });
-          player.fireEvent('ended');
         });
       
         test('fires enterFullscreen event', (done) => {
-          player.addEventListener('enterFullscreen', (event) => {
-            expect(event.detail.currentTime).not.to.be.undefined;
-            done();
+          flush(() => {
+            player.addEventListener('enterFullscreen', (event) => {
+              expect(event.detail.currentTime).not.to.be.undefined;
+              done();
+            });
+            player.fireEvent('enterFullscreen');
           });
-          player.fireEvent('enterFullscreen');
         });
       
         test('fires exitFullscreen event', (done) => {
-          player.addEventListener('exitFullscreen', (event) => {
-            expect(event.detail.currentTime).not.to.be.undefined;
-            done();
+          flush(() => {
+            player.addEventListener('exitFullscreen', (event) => {
+              expect(event.detail.currentTime).not.to.be.undefined;
+              done();
+            });
+            player.fireEvent('exitFullscreen');
           });
-          player.fireEvent('exitFullscreen');
         });
       
         test('fires timeUpdated event', (done) => {
-          player.addEventListener('timeUpdated', (event) => {
-            expect(event.detail.currentTime).not.to.be.undefined;
-            done();
+          flush(() => {
+            player.addEventListener('timeUpdated', (event) => {
+              expect(event.detail.currentTime).not.to.be.undefined;
+              done();
+            });
+            player.fireEvent('timeUpdated');
           });
-          player.fireEvent('timeUpdated');
         });
       
         test('fires volumeChange event', (done) => {
@@ -180,118 +192,148 @@
       });
 
       suite('toggling functionality', () => {
-        test('toggle play', () => {
-          player.play = () => Promise.resolve();
-          player.pause = () => Promise.resolve();
-          const playSpy = sinon.spy(player, 'play');
-          const pauseSpy = sinon.spy(player, 'pause');
+        test('toggle play', (done) => {
+          flush(() => {
+            player.play = () => Promise.resolve();
+            player.pause = () => Promise.resolve();
+            const playSpy = sinon.spy(player, 'play');
+            const pauseSpy = sinon.spy(player, 'pause');
 
-          player._togglePlay();
+            player._togglePlay();
       
-          expect(player.playing).to.equal(true);
-          assert(playSpy.calledOnce);
+            expect(player.playing).to.equal(true);
+            assert(playSpy.calledOnce);
 
-          player._togglePlay();
+            player._togglePlay();
 
-          expect(player.playing).to.equal(false);
-          assert(pauseSpy.calledOnce);
+            expect(player.playing).to.equal(false);
+            assert(pauseSpy.calledOnce);
+            done();
+          });
         });
       
-        test('toggle mute', () => {
-          const prevVolume = player.volume;
-          player._toggleMute();
-          expect(player.muted).to.equal(true);
-          expect(player.volume).to.equal(0);
-          player._toggleMute();
-          expect(player.muted).to.equal(false);
-          expect(player.volume).to.equal(prevVolume);
+        test('toggle mute', (done) => {
+          flush(() => {
+            const prevVolume = player.volume;
+            player._toggleMute();
+            expect(player.muted).to.equal(true);
+            expect(player.volume).to.equal(0);
+            player._toggleMute();
+            expect(player.muted).to.equal(false);
+            expect(player.volume).to.equal(prevVolume);
+            done();
+          });
         });
       
-        test('toggle fullscreen', () => {
-          player._enterFullscreen = () => Promise.resolve();
-          player._exitFullscreen = () => Promise.resolve();
-          const enterSpy = sinon.spy(player, '_enterFullscreen');
-          const exitSpy = sinon.spy(player, '_exitFullscreen');
+        test('toggle fullscreen', (done) => {
+          flush(() => {
+            player._enterFullscreen = () => Promise.resolve();
+            player._exitFullscreen = () => Promise.resolve();
+            const enterSpy = sinon.spy(player, '_enterFullscreen');
+            const exitSpy = sinon.spy(player, '_exitFullscreen');
       
-          player._toggleFullscreen();
+            player._toggleFullscreen();
       
-          expect(player.fullscreen).to.equal(true);
-          assert(enterSpy.calledOnce);
+            expect(player.fullscreen).to.equal(true);
+            assert(enterSpy.calledOnce);
       
-          player._toggleFullscreen();
+            player._toggleFullscreen();
 
-          expect(player.fullscreen).to.equal(false);
-          assert(exitSpy.calledOnce);
+            expect(player.fullscreen).to.equal(false);
+            assert(exitSpy.calledOnce);
+            done();
+          });
         });
 
-        test('toggle picture-in-picture', () => {
-          const video = player.shadowRoot.querySelector('#video_player');
-          video.requestPictureInPicture = () => Promise.resolve();
-          const requestPIP = sinon.spy(video, 'requestPictureInPicture');
-          player._togglePictureInPicture();
-          assert(requestPIP.calledOnce);
+        test('toggle picture-in-picture', (done) => {
+          flush(() => {
+            const video = player.shadowRoot.querySelector('#video_player');
+            video.requestPictureInPicture = () => Promise.resolve();
+            const requestPIP = sinon.spy(video, 'requestPictureInPicture');
+            player._togglePictureInPicture();
+            assert(requestPIP.calledOnce);
+            done();
+          });
         });
       });
 
       suite('click events', () => {
-        test('click large play button', () => {
-          const largePlayBtn = player.shadowRoot.querySelector('.large-btn');
-          click(largePlayBtn);
-          sinon.assert.calledOnce(playStub);
+        test('click large play button', (done) => {
+          flush(() => {
+            const largePlayBtn = player.shadowRoot.querySelector('.large-btn');
+            click(largePlayBtn);
+            sinon.assert.calledOnce(playStub);
+            done();
+          });
         });
 
-        test('double clicking player toggles fullscreen', () => {
-          const video = player._getShadowElementById('video_player');
-          dblClick(video);
-          sinon.assert.calledOnce(enterFullscreenStub);
-          dblClick(video);
-          sinon.assert.calledOnce(exitFullscreenStub);
+        test('double clicking player toggles fullscreen', (done) => {
+          flush(() => {
+            const video = player._getShadowElementById('video_player');
+            dblClick(video);
+            sinon.assert.calledOnce(enterFullscreenStub);
+            dblClick(video);
+            sinon.assert.calledOnce(exitFullscreenStub);
+            done();
+          });
         });
       });
 
       suite('player shortcuts', () => {
-        test('space bar calls "_togglePlay()"', () => {
-          pressSpace(window);
+        test('space bar calls "_togglePlay()"', (done) => {
+          flush(() => {
+            pressSpace(window);
 
-          expect(player.playing).to.equal(true);
-          sinon.assert.calledOnce(playStub);
+            expect(player.playing).to.equal(true);
+            sinon.assert.calledOnce(playStub);
       
-          pressSpace(window);
+            pressSpace(window);
       
-          expect(player.playing).to.equal(false);
-          sinon.assert.calledOnce(pauseStub);
+            expect(player.playing).to.equal(false);
+            sinon.assert.calledOnce(pauseStub);
+            done();
+          });
         });
 
-        test('p key calls "_togglePlay()"', () => {
-          pressAndReleaseKeyOn(window, P_KEY);
+        test('p key calls "_togglePlay()"', (done) => {
+          flush(() => {
+            pressAndReleaseKeyOn(window, P_KEY);
 
-          expect(player.playing).to.equal(true);
-          sinon.assert.calledOnce(playStub);
+            expect(player.playing).to.equal(true);
+            sinon.assert.calledOnce(playStub);
 
-          pressAndReleaseKeyOn(window, P_KEY);
+            pressAndReleaseKeyOn(window, P_KEY);
       
-          expect(player.playing).to.equal(false);
-          sinon.assert.calledOnce(pauseStub);
+            expect(player.playing).to.equal(false);
+            sinon.assert.calledOnce(pauseStub);
+            done();
+          });
         });
 
-        test('m key calls "_toggleMute()"', () => {
-          const prevVolume = player.volume;
-          pressAndReleaseKeyOn(window, M_KEY);
-          expect(player.volume).to.equal(0);
-          pressAndReleaseKeyOn(window, M_KEY);
-          expect(player.volume).to.equal(prevVolume);
+        test('m key calls "_toggleMute()"', (done) => {
+          flush(() => {
+            const prevVolume = player.volume;
+            pressAndReleaseKeyOn(window, M_KEY);
+            expect(player.volume).to.equal(0);
+            pressAndReleaseKeyOn(window, M_KEY);
+            expect(player.volume).to.equal(prevVolume);
+            done();
+          });
         });
 
-        test('f key calls "_toggleFullscreen()"', () => {
-          pressAndReleaseKeyOn(window, F_KEY);
+        test('f key calls "_toggleFullscreen()"', (done) => {
+          flush(() => {
+            pressAndReleaseKeyOn(window, F_KEY);
 
-          expect(player.fullscreen).to.equal(true);
-          sinon.assert.calledOnce(enterFullscreenStub);
+            expect(player.fullscreen).to.equal(true);
+            sinon.assert.calledOnce(enterFullscreenStub);
 
-          pressAndReleaseKeyOn(window, F_KEY);
+            pressAndReleaseKeyOn(window, F_KEY);
 
-          expect(player.fullscreen).to.equal(false);
-          sinon.assert.calledOnce(exitFullscreenStub);
+            expect(player.fullscreen).to.equal(false);
+            sinon.assert.calledOnce(exitFullscreenStub);
+            done();
+          });
         });
       
         test('left arrow key calls "_updateCurrentTime()"', () => {
