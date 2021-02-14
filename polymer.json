@@ -1,8 +1,16 @@
 {
+  "root": ".",
+  "entrypoint": "demo/index.html",
+  "sources": [
+    "./assets/**"
+  ],
+  "moduleResolution": "node",
   "npm": true,
-  "lint": {
-    "rules": [
-      "polymer-3"
-    ]
-  }
+  "builds": [
+    { 
+      "name": "es5prod",
+      "preset": "es5-bundled",
+      "addServiceWorker": true
+    }
+  ]
 }
