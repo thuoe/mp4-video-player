@@ -37,7 +37,6 @@ class MP4VideoPlayer extends PolymerElement {
           id="video_player" 
           playsinline
           on-dblclick="_toggleFullscreen"
-          crossorigin="anonymous"
           preload="metadata" 
           src$="[[src]]" 
           autoplay$="[[autoPlay]]"
