@@ -770,9 +770,15 @@ class MP4VideoPlayer extends PolymerElement {
    * Play the video
    */
   play() {
-    this._getShadowElementById('video_player').play();
-    this._setPlaying(true);
-    this.focus();
+    const aPromise = this._getShadowElementById('video_player').play();
+    if (aPromise !== undefined) {
+      aPromise.then(() => {
+        this._setPlaying(true);
+        this.focus();
+      }).catch(() => {
+        console.log('Problem Playing Audio!');
+      });
+    }
   }
 
   /**
