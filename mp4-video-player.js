@@ -86,13 +86,15 @@ class MP4VideoPlayer extends PolymerElement {
             <div class="left">
               <div id="play_icons" class="control-icons" on-click="_togglePlay">
                 <template is="dom-if" if={{!playing}}>
-                  <iron-icon icon="player-icons:play-arrow"></iron-icon>
+                  <template is="dom-if" if={{ended}}>
+                    <iron-icon icon="player-icons:replay"></iron-icon>
+                  </template>
+                  <template is="dom-if" if={{!ended}}>
+                    <iron-icon icon="player-icons:play-arrow"></iron-icon>
+                  </template>
                 </template>
                 <template is="dom-if" if={{playing}}>
                   <iron-icon icon="player-icons:pause"></iron-icon>
-                </template>
-                <template is="dom-if" if={{ended}}>
-                  <iron-icon icon="player-icons:ended"></iron-icon>
                 </template>
                 <span class="tooltip">[[_tooltipCaptions.playButton]]</span>
               </div>
@@ -164,6 +166,12 @@ class MP4VideoPlayer extends PolymerElement {
         readOnly: true,
         reflectToAttribute: true
       },
+      ended: {
+        type: Boolean,
+        value: false,
+        readOnly: true,
+        reflectToAttribute: true
+      },
       /* If the audio is currently muted */
       muted: {
         type: Boolean,
@@ -210,7 +218,7 @@ class MP4VideoPlayer extends PolymerElement {
       /* Used the populate the tooltip captions based on the current state of the player */
       _tooltipCaptions: {
         type: Object,
-        computed: '_computeTooltipCaptions(playing, muted, fullscreen)'
+        computed: '_computeTooltipCaptions(playing, muted, fullscreen, ended)'
       },
       /* Toggle the Picture-in-Picture feature based on browser compatibility */
       _enablePIP: {
@@ -341,7 +349,7 @@ class MP4VideoPlayer extends PolymerElement {
    * @return {Object} captions for lower track controls
    * @private
    */
-  _computeTooltipCaptions(playing, muted, fullscreen) {
+  _computeTooltipCaptions(playing, muted, fullscreen, ended) {
     const captions = {
       playButton: 'Play',
       volumeButton: 'Volume',
@@ -356,6 +364,11 @@ class MP4VideoPlayer extends PolymerElement {
     }
     if (fullscreen) {
       captions.fullscreenButton = 'Exit Fullscreen';
+    }
+    if (!playing) {
+      if (ended) {
+        captions.playButton = 'Replay';
+      }
     }
     return captions;
   }
@@ -576,6 +589,8 @@ class MP4VideoPlayer extends PolymerElement {
    * When the video has ended
    */
   _fireEndedEvent() {
+    this._setPlaying(false);
+    this._setEnded(true);
     const { currentTime } = this._getShadowElementById('video_player');
     this.dispatchEvent(this._createEvent('ended', { currentTime }));
   }
@@ -801,6 +816,7 @@ class MP4VideoPlayer extends PolymerElement {
    * @private
    */
   _togglePlay() {
+    this._setEnded(false);
     this._setPlaying(!this.playing);
     if (this.playing) {
       this.play();
