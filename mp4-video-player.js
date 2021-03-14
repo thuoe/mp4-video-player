@@ -218,7 +218,7 @@ class MP4VideoPlayer extends PolymerElement {
       /* Used the populate the tooltip captions based on the current state of the player */
       _tooltipCaptions: {
         type: Object,
-        computed: '_computeTooltipCaptions(playing, muted, fullscreen)'
+        computed: '_computeTooltipCaptions(playing, muted, fullscreen, ended)'
       },
       /* Toggle the Picture-in-Picture feature based on browser compatibility */
       _enablePIP: {
@@ -349,7 +349,7 @@ class MP4VideoPlayer extends PolymerElement {
    * @return {Object} captions for lower track controls
    * @private
    */
-  _computeTooltipCaptions(playing, muted, fullscreen) {
+  _computeTooltipCaptions(playing, muted, fullscreen, ended) {
     const captions = {
       playButton: 'Play',
       volumeButton: 'Volume',
@@ -364,6 +364,11 @@ class MP4VideoPlayer extends PolymerElement {
     }
     if (fullscreen) {
       captions.fullscreenButton = 'Exit Fullscreen';
+    }
+    if (!playing) {
+      if (ended) {
+        captions.playButton = 'Replay';
+      }
     }
     return captions;
   }
