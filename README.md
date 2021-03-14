@@ -88,6 +88,7 @@ The following properties below are accessible but cannot be altered dynamically:
 | `duration`         | The total duration of the video file after it has loaded | Number  | `0`           |
 | `playing`          | If the video is playing                                  | Boolean | `false`       |
 | `muted`            | If the video is muted                                    | Boolean | `false`       |
+| `ended`            | If the video has ended                                   | Boolean | `false`       |
 | `fullscreen`       | If the video is in fullscreen mode                       | Boolean | `false`       |
 
 ## Custom CSS Properties
