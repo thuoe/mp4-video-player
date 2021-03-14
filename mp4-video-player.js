@@ -86,13 +86,15 @@ class MP4VideoPlayer extends PolymerElement {
             <div class="left">
               <div id="play_icons" class="control-icons" on-click="_togglePlay">
                 <template is="dom-if" if={{!playing}}>
-                  <iron-icon icon="player-icons:play-arrow"></iron-icon>
+                  <template is="dom-if" if={{ended}}>
+                    <iron-icon icon="player-icons:replay"></iron-icon>
+                  </template>
+                  <template is="dom-if" if={{!ended}}>
+                    <iron-icon icon="player-icons:play-arrow"></iron-icon>
+                  </template>
                 </template>
                 <template is="dom-if" if={{playing}}>
                   <iron-icon icon="player-icons:pause"></iron-icon>
-                </template>
-                <template is="dom-if" if={{ended}}>
-                  <iron-icon icon="player-icons:ended"></iron-icon>
                 </template>
                 <span class="tooltip">[[_tooltipCaptions.playButton]]</span>
               </div>
@@ -159,6 +161,12 @@ class MP4VideoPlayer extends PolymerElement {
       },
       /* If the video is currently playing */
       playing: {
+        type: Boolean,
+        value: false,
+        readOnly: true,
+        reflectToAttribute: true
+      },
+      ended: {
         type: Boolean,
         value: false,
         readOnly: true,
@@ -576,6 +584,8 @@ class MP4VideoPlayer extends PolymerElement {
    * When the video has ended
    */
   _fireEndedEvent() {
+    this._setPlaying(false);
+    this._setEnded(true);
     const { currentTime } = this._getShadowElementById('video_player');
     this.dispatchEvent(this._createEvent('ended', { currentTime }));
   }
@@ -801,6 +811,7 @@ class MP4VideoPlayer extends PolymerElement {
    * @private
    */
   _togglePlay() {
+    this._setEnded(false);
     this._setPlaying(!this.playing);
     if (this.playing) {
       this.play();
