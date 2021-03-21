@@ -3,6 +3,7 @@
 .eslintignore
 .gitignore
 .travis.yml
+vercel.json
 demo/
 test/
 report/
