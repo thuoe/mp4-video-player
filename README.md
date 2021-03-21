@@ -98,8 +98,6 @@ The following custom CSS variables are also available for custom styling the vid
 Custom property | Description | Default Value
 ------------------------------------------|-------------------------------------------------------------|----------------------
 `--video-title-color`                     | Color of the video title                | `rgba(255,255,255,.9)`
-`--video-min-width`                       | The minimum width of the video player   | `600px`
-`--video-min-height`                      | The minimum height of the video player  | `400px`
 `--video-large-play-button-color`         | Large play button color                 | `#d32f2f`
 `--video-large-play-button-hover-color`   | Large play button hover color           | `#9a0007`
 `--video-track-fill-color`                | Track fill color                        | `#d32f2f`
