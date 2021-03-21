@@ -4,8 +4,6 @@ const playerStyles = html`
   <style>
     :host {
       display: block;
-      min-width: var(--video-min-width, 600px);
-      min-height: var(--video-min-height, 400px);
       user-select: none;
     }
 

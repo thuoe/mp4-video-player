@@ -360,8 +360,6 @@
       suite('player styling', () => {
         test('CSS properties are being applied..', () => {
           player.updateStyles({
-            '--video-min-width': '750px',
-            '--video-min-height': '300px',
             '--video-title-color': 'red',
             '--video-track-bar-color': 'blue',
             '--video-track-fill-color': 'green',
@@ -375,9 +373,6 @@
             '--video-pulse-icon-color': 'LightSteelBlue'
           });
       
-          assertComputed(player, '750px', '--video-min-width');
-          assertComputed(player, '300px', '--video-min-height');
-
           const title = player.shadowRoot.querySelector('.title');
           assertComputed(title, 'red', '--video-title-color');
       
