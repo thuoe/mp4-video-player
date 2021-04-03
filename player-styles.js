@@ -168,7 +168,7 @@ const playerStyles = html`
       transition: opacity 0.2s ease-in-out, transform .3s ease-in-out;
     }
 
-    .video-controls:hover {
+    .container:hover .video-controls {
       opacity: 1;
     }
 
