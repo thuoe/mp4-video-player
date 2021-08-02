@@ -23,11 +23,6 @@
     "start": "polymer serve",
     "test": "polymer test -l chrome"
   },
-  "husky": {
-    "hooks": {
-      "pre-push": "npm run lint && npm test"
-    }
-  },
   "dependencies": {
     "@polymer/iron-icon": "^3.0.0",
     "@polymer/polymer": "^3.0.0",
@@ -35,6 +30,8 @@
     "ua-parser-js": "^0.7.22"
   },
   "devDependencies": {
+    "@commitlint/cli": "^13.1.0",
+    "@commitlint/config-conventional": "^13.1.0",
     "@polymer/iron-component-page": "^4.0.0",
     "@polymer/iron-demo-helpers": "^3.0.0-pre.19",
     "@polymer/test-fixture": "^4.0.2",
@@ -44,7 +41,7 @@
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-html": "^6.0.1",
     "eslint-plugin-import": "^2.20.2",
-    "husky": "^4.2.3",
+    "husky": "^4.3.8",
     "mocha": "^5.2.0",
     "polymer-cli": "^1.9.11",
     "semantic-release": "^17.0.8",
