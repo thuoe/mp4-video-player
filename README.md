@@ -111,6 +111,7 @@ Custom property | Description | Default Value
 `--video-menu-item-icon-hover-color`      | Menu icon hover color                   | `white`
 `--video-tooltip-background-color`        | Tooltip background color                | `rgba(255,255,255,.9)`
 `--video-pulse-icon-color`                | Pulse icon background color              | `#d32f2f`
+`--video-font-family`                     | Font-family used throughout video player | `Arial`, `Helvetica`, `sans-serif`
 
 
 ### HTML Example:
