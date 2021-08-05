@@ -5,6 +5,7 @@ const playerStyles = html`
     :host {
       display: block;
       user-select: none;
+      font-family: var(--video-font-family), Arial, Helvetica, sans-serif;
     }
 
     :host(:-webkit-full-screen) {

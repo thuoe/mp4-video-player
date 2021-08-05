@@ -360,6 +360,7 @@
       suite('player styling', () => {
         test('CSS properties are being applied..', () => {
           player.updateStyles({
+            '--video-font-family': 'Times New Roman',
             '--video-title-color': 'red',
             '--video-track-bar-color': 'blue',
             '--video-track-fill-color': 'green',
@@ -373,6 +374,9 @@
             '--video-pulse-icon-color': 'LightSteelBlue'
           });
       
+          const timeElapsed = player.shadowRoot.querySelector('.time-elapsed');
+          assertComputed(timeElapsed, 'Times New Roman', '--video-font-family');
+
           const title = player.shadowRoot.querySelector('.title');
           assertComputed(title, 'red', '--video-title-color');
       
