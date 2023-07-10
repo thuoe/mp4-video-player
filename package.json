@@ -21,7 +21,8 @@
     "lint": "eslint './**/*.{html,js}' -o ./report/eslint.html -f html",
     "semantic-release": "semantic-release",
     "start": "polymer serve",
-    "test": "polymer test -l chrome"
+    "test": "polymer test -l chrome",
+    "build": "polymer build"
   },
   "dependencies": {
     "@polymer/iron-icon": "^3.0.0",
